@@ -19,19 +19,15 @@ fn main() {
     // `printpdf::Image` に変換
     let pdf_image = Image::from_dynamic_image(&image);
 
-    // 画像を PDF に描画
-    // let x = Mm(10.0); // 左から 10mm
-    // let y = Mm(297.0 - 10.0 - (image_height as f32 * 0.2)); // 上から 10mm
-    let scale = 0.2; // 画像のスケール（倍率）
-
     // 変換行列（スケールと位置の指定）
+    let dpi = 300.0;
     let transform = ImageTransform {
         translate_x: Option::from(Mm(10.0)), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-        translate_y: Option::from(Mm(50.0)), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-        scale_x: Option::from(image_width as f32 * scale), // NOTE: ミリメートル単位 で指定する。
-        scale_y: Option::from(image_height as f32 * scale), // NOTE: ミリメートル単位 で指定する。
+        translate_y: Option::from(Mm(40.0)), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
+        scale_x: Option::from(image_width as f32 / dpi), // NOTE: ミリメートル単位 で指定する。
+        scale_y: Option::from(image_height as f32 / dpi), // NOTE: ミリメートル単位 で指定する。
         rotate: None, // 回転なし
-        dpi: None,
+        dpi: Option::from(dpi),
     };
 
     // 画像を PDF に描画
