@@ -1,5 +1,5 @@
 use image::GenericImageView;
-use printpdf::{BuiltinFont, Color, Image, ImageTransform, Line, Mm, PdfDocument, Point, Rect, Rgb};
+use printpdf::{BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, Point, Rect, Rgb};
 use std::fs::File;
 use std::io::BufWriter;
 
@@ -68,6 +68,10 @@ fn main() {
             (Point::new(Mm(20.0), Mm(260.0)), false),
         ],
         is_closed: false,
+    });
+    layer4.set_line_dash_pattern(LineDashPattern {
+        dash_1: Some(2),
+        ..Default::default()
     });
     layer4.set_outline_thickness(5.0);
     layer4.add_line(Line {
