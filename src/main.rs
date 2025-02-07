@@ -1,5 +1,5 @@
 use image::GenericImageView;
-use printpdf::{BuiltinFont, Color, Image, ImageTransform, Mm, PdfDocument, Rect, Rgb};
+use printpdf::{BuiltinFont, Color, Image, ImageTransform, Line, Mm, PdfDocument, Point, Rect, Rgb};
 use std::fs::File;
 use std::io::BufWriter;
 
@@ -52,6 +52,31 @@ fn main() {
         Mm(20.0),  // 右下X
         Mm(277.0), // 右下Y
     ));
+
+    // --------------------
+    let layer4 = doc.get_page(page_index).add_layer("Layer 4");
+    layer4.set_outline_color(Color::Rgb(Rgb {
+        r: 0.0,
+        g: 255.0,
+        b: 0.0,
+        icc_profile: None,
+    }));
+    layer4.set_outline_thickness(1.0);
+    layer4.add_line(Line {
+        points: vec![
+            (Point::new(Mm(10.0), Mm(260.0)), false),
+            (Point::new(Mm(20.0), Mm(260.0)), false),
+        ],
+        is_closed: false,
+    });
+    layer4.set_outline_thickness(5.0);
+    layer4.add_line(Line {
+        points: vec![
+            (Point::new(Mm(10.0), Mm(255.0)), false),
+            (Point::new(Mm(20.0), Mm(255.0)), false),
+        ],
+        is_closed: false,
+    });
 
     // --------------------
     // 保存
