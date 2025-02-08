@@ -1,7 +1,6 @@
-mod box_document;
-
-use box_document::document_json;
-use box_document::pdf_generator;
+mod block_document;
+use block_document::document_json;
+use block_document::pdf_generator;
 use std::fs::File;
 
 fn main() {

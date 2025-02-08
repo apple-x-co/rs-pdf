@@ -1,4 +1,4 @@
-use crate::box_document::container::Container;
+use crate::block_document::container::Container;
 
 pub struct Document {
     pub title: String,

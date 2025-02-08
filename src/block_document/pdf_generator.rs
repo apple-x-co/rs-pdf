@@ -1,4 +1,4 @@
-use crate::box_document::document::Document;
+use crate::block_document::document::Document;
 use image::GenericImageView;
 use printpdf::{
     BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, Point, Rect,
@@ -8,8 +8,12 @@ use std::fs::File;
 use std::io::BufWriter;
 
 pub fn generate(document: Document, file: File) {
-    let (doc, page_index, layer_index) =
-        PdfDocument::new(document.title, Mm(document.width), Mm(document.height), "Layer 1");
+    let (doc, page_index, layer_index) = PdfDocument::new(
+        document.title,
+        Mm(document.width),
+        Mm(document.height),
+        "Layer 1",
+    );
     let layer = doc.get_page(page_index).get_layer(layer_index);
 
     // --------------------
