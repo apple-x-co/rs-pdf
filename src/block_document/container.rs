@@ -1,7 +1,13 @@
-pub struct Container {}
+use crate::block_document::block::Block;
+
+pub struct Container {
+    blocks: Vec<Block>,
+}
 
 impl Container {
     pub fn new() -> Container {
-        Container {}
+        Container {
+            blocks: Vec::new(),
+        }
     }
 }

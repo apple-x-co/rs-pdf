@@ -1,3 +1,4 @@
+pub mod block;
 pub mod container;
 pub mod document;
 pub mod document_json;
