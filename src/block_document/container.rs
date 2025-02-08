@@ -10,4 +10,8 @@ impl Container {
             blocks: Vec::new(),
         }
     }
+
+    pub fn add_block(&mut self, block: Block) {
+        self.blocks.push(block);
+    }
 }

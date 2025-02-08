@@ -1,23 +1,10 @@
-pub enum Direction {
-    Horizontal,
-    Vertical,
-}
-
-pub struct Size {
-    pub width: f64,
-    pub height: f64,
-}
-
-pub struct Coordinate {
-    pub x: u64,
-    pub y: u64,
-}
+use crate::block_document::direction::Direction;
+use crate::block_document::rect::Rect;
 
 pub struct Block {
     blocks: Vec<Block>,
     direction: Direction,
-    size: Option<Size>,
-    coordinate: Option<Coordinate>,
+    rect: Option<Rect>,
 }
 
 impl Block {
@@ -25,8 +12,7 @@ impl Block {
         Block {
             blocks: Vec::new(),
             direction: Direction::Horizontal,
-            size: None,
-            coordinate: None,
+            rect: None,
         }
     }
 }

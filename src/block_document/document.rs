@@ -16,4 +16,8 @@ impl Document {
             containers: Vec::new(),
         }
     }
+
+    pub fn add_container(&mut self, container: Container) {
+        self.containers.push(container);
+    }
 }
