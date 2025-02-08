@@ -2,12 +2,17 @@ use image::GenericImageView;
 use printpdf::{BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, Point, Rect, Rgb};
 use std::fs::File;
 use std::io::BufWriter;
+use crate::box_document::root::Root;
 
-pub struct Document {}
+pub struct Document {
+    pub root: Root,
+}
 
 impl Document {
-    pub fn new() -> Document {
-        Document {}
+    pub fn new(root: Root) -> Document {
+        Document {
+            root
+        }
     }
 
     pub fn save(&self) {
