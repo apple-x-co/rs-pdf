@@ -1,12 +1,14 @@
+use crate::box_document::document::Document;
 use image::GenericImageView;
-use printpdf::{BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, Point, Rect, Rgb};
+use printpdf::{
+    BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, Point, Rect,
+    Rgb,
+};
 use std::fs::File;
 use std::io::BufWriter;
-use crate::box_document::document::Document;
 
 pub fn generate(_document: Document) {
-    let (doc, page_index, layer_index) =
-        PdfDocument::new("Title", Mm(210.0), Mm(297.0), "Layer 1");
+    let (doc, page_index, layer_index) = PdfDocument::new("Title", Mm(210.0), Mm(297.0), "Layer 1");
     let layer = doc.get_page(page_index).get_layer(layer_index);
 
     // --------------------
@@ -89,9 +91,8 @@ pub fn generate(_document: Document) {
     doc.save(&mut BufWriter::new(
         File::create("output/printpdf_output.pdf").unwrap(),
     ))
-        .unwrap();
+    .unwrap();
 }
-
 
 // pub struct Document {
 //     pub root: Root,
