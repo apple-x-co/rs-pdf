@@ -1,7 +1,7 @@
-use crate::block_document::block::Block;
+use crate::block_document::rectangle::Rectangle;
 
 pub struct Container {
-    blocks: Vec<Block>,
+    blocks: Vec<Rectangle>,
 }
 
 impl Container {
@@ -11,7 +11,7 @@ impl Container {
         }
     }
 
-    pub fn add_block(&mut self, block: Block) {
+    pub fn add_block(&mut self, block: Rectangle) {
         self.blocks.push(block);
     }
 }

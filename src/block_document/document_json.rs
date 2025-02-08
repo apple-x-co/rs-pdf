@@ -1,4 +1,4 @@
-use crate::block_document::block::Block;
+use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
 use crate::block_document::document::Document;
 
@@ -8,7 +8,7 @@ pub fn parse() -> Document {
 
     let mut container = Container::new();
 
-    let block = Block::new();
+    let block = Rectangle::new();
     container.add_block(block);
 
     doc.add_container(container);
