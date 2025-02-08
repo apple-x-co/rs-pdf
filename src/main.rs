@@ -1,10 +1,9 @@
 mod box_document;
+use box_document::pdf_generator;
 use box_document::document::Document;
-use box_document::root::Root;
 
 fn main() {
-    let root = Root::new();
+    let document = Document::parse(); // TODO: 実行時パラメータの JSON ファイル名を渡す
 
-    let document = Document::new(root);
-    document.save();
+    pdf_generator::generate(document);
 }
