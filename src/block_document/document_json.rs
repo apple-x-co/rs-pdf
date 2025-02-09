@@ -1,6 +1,7 @@
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
 use crate::block_document::document::Document;
+use crate::block_document::image::Image;
 use crate::block_document::text::Text;
 
 // TODO: JSON ファイルをパースして Document 構造体を返す
@@ -14,6 +15,9 @@ pub fn parse() -> Document {
 
     let text = Text::new(String::from("HELLO WORLD"), None);
     container.add_block(Box::new(text));
+
+    let image = Image::new(String::from("assets/channel.png"), None);
+    container.add_block(Box::new(image));
 
     doc.add_container(container);
 
