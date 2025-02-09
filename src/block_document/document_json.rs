@@ -1,3 +1,4 @@
+use crate::block_document::bounds::Bounds;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
 use crate::block_document::document::Document;
@@ -5,6 +6,7 @@ use crate::block_document::image::Image;
 use crate::block_document::text::Text;
 
 // TODO: JSON ファイルをパースして Document 構造体を返す
+// NOTE: BlockDocument の座標基準は左上（printpdf は左下）
 pub fn parse() -> Document {
     let mut doc = Document::new(String::from("HELLO"), 210.0, 297.0);
 
