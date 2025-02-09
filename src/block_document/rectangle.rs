@@ -11,11 +11,11 @@ pub struct Rectangle {
 impl Block for Rectangle {}
 
 impl Rectangle {
-    pub fn new() -> Rectangle {
+    pub fn new(bounds: Option<Bounds>) -> Rectangle {
         Rectangle {
             blocks: Vec::new(),
             direction: Direction::Horizontal,
-            bounds: None,
+            bounds,
         }
     }
 }
