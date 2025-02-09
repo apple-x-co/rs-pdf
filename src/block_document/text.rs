@@ -1,6 +1,7 @@
 use crate::block_document::block::Block;
 use crate::block_document::bounds::Bounds;
 
+#[derive(Debug)]
 pub struct Text {
     text: String,
     bounds: Option<Bounds>,

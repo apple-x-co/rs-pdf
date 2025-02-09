@@ -1,4 +1,6 @@
-use crate::block_document::document::Document;
+use std::any::{Any, TypeId};
+use crate::block_document::document::Document as BlockDocument;
+use crate::block_document::line::Line as BlockLine;
 use image::GenericImageView;
 use printpdf::{
     BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, Point, Rect,
@@ -7,11 +9,34 @@ use printpdf::{
 use std::fs::File;
 use std::io::BufWriter;
 
-pub fn generate(document: Document, file: File) {
+pub fn generate(block_document: BlockDocument, file: File) {
     let (doc, page_index, layer_index) = PdfDocument::new(
-        document.title,
-        Mm(document.width),
-        Mm(document.height),
+        block_document.title,
+        Mm(block_document.width),
+        Mm(block_document.height),
+        "Layer 1",
+    );
+    let _layer = doc.get_page(page_index).get_layer(layer_index);
+
+    for container in block_document.containers.iter() {
+        for block in container.blocks.iter() {
+            println!("block:{:?}", block);
+
+            // FIXME
+            if block.type_id() == TypeId::of::<BlockLine>() {
+                println!("- type_id:{:?}", block.type_id());
+            }
+        }
+    }
+
+    doc.save(&mut BufWriter::new(file)).unwrap();
+}
+
+pub fn dummy(block_document: BlockDocument, file: File) {
+    let (doc, page_index, layer_index) = PdfDocument::new(
+        block_document.title,
+        Mm(block_document.width),
+        Mm(block_document.height),
         "Layer 1",
     );
     let layer = doc.get_page(page_index).get_layer(layer_index);

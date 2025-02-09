@@ -1,6 +1,7 @@
 use crate::block_document::block::Block;
 use crate::block_document::bounds::Bounds;
 
+#[derive(Debug)]
 pub struct Image {
     location: String,
     bounds: Option<Bounds>,

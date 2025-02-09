@@ -2,6 +2,7 @@ use crate::block_document::block::Block;
 use crate::block_document::direction::Direction;
 use crate::block_document::bounds::Bounds;
 
+#[derive(Debug)]
 pub struct Rectangle {
     blocks: Vec<Rectangle>,
     direction: Direction,

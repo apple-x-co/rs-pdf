@@ -2,8 +2,8 @@ use crate::block_document::container::Container;
 
 pub struct Document {
     pub title: String,
-    pub width: f32,
-    pub height: f32,
+    pub width: f32, // NOTE: mm
+    pub height: f32, // NOTE: mm
     pub containers: Vec<Container>,
 }
 

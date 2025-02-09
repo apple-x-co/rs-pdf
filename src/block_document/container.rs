@@ -1,7 +1,8 @@
 use crate::block_document::block::Block;
 
+#[derive(Debug)]
 pub struct Container {
-    blocks: Vec<Box<dyn Block>>,
+    pub blocks: Vec<Box<dyn Block>>,
 }
 
 impl Container {
