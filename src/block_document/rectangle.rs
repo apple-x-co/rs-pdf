@@ -5,7 +5,7 @@ use crate::block_document::bounds::Bounds;
 pub struct Rectangle {
     blocks: Vec<Rectangle>,
     direction: Direction,
-    rect: Option<Bounds>,
+    bounds: Option<Bounds>,
 }
 
 impl Block for Rectangle {}
@@ -15,7 +15,7 @@ impl Rectangle {
         Rectangle {
             blocks: Vec::new(),
             direction: Direction::Horizontal,
-            rect: None,
+            bounds: None,
         }
     }
 }

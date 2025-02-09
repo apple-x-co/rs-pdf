@@ -1,6 +1,7 @@
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
 use crate::block_document::document::Document;
+use crate::block_document::text::Text;
 
 // TODO: JSON ファイルをパースして Document 構造体を返す
 pub fn parse() -> Document {
@@ -8,8 +9,11 @@ pub fn parse() -> Document {
 
     let mut container = Container::new();
 
-    let block = Rectangle::new();
-    container.add_block(block);
+    let rectangle = Rectangle::new();
+    container.add_block(Box::new(rectangle));
+
+    let text = Text::new(String::from("HELLO WORLD"), None);
+    container.add_block(Box::new(text));
 
     doc.add_container(container);
 

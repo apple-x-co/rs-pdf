@@ -6,3 +6,4 @@ pub mod document;
 pub mod document_json;
 pub mod pdf_generator;
 pub mod rectangle;
+pub mod text;
