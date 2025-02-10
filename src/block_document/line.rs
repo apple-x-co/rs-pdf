@@ -3,7 +3,7 @@ use crate::block_document::bounds::Bounds;
 
 #[derive(Debug)]
 pub struct Line {
-    bounds: Bounds,
+    pub bounds: Bounds,
 }
 
 impl Block for Line {}

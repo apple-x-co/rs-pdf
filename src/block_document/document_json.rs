@@ -1,3 +1,4 @@
+use crate::block_document::block::BlockType;
 use crate::block_document::bounds::Bounds;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
@@ -20,7 +21,7 @@ pub fn parse() -> Document {
         x: Some(10.0),
         y: Some(10.0), // 297.0 - 287.0
     }));
-    container.add_block(Box::new(rectangle));
+    container.add_block(BlockType::Rectangle(rectangle));
 
     // Block Test2
     let line = Line::new(Bounds {
@@ -29,7 +30,7 @@ pub fn parse() -> Document {
         x: Some(10.0),
         y: Some(37.0), // 297.0 - 255.0
     });
-    container.add_block(Box::new(line));
+    container.add_block(BlockType::Line(line));
 
     // Block Test3
     let text = Text::new(String::from("HELLO WORLD"), Some(Bounds {
@@ -38,7 +39,7 @@ pub fn parse() -> Document {
         x: Some(10.0),
         y: Some(287.0), // 297.0 - 10.0
     }));
-    container.add_block(Box::new(text));
+    container.add_block(BlockType::Text(text));
 
     // Block Test4
     let image = Image::new(String::from("assets/channel.png"), Some(Bounds {
@@ -47,7 +48,7 @@ pub fn parse() -> Document {
         x: Some(10.0),
         y: Some(257.0), // 297.0 - 40.0
     }));
-    container.add_block(Box::new(image));
+    container.add_block(BlockType::Image(image));
 
     doc.add_container(container);
 

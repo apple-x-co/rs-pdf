@@ -1,8 +1,8 @@
-use crate::block_document::block::Block;
+use crate::block_document::block::{Block, BlockType};
 
 #[derive(Debug)]
 pub struct Container {
-    pub blocks: Vec<Box<dyn Block>>,
+    pub blocks: Vec<BlockType>,
 }
 
 impl Container {
@@ -12,7 +12,7 @@ impl Container {
         }
     }
 
-    pub fn add_block(&mut self, block: Box<dyn Block>) {
+    pub fn add_block(&mut self, block: BlockType) {
         self.blocks.push(block);
     }
 }

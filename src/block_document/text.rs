@@ -3,8 +3,8 @@ use crate::block_document::bounds::Bounds;
 
 #[derive(Debug)]
 pub struct Text {
-    text: String,
-    bounds: Option<Bounds>,
+    pub text: String,
+    pub bounds: Option<Bounds>,
 }
 
 impl Block for Text {}

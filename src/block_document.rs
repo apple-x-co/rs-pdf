@@ -6,6 +6,6 @@ pub mod document;
 pub mod document_json;
 pub mod image;
 pub mod line;
-pub mod pdf_generator;
+pub mod pdf_writer;
 pub mod rectangle;
 pub mod text;

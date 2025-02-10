@@ -3,8 +3,8 @@ use crate::block_document::bounds::Bounds;
 
 #[derive(Debug)]
 pub struct Image {
-    location: String,
-    bounds: Option<Bounds>,
+    pub location: String,
+    pub bounds: Option<Bounds>,
 }
 
 impl Block for Image {}
