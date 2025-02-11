@@ -53,12 +53,15 @@ pub fn save(block_document: BlockDocument, file: File) {
                     println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
 
                     write_rectangle(
-                        &doc, page_index, &rectangle, BlockBounds {
+                        &doc,
+                        page_index,
+                        &rectangle,
+                        BlockBounds {
                             width: Some(block_document.width),
                             height: Some(block_document.height),
                             x: Some(0.0),
                             y: Some(0.0),
-                        }
+                        },
                     )
                 }
                 BlockType::Text(text) => {
@@ -66,17 +69,34 @@ pub fn save(block_document: BlockDocument, file: File) {
                     // text 変数を使って Text の情報にアクセスできます
                     println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
 
-                    write_text(&doc, page_index, &text, BlockBounds {
-                        width: Some(block_document.width),
-                        height: Some(block_document.height),
-                        x: Some(0.0),
-                        y: Some(0.0),
-                    });
+                    write_text(
+                        &doc,
+                        page_index,
+                        &text,
+                        BlockBounds {
+                            width: Some(block_document.width),
+                            height: Some(block_document.height),
+                            x: Some(0.0),
+                            y: Some(0.0),
+                        },
+                    );
                 }
                 BlockType::Image(image) => {
                     println!("- This is an Image!");
                     // image 変数を使って Image の情報にアクセスできます
                     println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
+
+                    write_image(
+                        &doc,
+                        page_index,
+                        &image,
+                        BlockBounds {
+                            width: Some(block_document.width),
+                            height: Some(block_document.height),
+                            x: Some(0.0),
+                            y: Some(0.0),
+                        },
+                    );
                 }
             }
         }
@@ -94,6 +114,7 @@ fn write_rectangle(
     if let Some(bounds) = &block_rectangle.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.translate_lb(block_bounds);
+
             let layer = doc.get_page(page_index).add_layer("Layer");
             layer.set_fill_color(Color::Rgb(Rgb {
                 r: 255.0,
@@ -102,16 +123,15 @@ fn write_rectangle(
                 icc_profile: None,
             }));
             layer.add_rect(Rect::new(
-                Mm(lb_bounds.min_x()),  // 左上X
+                Mm(lb_bounds.min_x()), // 左上X
                 Mm(lb_bounds.max_y()), // 左上Y
-                Mm(lb_bounds.max_x()),  // 右下X
+                Mm(lb_bounds.max_x()), // 右下X
                 Mm(lb_bounds.min_y()), // 右下Y
             ));
         }
     }
 }
 
-// FIXME
 fn write_text(
     doc: &PdfDocumentReference,
     page_index: PdfPageIndex,
@@ -121,10 +141,54 @@ fn write_text(
     if let Some(bounds) = &block_text.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.translate_lb(block_bounds);
+
             let layer = doc.get_page(page_index).add_layer("Layer");
             // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
-            let font = doc.add_external_font(File::open(&block_text.font_path).unwrap()).unwrap();
-            layer.use_text(block_text.text.clone(), block_text.size, Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y()), &font);
+            let font = doc
+                .add_external_font(File::open(&block_text.font_path).unwrap())
+                .unwrap();
+            layer.use_text(
+                block_text.text.clone(),
+                block_text.size,
+                Mm(lb_bounds.min_x()),
+                Mm(lb_bounds.max_y()),
+                &font,
+            );
+        }
+    }
+}
+
+fn write_image(
+    doc: &PdfDocumentReference,
+    page_index: PdfPageIndex,
+    block_image: &BlockImage,
+    block_bounds: BlockBounds,
+) {
+    if let Some(bounds) = &block_image.bounds {
+        if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
+            let lb_bounds = bounds.translate_lb(block_bounds);
+
+            let layer = doc.get_page(page_index).add_layer("Layer");
+
+            let image = image::io::Reader::open(&block_image.location)
+                .unwrap()
+                .decode()
+                .unwrap();
+            // let (image_width, image_height) = image.dimensions();
+
+            let pdf_image = Image::from_dynamic_image(&image);
+
+            let dpi = 300.0;
+            let transform = ImageTransform {
+                translate_x: Option::from(Mm(lb_bounds.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
+                translate_y: Option::from(Mm(lb_bounds.max_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
+                scale_x: Option::from(bounds.width.unwrap() / dpi), // NOTE: ミリメートル単位 で指定する。
+                scale_y: Option::from(bounds.height.unwrap() / dpi), // NOTE: ミリメートル単位 で指定する。
+                rotate: None,                                     // 回転なし
+                dpi: Option::from(dpi),
+            };
+
+            pdf_image.add_to_layer(layer, transform);
         }
     }
 }

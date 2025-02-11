@@ -44,8 +44,8 @@ pub fn parse() -> Document {
         48.0,
         String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
         Some(Bounds {
-            width: text_bounds.width,
-            height: text_bounds.height,
+            width: text_bounds.width, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            height: text_bounds.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             x: Some(10.0),
             y: Some(277.0), // 297.0 - 20.0
         }),
@@ -56,8 +56,8 @@ pub fn parse() -> Document {
     let image = Image::new(
         String::from("assets/images/channel.png"),
         Some(Bounds {
-            width: None,
-            height: None,
+            width: Some(500.0), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            height: Some(500.0), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             x: Some(10.0),
             y: Some(257.0), // 297.0 - 40.0
         }),
