@@ -120,10 +120,11 @@ fn write_text(
 ) {
     if let Some(bounds) = &block_text.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
+            let lb_bounds = bounds.translate_lb(block_bounds);
             let layer = doc.get_page(page_index).add_layer("Layer");
             // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
             let font = doc.add_external_font(File::open("assets/fonts/NotoSansJP-VariableFont_wght.ttf").unwrap()).unwrap();
-            layer.use_text(block_text.text.clone(), block_text.size, Mm(x), Mm(y), &font);
+            layer.use_text(block_text.text.clone(), block_text.size, Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y()), &font);
         }
     }
 }

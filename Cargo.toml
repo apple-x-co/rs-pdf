@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 image = { version = "0.24", default-features = false, features = ["png"] }
 printpdf = { version = "0.7", features = ["embedded_images"] }
+rusttype = "0.9.3"

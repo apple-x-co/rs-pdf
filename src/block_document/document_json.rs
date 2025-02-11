@@ -3,6 +3,7 @@ use crate::block_document::bounds::Bounds;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
 use crate::block_document::document::Document;
+use crate::block_document::font::measure_text;
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::text::Text;
@@ -33,11 +34,12 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Line(line));
 
     // Block Test3
+    let text_bounds = measure_text(&String::from("HELLO WORLD"), 48.0);
     let text = Text::new(String::from("HELLO WORLD"), 48.0, Some(Bounds {
-        width: None,
-        height: None,
+        width: text_bounds.width,
+        height: text_bounds.height,
         x: Some(10.0),
-        y: Some(287.0), // 297.0 - 10.0
+        y: Some(277.0), // 297.0 - 20.0
     }));
     container.add_block(BlockType::Text(text));
 
