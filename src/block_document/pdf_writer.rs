@@ -111,6 +111,7 @@ fn write_rectangle(
     }
 }
 
+// FIXME
 fn write_text(
     doc: &PdfDocumentReference,
     page_index: PdfPageIndex,
@@ -120,8 +121,9 @@ fn write_text(
     if let Some(bounds) = &block_text.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
             let layer = doc.get_page(page_index).add_layer("Layer");
-            let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
-            layer.use_text(block_text.text.clone(), 48.0, Mm(x), Mm(y), &font);
+            // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
+            let font = doc.add_external_font(File::open("assets/fonts/NotoSansJP-VariableFont_wght.ttf").unwrap()).unwrap();
+            layer.use_text(block_text.text.clone(), block_text.size, Mm(x), Mm(y), &font);
         }
     }
 }
@@ -137,13 +139,14 @@ pub fn dummy(block_document: BlockDocument, file: File) {
 
     // --------------------
     // フォントを指定してテキストを描画
-    let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
+    // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
+    let font = doc.add_external_font(File::open("assets/fonts/NotoSansJP-VariableFont_wght.ttf").unwrap()).unwrap();
     layer.use_text("HELLO WORLD", 48.0, Mm(10.0), Mm(20.0), &font);
 
     // --------------------
     let layer2 = doc.get_page(page_index).add_layer("Layer 2");
     // 画像を読み込む
-    let image = image::io::Reader::open("assets/channel.png")
+    let image = image::io::Reader::open("assets/images/channel.png")
         .unwrap()
         .decode()
         .unwrap();

@@ -33,7 +33,7 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Line(line));
 
     // Block Test3
-    let text = Text::new(String::from("HELLO WORLD"), Some(Bounds {
+    let text = Text::new(String::from("HELLO WORLD"), 48.0, Some(Bounds {
         width: None,
         height: None,
         x: Some(10.0),
@@ -42,7 +42,7 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Text(text));
 
     // Block Test4
-    let image = Image::new(String::from("assets/channel.png"), Some(Bounds {
+    let image = Image::new(String::from("assets/images/channel.png"), Some(Bounds {
         width: None,
         height: None,
         x: Some(10.0),
