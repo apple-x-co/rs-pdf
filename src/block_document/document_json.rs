@@ -1,11 +1,11 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::bounds::Bounds;
-use crate::block_document::rectangle::Rectangle;
 use crate::block_document::container::Container;
 use crate::block_document::document::Document;
 use crate::block_document::font::measure_text;
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
+use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
 
 // TODO: JSON ファイルをパースして Document 構造体を返す
@@ -34,22 +34,34 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Line(line));
 
     // Block Test3
-    let text_bounds = measure_text(&String::from("HELLO WORLD"), 48.0);
-    let text = Text::new(String::from("HELLO WORLD"), 48.0, Some(Bounds {
-        width: text_bounds.width,
-        height: text_bounds.height,
-        x: Some(10.0),
-        y: Some(277.0), // 297.0 - 20.0
-    }));
+    let text_bounds = measure_text(
+        &String::from("HELLO WORLD"),
+        48.0,
+        &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+    );
+    let text = Text::new(
+        String::from("HELLO WORLD"),
+        48.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        Some(Bounds {
+            width: text_bounds.width,
+            height: text_bounds.height,
+            x: Some(10.0),
+            y: Some(277.0), // 297.0 - 20.0
+        }),
+    );
     container.add_block(BlockType::Text(text));
 
     // Block Test4
-    let image = Image::new(String::from("assets/images/channel.png"), Some(Bounds {
-        width: None,
-        height: None,
-        x: Some(10.0),
-        y: Some(257.0), // 297.0 - 40.0
-    }));
+    let image = Image::new(
+        String::from("assets/images/channel.png"),
+        Some(Bounds {
+            width: None,
+            height: None,
+            x: Some(10.0),
+            y: Some(257.0), // 297.0 - 40.0
+        }),
+    );
     container.add_block(BlockType::Image(image));
 
     doc.add_container(container);

@@ -3,9 +3,11 @@ use std::io::Read;
 use crate::block_document::bounds::Bounds;
 use rusttype::{point, Font, Scale};
 
-pub fn measure_text(text: &String, size: f32) -> Bounds {
-    let font_data = include_bytes!("../../assets/fonts/NotoSansJP-VariableFont_wght.ttf");
-    let font = Font::try_from_bytes(font_data as &[u8]).unwrap();
+pub fn measure_text(text: &String, size: f32, font_path: &String) -> Bounds {
+    let mut file = File::open(font_path).unwrap();
+    let mut font_data = Vec::new();
+    file.read_to_end(&mut font_data).expect("Cannot read font");
+    let font = Font::try_from_bytes(&font_data[..]).unwrap();
 
     let scale = Scale::uniform(size);
     let v_metrics = font.v_metrics(scale);

@@ -1,4 +1,4 @@
-use crate::block_document::block::{Block, BlockType};
+use crate::block_document::block::{BlockType};
 
 #[derive(Debug)]
 pub struct Container {
