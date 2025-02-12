@@ -20,7 +20,7 @@ pub fn parse() -> Document {
         width: Some(10.0),
         height: Some(10.0),
         x: Some(10.0),
-        y: Some(10.0), // 297.0 - 287.0
+        y: Some(10.0),
     }));
     container.add_block(BlockType::Rectangle(rectangle));
 
@@ -29,7 +29,7 @@ pub fn parse() -> Document {
         width: Some(10.0),
         height: Some(1.0),
         x: Some(10.0),
-        y: Some(37.0), // 297.0 - 255.0
+        y: Some(37.0),
     });
     container.add_block(BlockType::Line(line));
 
@@ -47,7 +47,7 @@ pub fn parse() -> Document {
             width: text_bounds.width, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             height: text_bounds.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             x: Some(10.0),
-            y: Some(277.0), // 297.0 - 20.0
+            y: Some(277.0),
         }),
     );
     container.add_block(BlockType::Text(text));
@@ -59,7 +59,7 @@ pub fn parse() -> Document {
             width: Some(500.0), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             height: Some(500.0), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             x: Some(10.0),
-            y: Some(257.0), // 297.0 - 40.0
+            y: Some(257.0),
         }),
     );
     container.add_block(BlockType::Image(image));

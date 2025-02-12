@@ -113,7 +113,7 @@ fn write_rectangle(
 ) {
     if let Some(bounds) = &block_rectangle.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
-            let lb_bounds = bounds.translate_lb(block_bounds);
+            let lb_bounds = bounds.transform(block_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
             layer.set_fill_color(Color::Rgb(Rgb {
@@ -140,7 +140,7 @@ fn write_text(
 ) {
     if let Some(bounds) = &block_text.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
-            let lb_bounds = bounds.translate_lb(block_bounds);
+            let lb_bounds = bounds.transform(block_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
             // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
@@ -166,7 +166,7 @@ fn write_image(
 ) {
     if let Some(bounds) = &block_image.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
-            let lb_bounds = bounds.translate_lb(block_bounds);
+            let lb_bounds = bounds.transform(block_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
 

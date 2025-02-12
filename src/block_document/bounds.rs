@@ -24,12 +24,12 @@ impl Bounds {
     }
 
     // NOTE: 左上座標から左下座標に変換をする
-    pub fn translate_lb(&self, parent: Bounds) -> Bounds {
+    pub fn transform(&self, parent: Bounds) -> Bounds {
         Bounds {
             width: self.width,
             height: self.height,
-            x: self.x,
-            y: Some(parent.max_y() - self.height.unwrap() - self.y.unwrap()), // NOTE: あってる?
+            x: self.x.map(|x| x + parent.x.unwrap_or(0.0)), // 親のX座標を加算
+            y: self.y.map(|y| parent.height.unwrap_or(0.0) - self.y.unwrap() - self.height.unwrap_or(0.0) + parent.y.unwrap_or(0.0)), // Y座標の変換
         }
     }
 }
