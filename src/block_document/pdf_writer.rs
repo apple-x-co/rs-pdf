@@ -1,6 +1,6 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::bounds::Bounds as BlockBounds;
-use crate::block_document::document::Document as BlockDocument;
+use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
@@ -48,9 +48,9 @@ pub fn save(block_document: BlockDocument, file: File) {
                     println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
                 }
                 BlockType::Rectangle(rectangle) => {
-                    println!("- This is a Rectangle!");
+                    // println!("- This is a Rectangle!");
                     // rectangle 変数を使って Rectangle の情報にアクセスできます
-                    println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
+                    // println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
 
                     write_rectangle(
                         &doc,
@@ -65,9 +65,9 @@ pub fn save(block_document: BlockDocument, file: File) {
                     )
                 }
                 BlockType::Text(text) => {
-                    println!("- This is a Text!");
+                    // println!("- This is a Text!");
                     // text 変数を使って Text の情報にアクセスできます
-                    println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
+                    // println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
 
                     write_text(
                         &doc,
@@ -151,7 +151,7 @@ fn write_text(
                 block_text.text.clone(),
                 block_text.size,
                 Mm(lb_bounds.min_x()),
-                Mm(lb_bounds.max_y()),
+                Mm(lb_bounds.min_y()),
                 &font,
             );
         }
@@ -167,6 +167,7 @@ fn write_image(
     if let Some(bounds) = &block_image.bounds {
         if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.transform(block_bounds);
+            println!("  - lb_bounds: {:?}", lb_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
 
@@ -178,14 +179,13 @@ fn write_image(
 
             let pdf_image = Image::from_dynamic_image(&image);
 
-            let dpi = 300.0;
             let transform = ImageTransform {
                 translate_x: Option::from(Mm(lb_bounds.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                translate_y: Option::from(Mm(lb_bounds.max_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                scale_x: Option::from(bounds.width.unwrap() / dpi), // NOTE: ミリメートル単位 で指定する。
-                scale_y: Option::from(bounds.height.unwrap() / dpi), // NOTE: ミリメートル単位 で指定する。
-                rotate: None,                                     // 回転なし
-                dpi: Option::from(dpi),
+                translate_y: Option::from(Mm(lb_bounds.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
+                scale_x: Some(1.0), // NOTE: 水平方向の拡縮小
+                scale_y: Some(1.0), // NOTE: 垂直方向の拡縮小
+                rotate: None, // 回転なし
+                dpi: Option::from(BlockDPI),
             };
 
             pdf_image.add_to_layer(layer, transform);

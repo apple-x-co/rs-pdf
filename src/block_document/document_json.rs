@@ -1,7 +1,7 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::bounds::Bounds;
 use crate::block_document::container::Container;
-use crate::block_document::document::Document;
+use crate::block_document::document::{pixel_to_mm, Document};
 use crate::block_document::font::measure_text;
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
@@ -19,8 +19,8 @@ pub fn parse() -> Document {
     let rectangle = Rectangle::new(Some(Bounds {
         width: Some(10.0),
         height: Some(10.0),
-        x: Some(10.0),
-        y: Some(10.0),
+        x: Some(1.0),
+        y: Some(1.0),
     }));
     container.add_block(BlockType::Rectangle(rectangle));
 
@@ -56,10 +56,10 @@ pub fn parse() -> Document {
     let image = Image::new(
         String::from("assets/images/channel.png"),
         Some(Bounds {
-            width: Some(500.0), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            height: Some(500.0), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            x: Some(10.0),
-            y: Some(257.0),
+            width: Some(pixel_to_mm(500.0)), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            height: Some(pixel_to_mm(500.0)), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            x: Some(166.666668),
+            y: Some(1.0),
         }),
     );
     container.add_block(BlockType::Image(image));

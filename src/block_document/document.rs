@@ -1,5 +1,11 @@
 use crate::block_document::container::Container;
 
+pub const DPI: f32 = 300.0;
+
+pub fn pixel_to_mm(pixel: f32) -> f32 {
+    pixel / (DPI / 25.4)
+}
+
 pub struct Document {
     pub title: String,
     pub width: f32, // NOTE: mm
