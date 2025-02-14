@@ -29,6 +29,12 @@ pub fn save(block_document: BlockDocument, file: File) {
     // ...
 
     // TODO: 描画（Bounds が確定している）
+    // let parent_bounds = BlockBounds {
+    //     width: Some(block_document.width),
+    //     height: Some(block_document.height),
+    //     x: Some(0.0),
+    //     y: Some(0.0),
+    // };
     let mut count = 0;
     for container in block_document.containers.iter() {
         if count > 0 {
@@ -47,6 +53,18 @@ pub fn save(block_document: BlockDocument, file: File) {
                     // println!("- This is a BlockLine!");
                     // line 変数を使って BlockLine の情報にアクセスできます
                     // println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
+
+                    write_line(
+                        &doc,
+                        page_index,
+                        &line,
+                        BlockBounds {
+                            width: Some(block_document.width),
+                            height: Some(block_document.height),
+                            x: Some(0.0),
+                            y: Some(0.0),
+                        },
+                    )
                 }
                 BlockType::Rectangle(rectangle) => {
                     // println!("- This is a Rectangle!");
@@ -136,6 +154,36 @@ fn write_rectangle(
             ));
         }
     }
+}
+
+fn write_line(
+    doc: &PdfDocumentReference,
+    page_index: PdfPageIndex,
+    block_line: &BlockLine,
+    block_bounds: BlockBounds,
+) {
+    let lb_bounds = block_line.bounds.transform(block_bounds);
+    println!("  - lb_bounds: {:?}", lb_bounds);
+    println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
+    println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
+    println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
+    println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
+
+    let layer = doc.get_page(page_index).add_layer("Layer");
+    layer.set_outline_color(Color::Rgb(Rgb {
+        r: 0.0,
+        g: 255.0,
+        b: 0.0,
+        icc_profile: None,
+    }));
+    layer.set_outline_thickness(lb_bounds.height.unwrap());
+    layer.add_line(Line {
+        points: vec![
+            (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
+            (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
+        ],
+        is_closed: false,
+    });
 }
 
 fn write_text(

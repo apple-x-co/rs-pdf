@@ -18,7 +18,7 @@ pub fn parse() -> Document {
 
     let mut container = Container::new();
 
-    // Block Test1
+    // Block Test1 - Rectangle
     let rectangle = Rectangle::new(Some(Bounds {
         width: Some(10.0),
         height: Some(10.0),
@@ -27,16 +27,16 @@ pub fn parse() -> Document {
     }));
     container.add_block(BlockType::Rectangle(rectangle));
 
-    // Block Test2
+    // Block Test2 - Line
     let line = Line::new(Bounds {
         width: Some(10.0),
-        height: Some(1.0),
-        x: Some(10.0),
-        y: Some(37.0),
+        height: Some(2.0),
+        x: Some(1.0),
+        y: Some(1.0),
     });
     container.add_block(BlockType::Line(line));
 
-    // Block Test3
+    // Block Test3 - Text
     let text_bounds = measure_text(
         &String::from("HELLO WORLD"),
         48.0,
@@ -55,7 +55,7 @@ pub fn parse() -> Document {
     );
     container.add_block(BlockType::Text(text));
 
-    // Block Test4
+    // Block Test4 - Image
     let image = Image::new(
         String::from("assets/images/channel.png"),
         Some(Bounds {
