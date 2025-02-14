@@ -8,13 +8,13 @@ use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
 
-const PAGE_WIDTH: f32 = 210.0;
-const PAGE_HEIGHT: f32 = 297.0;
+const PAGE_A4_WIDTH: f32 = 210.0;
+const PAGE_A4_HEIGHT: f32 = 297.0;
 
 // TODO: JSON ファイルをパースして Document 構造体を返す
 // NOTE: BlockDocument の座標基準は左上（printpdf は左下）
 pub fn parse() -> Document {
-    let mut doc = Document::new(String::from("HELLO"), PAGE_WIDTH, PAGE_HEIGHT);
+    let mut doc = Document::new(String::from("HELLO"), PAGE_A4_WIDTH, PAGE_A4_HEIGHT);
 
     let mut container = Container::new();
 
@@ -28,13 +28,20 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Rectangle(rectangle));
 
     // Block Test2 - Line
-    let line = Line::new(Bounds {
+    let line1 = Line::new(Bounds {
         width: Some(10.0),
-        height: Some(2.0),
-        x: Some(1.0),
-        y: Some(1.0),
+        height: Some(0.0),
+        x: Some(PAGE_A4_WIDTH - 11.0),
+        y: Some(PAGE_A4_HEIGHT - 1.0),
     });
-    container.add_block(BlockType::Line(line));
+    container.add_block(BlockType::Line(line1));
+    let line2 = Line::new(Bounds {
+        width: Some(0.0),
+        height: Some(10.0),
+        x: Some(PAGE_A4_WIDTH - 1.0),
+        y: Some(PAGE_A4_HEIGHT - 11.0),
+    });
+    container.add_block(BlockType::Line(line2));
 
     // Block Test3 - Text
     let text_bounds = measure_text(
@@ -50,7 +57,7 @@ pub fn parse() -> Document {
             width: text_bounds.width, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             height: text_bounds.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             x: Some(1.0),
-            y: Some(PAGE_HEIGHT - text_bounds.height.unwrap() - 1.0),
+            y: Some(PAGE_A4_HEIGHT - text_bounds.height.unwrap() - 1.0),
         }),
     );
     container.add_block(BlockType::Text(text));

@@ -163,11 +163,11 @@ fn write_line(
     block_bounds: BlockBounds,
 ) {
     let lb_bounds = block_line.bounds.transform(block_bounds);
-    println!("  - lb_bounds: {:?}", lb_bounds);
-    println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
-    println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
-    println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
-    println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
+    // println!("  - lb_bounds: {:?}", lb_bounds);
+    // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
+    // println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
+    // println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
+    // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
     let layer = doc.get_page(page_index).add_layer("Layer");
     layer.set_outline_color(Color::Rgb(Rgb {
@@ -176,14 +176,24 @@ fn write_line(
         b: 0.0,
         icc_profile: None,
     }));
-    layer.set_outline_thickness(lb_bounds.height.unwrap());
-    layer.add_line(Line {
-        points: vec![
-            (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
-            (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
-        ],
-        is_closed: false,
-    });
+    layer.set_outline_thickness(1.0);
+    if lb_bounds.min_x() == lb_bounds.max_x() {
+        layer.add_line(Line {
+            points: vec![
+                (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())), false),
+                (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
+            ],
+            is_closed: false,
+        });
+    } else {
+        layer.add_line(Line {
+            points: vec![
+                (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
+                (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
+            ],
+            is_closed: false,
+        });
+    }
 }
 
 fn write_text(
@@ -228,9 +238,8 @@ fn write_text(
                     (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())), false),
                     (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
                     (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
-                    (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())), false),
                 ],
-                is_closed: false,
+                is_closed: true,
             });
             // DEBUG
         }
