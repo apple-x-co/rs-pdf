@@ -7,7 +7,7 @@ use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::text::Text as BlockText;
 use image::GenericImageView;
 use printpdf::{
-    BuiltinFont, Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument,
+    Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument,
     PdfDocumentReference, PdfPageIndex, Point, Rect, Rgb,
 };
 use std::any::{Any, TypeId};
@@ -24,6 +24,9 @@ pub fn save(block_document: BlockDocument, file: File) {
     // let _layer = doc.get_page(page_index).get_layer(layer_index);
 
     // TODO: Bounds を調整
+    // ...
+    // ...
+    // ...
 
     // TODO: 描画（Bounds が確定している）
     let mut count = 0;
@@ -39,13 +42,11 @@ pub fn save(block_document: BlockDocument, file: File) {
         count += 1;
 
         for block in container.blocks.iter() {
-            println!("block:{:?}", block);
-
             match block {
                 BlockType::Line(line) => {
-                    println!("- This is a BlockLine!");
+                    // println!("- This is a BlockLine!");
                     // line 変数を使って BlockLine の情報にアクセスできます
-                    println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
+                    // println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
                 }
                 BlockType::Rectangle(rectangle) => {
                     // println!("- This is a Rectangle!");
@@ -82,9 +83,9 @@ pub fn save(block_document: BlockDocument, file: File) {
                     );
                 }
                 BlockType::Image(image) => {
-                    println!("- This is an Image!");
+                    // println!("- This is an Image!");
                     // image 変数を使って Image の情報にアクセスできます
-                    println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
+                    // println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
 
                     write_image(
                         &doc,
@@ -112,8 +113,13 @@ fn write_rectangle(
     block_bounds: BlockBounds,
 ) {
     if let Some(bounds) = &block_rectangle.bounds {
-        if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
+        if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.transform(block_bounds);
+            // println!("  - lb_bounds: {:?}", lb_bounds);
+            // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
+            // println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
+            // println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
+            // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
             let layer = doc.get_page(page_index).add_layer("Layer");
             layer.set_fill_color(Color::Rgb(Rgb {
@@ -139,8 +145,9 @@ fn write_text(
     block_bounds: BlockBounds,
 ) {
     if let Some(bounds) = &block_text.bounds {
-        if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
+        if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.transform(block_bounds);
+            // println!("  - lb_bounds: {:?}", lb_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
             // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
@@ -149,11 +156,35 @@ fn write_text(
                 .unwrap();
             layer.use_text(
                 block_text.text.clone(),
-                block_text.size,
+                block_text.font_size,
                 Mm(lb_bounds.min_x()),
                 Mm(lb_bounds.min_y()),
                 &font,
             );
+
+            // DEBUG
+            layer.set_outline_color(Color::Rgb(Rgb {
+                r: 0.9,
+                g: 0.9,
+                b: 0.9,
+                icc_profile: None,
+            }));
+            layer.set_line_dash_pattern(LineDashPattern {
+                dash_1: Some(2),
+                ..Default::default()
+            });
+            layer.set_outline_thickness(1.0);
+            layer.add_line(Line {
+                points: vec![
+                    (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())), false),
+                    (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())), false),
+                    (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
+                    (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
+                    (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())), false),
+                ],
+                is_closed: false,
+            });
+            // DEBUG
         }
     }
 }
@@ -165,9 +196,9 @@ fn write_image(
     block_bounds: BlockBounds,
 ) {
     if let Some(bounds) = &block_image.bounds {
-        if let (Some(x), Some(y)) = (bounds.x, bounds.y) {
+        if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.transform(block_bounds);
-            println!("  - lb_bounds: {:?}", lb_bounds);
+            // println!("  - lb_bounds: {:?}", lb_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
 
@@ -182,9 +213,9 @@ fn write_image(
             let transform = ImageTransform {
                 translate_x: Option::from(Mm(lb_bounds.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
                 translate_y: Option::from(Mm(lb_bounds.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                scale_x: Some(1.0), // NOTE: 水平方向の拡縮小
-                scale_y: Some(1.0), // NOTE: 垂直方向の拡縮小
-                rotate: None, // 回転なし
+                scale_x: Some(1.0),                               // NOTE: 水平方向の拡縮小
+                scale_y: Some(1.0),                               // NOTE: 垂直方向の拡縮小
+                rotate: None,                                     // 回転なし
                 dpi: Option::from(BlockDPI),
             };
 

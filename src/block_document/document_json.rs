@@ -8,10 +8,13 @@ use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
 
+const PAGE_WIDTH: f32 = 210.0;
+const PAGE_HEIGHT: f32 = 297.0;
+
 // TODO: JSON ファイルをパースして Document 構造体を返す
 // NOTE: BlockDocument の座標基準は左上（printpdf は左下）
 pub fn parse() -> Document {
-    let mut doc = Document::new(String::from("HELLO"), 210.0, 297.0);
+    let mut doc = Document::new(String::from("HELLO"), PAGE_WIDTH, PAGE_HEIGHT);
 
     let mut container = Container::new();
 
@@ -46,8 +49,8 @@ pub fn parse() -> Document {
         Some(Bounds {
             width: text_bounds.width, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             height: text_bounds.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            x: Some(10.0),
-            y: Some(277.0),
+            x: Some(1.0),
+            y: Some(PAGE_HEIGHT - text_bounds.height.unwrap() - 1.0),
         }),
     );
     container.add_block(BlockType::Text(text));
