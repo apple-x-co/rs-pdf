@@ -1,7 +1,8 @@
+use image::GenericImageView;
 use crate::block_document::block::BlockType;
 use crate::block_document::bounds::Bounds;
 use crate::block_document::container::Container;
-use crate::block_document::document::{pixel_to_mm, Document};
+use crate::block_document::document::{px_to_mm, Document};
 use crate::block_document::font::measure_text;
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
@@ -63,11 +64,16 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Text(text));
 
     // Block Test4 - Image
+    let image = image::io::Reader::open("assets/images/channel.png")
+        .unwrap()
+        .decode()
+        .unwrap();
+    let (image_width, image_height) = image.dimensions();
     let image = Image::new(
         String::from("assets/images/channel.png"),
         Some(Bounds {
-            width: Some(pixel_to_mm(500.0)), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            height: Some(pixel_to_mm(500.0)), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            width: Some(px_to_mm(image_width as f32)), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            height: Some(px_to_mm(image_height as f32)), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             x: Some(166.666668),
             y: Some(1.0),
         }),
