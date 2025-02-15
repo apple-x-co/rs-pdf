@@ -1,12 +1,12 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::container::Container;
 use crate::block_document::document::{px_to_mm, Document};
-use crate::block_document::font::measure_text;
 use crate::block_document::geometry::Bounds;
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
+use crate::block_document::text_renderer::measure_text;
 use image::GenericImageView;
 
 const PAGE_A4_WIDTH: f32 = 210.0;
