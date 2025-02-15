@@ -50,6 +50,9 @@ pub fn save(block_document: BlockDocument, file: File) {
 
         for block in container.blocks.iter() {
             match block {
+                &BlockType::Container(block_container) => {
+                    // TODO: 再起的に呼び出す
+                },
                 BlockType::Line(line) => {
                     // println!("- This is a BlockLine!");
                     // line 変数を使って BlockLine の情報にアクセスできます
