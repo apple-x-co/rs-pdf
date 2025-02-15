@@ -69,7 +69,7 @@ pub fn parse() -> Document {
         Some(Bounds::new(
             px_to_mm(image_width as f32), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             px_to_mm(image_height as f32), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            166.666668,
+            PAGE_A4_WIDTH - px_to_mm(image_width as f32) - 1.0,
             1.0,
         )),
     );
