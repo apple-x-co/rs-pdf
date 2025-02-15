@@ -18,8 +18,8 @@ use std::io::BufWriter;
 pub fn save(block_document: BlockDocument, file: File) {
     let (doc, mut page_index, mut _layer_index) = PdfDocument::new(
         block_document.title.clone(),
-        Mm(block_document.width),
-        Mm(block_document.height),
+        Mm(block_document.size.width),
+        Mm(block_document.size.height),
         "Layer 1",
     );
     // let _layer = doc.get_page(page_index).get_layer(layer_index);
@@ -31,8 +31,8 @@ pub fn save(block_document: BlockDocument, file: File) {
 
     // TODO: 描画（Bounds が確定している）
     // let parent_bounds = GeoBounds {
-    //     width: Some(block_document.width),
-    //     height: Some(block_document.height),
+    //     width: Some(block_document.size.width),
+    //     height: Some(block_document.size.height),
     //     x: Some(0.0),
     //     y: Some(0.0),
     // };
@@ -40,8 +40,8 @@ pub fn save(block_document: BlockDocument, file: File) {
     for container in block_document.containers.iter() {
         if count > 0 {
             (page_index, _layer_index) = doc.add_page(
-                Mm(block_document.width),
-                Mm(block_document.height),
+                Mm(block_document.size.width),
+                Mm(block_document.size.height),
                 "Layer 1",
             );
         }
@@ -62,12 +62,12 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &line,
-                        GeoBounds {
-                            width: Some(block_document.width),
-                            height: Some(block_document.height),
-                            x: Some(0.0),
-                            y: Some(0.0),
-                        },
+                        GeoBounds::new (
+                            block_document.size.width,
+                            block_document.size.height,
+                            0.0,
+                            0.0,
+                        ),
                     )
                 }
                 BlockType::Rectangle(rectangle) => {
@@ -79,12 +79,12 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &rectangle,
-                        GeoBounds {
-                            width: Some(block_document.width),
-                            height: Some(block_document.height),
-                            x: Some(0.0),
-                            y: Some(0.0),
-                        },
+                        GeoBounds::new (
+                            block_document.size.width,
+                            block_document.size.height,
+                            0.0,
+                            0.0,
+                        ),
                     )
                 }
                 BlockType::Text(text) => {
@@ -96,12 +96,12 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &text,
-                        GeoBounds {
-                            width: Some(block_document.width),
-                            height: Some(block_document.height),
-                            x: Some(0.0),
-                            y: Some(0.0),
-                        },
+                        GeoBounds::new (
+                            block_document.size.width,
+                            block_document.size.height,
+                            0.0,
+                            0.0,
+                        ),
                     );
                 }
                 BlockType::Image(image) => {
@@ -113,12 +113,12 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &image,
-                        GeoBounds {
-                            width: Some(block_document.width),
-                            height: Some(block_document.height),
-                            x: Some(0.0),
-                            y: Some(0.0),
-                        },
+                        GeoBounds::new (
+                            block_document.size.width,
+                            block_document.size.height,
+                            0.0,
+                            0.0,
+                        ),
                     );
                 }
             }
@@ -135,7 +135,7 @@ fn write_rectangle(
     geo_bounds: GeoBounds,
 ) {
     if let Some(bounds) = &block_rectangle.bounds {
-        if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
+        if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
             // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
@@ -219,7 +219,7 @@ fn write_text(
     geo_bounds: GeoBounds,
 ) {
     if let Some(bounds) = &block_text.bounds {
-        if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
+        if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
@@ -287,7 +287,7 @@ fn write_image(
     }
 
     if let Some(bounds) = &block_image.bounds {
-        if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
+        if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 

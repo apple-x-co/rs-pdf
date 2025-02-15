@@ -1,9 +1,9 @@
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::Size;
 use ab_glyph::{Font, FontVec, ScaleFont};
 use std::fs::File;
 use std::io::Read;
 
-pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Bounds {
+pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
     let mut file = File::open(font_path).unwrap();
     let mut font_data = Vec::new();
     file.read_to_end(&mut font_data).expect("Cannot read font");
@@ -33,10 +33,8 @@ pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Bounds
     let width_mm = width_pt * 0.35278;
     let height_mm = height_pt * 0.35278;
 
-    Bounds {
-        width: Some(width_mm),
-        height: Some(height_mm),
-        x: None,
-        y: None,
+    Size {
+        width: width_mm,
+        height: height_mm,
     }
 }
