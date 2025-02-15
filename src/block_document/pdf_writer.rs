@@ -10,7 +10,6 @@ use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
     PdfPageIndex, Point, Rect, Rgb,
 };
-use std::any::{Any, TypeId};
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;

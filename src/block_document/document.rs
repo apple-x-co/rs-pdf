@@ -9,8 +9,6 @@ pub fn px_to_mm(pixel: f32) -> f32 {
 
 pub struct Document {
     pub title: String,
-    // pub width: f32, // NOTE: mm
-    // pub height: f32, // NOTE: mm
     pub size: Size,
     pub containers: Vec<Container>,
 }
