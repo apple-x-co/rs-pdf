@@ -1,5 +1,5 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::geometry::Bounds as GeoBounds;
+use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
@@ -29,15 +29,9 @@ pub fn save(block_document: BlockDocument, file: File) {
     // ...
 
     // TODO: 描画（Bounds が確定している）
-    // let parent_bounds = GeoBounds {
-    //     width: Some(block_document.size.width),
-    //     height: Some(block_document.size.height),
-    //     x: Some(0.0),
-    //     y: Some(0.0),
-    // };
-    let mut count = 0;
+    let mut i = 0;
     for container in block_document.containers.iter() {
-        if count > 0 {
+        if i > 0 {
             (page_index, _layer_index) = doc.add_page(
                 Mm(block_document.size.width),
                 Mm(block_document.size.height),
@@ -45,93 +39,86 @@ pub fn save(block_document: BlockDocument, file: File) {
             );
         }
 
-        count += 1;
+        i += 1;
+
+        let page_bounds = GeoBounds::new(
+            block_document.size.width,
+            block_document.size.height,
+            0.0,
+            0.0,
+        );
 
         for block in container.blocks.iter() {
-            match block {
-                BlockType::Container(block_container) => {
-                    // TODO: 再起的に呼び出す
-                },
-                BlockType::Line(line) => {
-                    // println!("- This is a BlockLine!");
-                    // line 変数を使って BlockLine の情報にアクセスできます
-                    // println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
-
-                    write_line(
-                        &doc,
-                        page_index,
-                        &line,
-                        GeoBounds::new (
-                            block_document.size.width,
-                            block_document.size.height,
-                            0.0,
-                            0.0,
-                        ),
-                    )
-                }
-                BlockType::Rectangle(rectangle) => {
-                    // println!("- This is a Rectangle!");
-                    // rectangle 変数を使って Rectangle の情報にアクセスできます
-                    // println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
-
-                    write_rectangle(
-                        &doc,
-                        page_index,
-                        &rectangle,
-                        GeoBounds::new (
-                            block_document.size.width,
-                            block_document.size.height,
-                            0.0,
-                            0.0,
-                        ),
-                    )
-                }
-                BlockType::Text(text) => {
-                    // println!("- This is a Text!");
-                    // text 変数を使って Text の情報にアクセスできます
-                    // println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
-
-                    write_text(
-                        &doc,
-                        page_index,
-                        &text,
-                        GeoBounds::new (
-                            block_document.size.width,
-                            block_document.size.height,
-                            0.0,
-                            0.0,
-                        ),
-                    );
-                }
-                BlockType::Image(image) => {
-                    // println!("- This is an Image!");
-                    // image 変数を使って Image の情報にアクセスできます
-                    // println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
-
-                    write_image(
-                        &doc,
-                        page_index,
-                        &image,
-                        GeoBounds::new (
-                            block_document.size.width,
-                            block_document.size.height,
-                            0.0,
-                            0.0,
-                        ),
-                    );
-                }
-            }
+            draw(&doc, &page_index, &page_bounds, block);
         }
     }
 
     doc.save(&mut BufWriter::new(file)).unwrap();
 }
 
-fn write_rectangle(
+fn draw(doc: &PdfDocumentReference, page_index: &PdfPageIndex, parent_bounds: &Bounds, block: &BlockType) {
+    match block {
+        BlockType::Container(block_container) => {
+            for block in block_container.blocks.iter() {
+                draw(doc, page_index, parent_bounds, block); // TODO: parent_bounds を自分自身にする
+            }
+        },
+        BlockType::Line(line) => {
+            // println!("- This is a BlockLine!");
+            // line 変数を使って BlockLine の情報にアクセスできます
+            // println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
+
+            draw_line(
+                doc,
+                page_index,
+                line,
+                parent_bounds,
+            )
+        }
+        BlockType::Rectangle(rectangle) => {
+            // println!("- This is a Rectangle!");
+            // rectangle 変数を使って Rectangle の情報にアクセスできます
+            // println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
+
+            draw_rectangle(
+                doc,
+                page_index,
+                rectangle,
+                parent_bounds,
+            )
+        }
+        BlockType::Text(text) => {
+            // println!("- This is a Text!");
+            // text 変数を使って Text の情報にアクセスできます
+            // println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
+
+            draw_text(
+                doc,
+                page_index,
+                text,
+                parent_bounds,
+            );
+        }
+        BlockType::Image(image) => {
+            // println!("- This is an Image!");
+            // image 変数を使って Image の情報にアクセスできます
+            // println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
+
+            draw_image(
+                doc,
+                page_index,
+                image,
+                parent_bounds,
+            );
+        }
+    }
+}
+
+fn draw_rectangle(
     doc: &PdfDocumentReference,
-    page_index: PdfPageIndex,
+    page_index: &PdfPageIndex,
     block_rectangle: &BlockRectangle,
-    geo_bounds: GeoBounds,
+    geo_bounds: &GeoBounds,
 ) {
     if let Some(bounds) = &block_rectangle.bounds {
         if bounds.point.is_some() {
@@ -142,7 +129,7 @@ fn write_rectangle(
             // println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
             // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
-            let layer = doc.get_page(page_index).add_layer("Layer");
+            let layer = doc.get_page(*page_index).add_layer("Layer");
             layer.set_fill_color(Color::Rgb(Rgb {
                 r: 255.0,
                 g: 0.0,
@@ -159,11 +146,11 @@ fn write_rectangle(
     }
 }
 
-fn write_line(
+fn draw_line(
     doc: &PdfDocumentReference,
-    page_index: PdfPageIndex,
+    page_index: &PdfPageIndex,
     block_line: &BlockLine,
-    geo_bounds: GeoBounds,
+    geo_bounds: &GeoBounds,
 ) {
     let lb_bounds = block_line.bounds.transform(geo_bounds);
     // println!("  - lb_bounds: {:?}", lb_bounds);
@@ -172,7 +159,7 @@ fn write_line(
     // println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
     // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
-    let layer = doc.get_page(page_index).add_layer("Layer");
+    let layer = doc.get_page(*page_index).add_layer("Layer");
     layer.set_outline_color(Color::Rgb(Rgb {
         r: 0.0,
         g: 255.0,
@@ -211,18 +198,18 @@ fn write_line(
     }
 }
 
-fn write_text(
+fn draw_text(
     doc: &PdfDocumentReference,
-    page_index: PdfPageIndex,
+    page_index: &PdfPageIndex,
     block_text: &BlockText,
-    geo_bounds: GeoBounds,
+    geo_bounds: &GeoBounds,
 ) {
     if let Some(bounds) = &block_text.bounds {
         if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
-            let layer = doc.get_page(page_index).add_layer("Layer");
+            let layer = doc.get_page(*page_index).add_layer("Layer");
             // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
             let font = doc
                 .add_external_font(File::open(&block_text.font_path).unwrap())
@@ -273,11 +260,11 @@ fn write_text(
     }
 }
 
-fn write_image(
+fn draw_image(
     doc: &PdfDocumentReference,
-    page_index: PdfPageIndex,
+    page_index: &PdfPageIndex,
     block_image: &BlockImage,
-    geo_bounds: GeoBounds,
+    geo_bounds: &GeoBounds,
 ) {
     if !fs::exists(&block_image.path).unwrap() {
         eprintln!("No such file or directory -> {:?}", &block_image.path);
@@ -290,7 +277,7 @@ fn write_image(
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
-            let layer = doc.get_page(page_index).add_layer("Layer");
+            let layer = doc.get_page(*page_index).add_layer("Layer");
 
             let image = image::io::Reader::open(&block_image.path)
                 .unwrap()

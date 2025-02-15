@@ -43,7 +43,7 @@ impl Bounds {
     }
 
     // NOTE: 左上座標から左下座標に変換をする
-    pub fn transform(&self, parent: Bounds) -> Bounds {
+    pub fn transform(&self, parent: &Bounds) -> Bounds {
         Bounds {
             point: Some(Point {
                 x: self.point.as_ref().unwrap_or(&Default::default()).x
