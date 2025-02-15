@@ -1,5 +1,5 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::geometry::Bounds as BlockBounds;
+use crate::block_document::geometry::Bounds as GeoBounds;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
@@ -30,7 +30,7 @@ pub fn save(block_document: BlockDocument, file: File) {
     // ...
 
     // TODO: 描画（Bounds が確定している）
-    // let parent_bounds = BlockBounds {
+    // let parent_bounds = GeoBounds {
     //     width: Some(block_document.width),
     //     height: Some(block_document.height),
     //     x: Some(0.0),
@@ -62,7 +62,7 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &line,
-                        BlockBounds {
+                        GeoBounds {
                             width: Some(block_document.width),
                             height: Some(block_document.height),
                             x: Some(0.0),
@@ -79,7 +79,7 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &rectangle,
-                        BlockBounds {
+                        GeoBounds {
                             width: Some(block_document.width),
                             height: Some(block_document.height),
                             x: Some(0.0),
@@ -96,7 +96,7 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &text,
-                        BlockBounds {
+                        GeoBounds {
                             width: Some(block_document.width),
                             height: Some(block_document.height),
                             x: Some(0.0),
@@ -113,7 +113,7 @@ pub fn save(block_document: BlockDocument, file: File) {
                         &doc,
                         page_index,
                         &image,
-                        BlockBounds {
+                        GeoBounds {
                             width: Some(block_document.width),
                             height: Some(block_document.height),
                             x: Some(0.0),
@@ -132,11 +132,11 @@ fn write_rectangle(
     doc: &PdfDocumentReference,
     page_index: PdfPageIndex,
     block_rectangle: &BlockRectangle,
-    block_bounds: BlockBounds,
+    geo_bounds: GeoBounds,
 ) {
     if let Some(bounds) = &block_rectangle.bounds {
         if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
-            let lb_bounds = bounds.transform(block_bounds);
+            let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
             // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
             // println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
@@ -164,9 +164,9 @@ fn write_line(
     doc: &PdfDocumentReference,
     page_index: PdfPageIndex,
     block_line: &BlockLine,
-    block_bounds: BlockBounds,
+    geo_bounds: GeoBounds,
 ) {
-    let lb_bounds = block_line.bounds.transform(block_bounds);
+    let lb_bounds = block_line.bounds.transform(geo_bounds);
     // println!("  - lb_bounds: {:?}", lb_bounds);
     // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
     // println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
@@ -216,11 +216,11 @@ fn write_text(
     doc: &PdfDocumentReference,
     page_index: PdfPageIndex,
     block_text: &BlockText,
-    block_bounds: BlockBounds,
+    geo_bounds: GeoBounds,
 ) {
     if let Some(bounds) = &block_text.bounds {
         if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
-            let lb_bounds = bounds.transform(block_bounds);
+            let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
@@ -278,7 +278,7 @@ fn write_image(
     doc: &PdfDocumentReference,
     page_index: PdfPageIndex,
     block_image: &BlockImage,
-    block_bounds: BlockBounds,
+    geo_bounds: GeoBounds,
 ) {
     if !fs::exists(&block_image.path).unwrap() {
         eprintln!("No such file or directory -> {:?}", &block_image.path);
@@ -288,7 +288,7 @@ fn write_image(
 
     if let Some(bounds) = &block_image.bounds {
         if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
-            let lb_bounds = bounds.transform(block_bounds);
+            let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
             let layer = doc.get_page(page_index).add_layer("Layer");
