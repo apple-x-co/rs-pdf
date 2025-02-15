@@ -1,5 +1,5 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::bounds::Bounds as BlockBounds;
+use crate::block_document::geometry::Bounds as BlockBounds;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
@@ -50,7 +50,7 @@ pub fn save(block_document: BlockDocument, file: File) {
 
         for block in container.blocks.iter() {
             match block {
-                &BlockType::Container(block_container) => {
+                BlockType::Container(block_container) => {
                     // TODO: 再起的に呼び出す
                 },
                 BlockType::Line(line) => {

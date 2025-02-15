@@ -1,5 +1,5 @@
 use crate::block_document::block::Block;
-use crate::block_document::bounds::Bounds;
+use crate::block_document::geometry::Bounds;
 
 #[derive(Debug)]
 pub struct Rectangle {

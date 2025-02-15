@@ -1,4 +1,4 @@
-use crate::block_document::bounds::Bounds;
+use crate::block_document::geometry::Bounds;
 use ab_glyph::{Font, FontVec, ScaleFont};
 use std::fs::File;
 use std::io::Read;

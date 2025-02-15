@@ -6,6 +6,16 @@ pub struct Bounds {
     pub y: Option<f32>,      // NOTE: mm
 }
 
+pub struct Point {
+    pub x: f32,  // NOTE: mm
+    pub y: f32,  // NOTE: mm
+}
+
+pub struct Size {
+    pub width: f32,  // NOTE: mm
+    pub height: f32,  // NOTE: mm
+}
+
 impl Bounds {
     pub fn min_x(&self) -> f32 {
         self.x.unwrap()

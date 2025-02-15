@@ -1,6 +1,6 @@
 pub mod block;
 pub mod block_container;
-pub mod bounds;
+pub mod geometry;
 pub mod container;
 pub mod direction;
 pub mod document;
