@@ -7,10 +7,11 @@ use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::text::Text as BlockText;
 use image::GenericImageView;
 use printpdf::{
-    Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument,
-    PdfDocumentReference, PdfPageIndex, Point, Rect, Rgb,
+    Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
+    PdfPageIndex, Point, Rect, Rgb,
 };
 use std::any::{Any, TypeId};
+use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
 
@@ -180,16 +181,28 @@ fn write_line(
     if lb_bounds.min_x() == lb_bounds.max_x() {
         layer.add_line(Line {
             points: vec![
-                (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())), false),
-                (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
+                (
+                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                    false,
+                ),
+                (
+                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                    false,
+                ),
             ],
             is_closed: false,
         });
     } else {
         layer.add_line(Line {
             points: vec![
-                (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
-                (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
+                (
+                    Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                    false,
+                ),
+                (
+                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                    false,
+                ),
             ],
             is_closed: false,
         });
@@ -234,10 +247,22 @@ fn write_text(
             layer.set_outline_thickness(1.0);
             layer.add_line(Line {
                 points: vec![
-                    (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())), false),
-                    (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())), false),
-                    (Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())), false),
-                    (Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())), false),
+                    (
+                        Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
+                        false,
+                    ),
+                    (
+                        Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                        false,
+                    ),
+                    (
+                        Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                        false,
+                    ),
+                    (
+                        Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                        false,
+                    ),
                 ],
                 is_closed: true,
             });
@@ -252,6 +277,12 @@ fn write_image(
     block_image: &BlockImage,
     block_bounds: BlockBounds,
 ) {
+    if !fs::exists(&block_image.path).unwrap() {
+        eprintln!("No such file or directory -> {:?}", &block_image.path);
+
+        return;
+    }
+
     if let Some(bounds) = &block_image.bounds {
         if let (Some(_x), Some(_y)) = (bounds.x, bounds.y) {
             let lb_bounds = bounds.transform(block_bounds);
@@ -259,7 +290,7 @@ fn write_image(
 
             let layer = doc.get_page(page_index).add_layer("Layer");
 
-            let image = image::io::Reader::open(&block_image.location)
+            let image = image::io::Reader::open(&block_image.path)
                 .unwrap()
                 .decode()
                 .unwrap();

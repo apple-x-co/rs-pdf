@@ -3,16 +3,16 @@ use crate::block_document::bounds::Bounds;
 
 #[derive(Debug)]
 pub struct Image {
-    pub location: String,
+    pub path: String,
     pub bounds: Option<Bounds>,
 }
 
 impl Block for Image {}
 
 impl Image {
-    pub fn new(location: String, bounds: Option<Bounds>) -> Image {
+    pub fn new(path: String, bounds: Option<Bounds>) -> Image {
         Image {
-            location,
+            path,
             bounds,
         }
     }
