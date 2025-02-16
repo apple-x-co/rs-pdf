@@ -1,13 +1,14 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::container::Container;
 use crate::block_document::document::{px_to_mm, Document};
-use crate::block_document::geometry::{Bounds, Size};
+use crate::block_document::geometry::{Bounds, Point, Size};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
 use image::GenericImageView;
+use crate::block_document::block_container::BlockContainer;
 
 const PAGE_A4_WIDTH: f32 = 210.0;
 const PAGE_A4_HEIGHT: f32 = 297.0;
@@ -80,6 +81,45 @@ pub fn parse() -> Document {
         )),
     );
     container.add_block(BlockType::Image(image));
+
+    // Block Test5 - BlockContainer
+    let mut block_container = BlockContainer::new(
+        Some(Bounds{
+            point: Some(Point {
+                x: (PAGE_A4_WIDTH / 2.0) - (50.0 / 2.0),
+                y: (PAGE_A4_HEIGHT / 2.0) - (50.0 / 2.0),
+            }), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            size: Some(Size {
+                width: 50.0,
+                height: 50.0,
+            }), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+        })
+    );
+    let rectangle2 = Rectangle::new(Some(Bounds::new(
+        50.0,
+        50.0,
+        0.0, // NOTE: BlockContainer からの座標
+        0.0 // NOTE: BlockContainer からの座標
+    )));
+    block_container.add_block(BlockType::Rectangle(rectangle2));
+    let text_size2 = measure_text(
+        &String::from("Hi!!"),
+        20.0,
+        &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+    );
+    let text2 = Text::new(
+        String::from("Hi!!"),
+        20.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        Some(Bounds::new(
+            text_size2.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            text_size2.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            1.0, // NOTE: BlockContainer からの座標
+            1.0, // NOTE: BlockContainer からの座標
+        )),
+    );
+    block_container.add_block(BlockType::Text(text2));
+    container.add_block(BlockType::Container(block_container));
 
     doc.add_container(container);
 

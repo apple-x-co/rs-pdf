@@ -13,6 +13,7 @@ use printpdf::{
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
+use crate::block_document::block::BlockType::Rectangle;
 
 pub fn save(block_document: BlockDocument, file: File) {
     let (doc, mut page_index, mut _layer_index) = PdfDocument::new(
@@ -59,8 +60,19 @@ pub fn save(block_document: BlockDocument, file: File) {
 fn draw(doc: &PdfDocumentReference, page_index: &PdfPageIndex, parent_bounds: &Bounds, block: &BlockType) {
     match block {
         BlockType::Container(block_container) => {
+            // TEST
+            // draw_rectangle(
+            //     doc,
+            //     page_index,
+            //     &BlockRectangle::new(
+            //         block_container.bounds.clone()
+            //     ),
+            //     parent_bounds,
+            // );
+            // TEST
+
             for block in block_container.blocks.iter() {
-                draw(doc, page_index, parent_bounds, block); // TODO: parent_bounds を自分自身にする
+                draw(doc, page_index, block_container.bounds.as_ref().unwrap(), block);
             }
         },
         BlockType::Line(line) => {
