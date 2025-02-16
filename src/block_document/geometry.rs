@@ -16,6 +16,14 @@ pub struct Size {
     pub height: f32, // NOTE: mm
 }
 
+// #[derive(Debug, Default, Clone)]
+// pub struct Margin {
+//     pub top: f32,    // NOTE: mm
+//     pub right: f32,  // NOTE: mm
+//     pub bottom: f32, // NOTE: mm
+//     pub left: f32,   // NOTE: mm
+// }
+
 #[derive(Debug, Default, Clone)]
 pub struct Insets {
     pub top: f32,    // NOTE: mm

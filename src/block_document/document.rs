@@ -14,10 +14,10 @@ pub struct Document {
 }
 
 impl Document {
-    pub fn new(title: String, width: f32, height: f32) -> Document {
+    pub fn new(title: String, size: Size) -> Document {
         Document {
             title,
-            size: Size { width, height },
+            size,
             containers: Vec::new(),
         }
     }

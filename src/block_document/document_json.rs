@@ -1,7 +1,7 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::container::Container;
 use crate::block_document::document::{px_to_mm, Document};
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::{Bounds, Size};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
@@ -15,7 +15,13 @@ const PAGE_A4_HEIGHT: f32 = 297.0;
 // TODO: JSON ファイルをパースして Document 構造体を返す
 // NOTE: BlockDocument の座標基準は左上（printpdf は左下）
 pub fn parse() -> Document {
-    let mut doc = Document::new(String::from("HELLO"), PAGE_A4_WIDTH, PAGE_A4_HEIGHT);
+    let mut doc = Document::new(
+        String::from("HELLO"),
+        Size {
+            width: PAGE_A4_WIDTH,
+            height: PAGE_A4_HEIGHT,
+        },
+    );
 
     let mut container = Container::new();
 
