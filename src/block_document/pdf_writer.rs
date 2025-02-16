@@ -1,19 +1,17 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
+use crate::block_document::block::BlockType::Rectangle;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
+use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
+use crate::block_document::style::{BorderStyle, Style, TextOutlineStyle, TextStyle};
 use crate::block_document::text::Text as BlockText;
 use image::GenericImageView;
-use printpdf::{
-    Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
-    PdfPageIndex, Point, Rect, Rgb,
-};
+use printpdf::{Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference, PdfPageIndex, Point, Rect, Rgb, TextRenderingMode};
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
-use crate::block_document::block::BlockType::Rectangle;
 
 pub fn save(block_document: BlockDocument, file: File) {
     let (doc, mut page_index, mut _layer_index) = PdfDocument::new(
@@ -57,7 +55,12 @@ pub fn save(block_document: BlockDocument, file: File) {
     doc.save(&mut BufWriter::new(file)).unwrap();
 }
 
-fn draw(doc: &PdfDocumentReference, page_index: &PdfPageIndex, parent_bounds: &Bounds, block: &BlockType) {
+fn draw(
+    doc: &PdfDocumentReference,
+    page_index: &PdfPageIndex,
+    parent_bounds: &Bounds,
+    block: &BlockType,
+) {
     match block {
         BlockType::Container(block_container) => {
             // TEST
@@ -72,56 +75,41 @@ fn draw(doc: &PdfDocumentReference, page_index: &PdfPageIndex, parent_bounds: &B
             // TEST
 
             for block in block_container.blocks.iter() {
-                draw(doc, page_index, block_container.bounds.as_ref().unwrap(), block);
+                draw(
+                    doc,
+                    page_index,
+                    block_container.bounds.as_ref().unwrap(),
+                    block,
+                );
             }
-        },
+        }
         BlockType::Line(line) => {
             // println!("- This is a BlockLine!");
             // line 変数を使って BlockLine の情報にアクセスできます
             // println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
 
-            draw_line(
-                doc,
-                page_index,
-                line,
-                parent_bounds,
-            )
+            draw_line(doc, page_index, line, parent_bounds)
         }
         BlockType::Rectangle(rectangle) => {
             // println!("- This is a Rectangle!");
             // rectangle 変数を使って Rectangle の情報にアクセスできます
             // println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
 
-            draw_rectangle(
-                doc,
-                page_index,
-                rectangle,
-                parent_bounds,
-            )
+            draw_rectangle(doc, page_index, rectangle, parent_bounds)
         }
         BlockType::Text(text) => {
             // println!("- This is a Text!");
             // text 変数を使って Text の情報にアクセスできます
             // println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
 
-            draw_text(
-                doc,
-                page_index,
-                text,
-                parent_bounds,
-            );
+            draw_text(doc, page_index, text, parent_bounds);
         }
         BlockType::Image(image) => {
             // println!("- This is an Image!");
             // image 変数を使って Image の情報にアクセスできます
             // println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
 
-            draw_image(
-                doc,
-                page_index,
-                image,
-                parent_bounds,
-            );
+            draw_image(doc, page_index, image, parent_bounds);
         }
     }
 }
@@ -221,53 +209,117 @@ fn draw_text(
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
-            let layer = doc.get_page(*page_index).add_layer("Layer");
+            let layer1 = doc.get_page(*page_index).add_layer("Layer 1");
+
+            for style in &block_text.styles {
+                match style {
+                    Style::BorderColor(rgb_color) => {
+                        layer1.set_outline_color(Color::Rgb(Rgb {
+                            r: rgb_color.r as f32 / 255.0,
+                            g: rgb_color.g as f32 / 255.0,
+                            b: rgb_color.b as f32 / 255.0,
+                            icc_profile: None,
+                        }));
+                    }
+                    Style::BorderWidth(width) => {
+                        layer1.set_outline_thickness(*width);
+                        layer1.add_line(Line {
+                            points: vec![
+                                (
+                                    Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
+                                    false,
+                                ),
+                                (
+                                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                                    false,
+                                ),
+                                (
+                                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                                    false,
+                                ),
+                                (
+                                    Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                                    false,
+                                ),
+                            ],
+                            is_closed: true,
+                        });
+                    }
+                    Style::BorderStyle(border_style) => match border_style {
+                        BorderStyle::Dash(i) => {
+                            layer1.set_line_dash_pattern(LineDashPattern {
+                                dash_1: Some(*i),
+                                ..Default::default()
+                            });
+                        }
+                        _ => {}
+                    },
+                    _ => {}
+                }
+            }
+
+            let layer2 = doc.get_page(*page_index).add_layer("Layer 2");
+
             // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
             let font = doc
                 .add_external_font(File::open(&block_text.font_path).unwrap())
                 .unwrap();
-            layer.use_text(
+            for style in &block_text.styles {
+                match style {
+                    Style::TextFillColor(rgb_color) => {
+                        layer2.set_fill_color(Color::Rgb(
+                            Rgb {
+                                r: rgb_color.r as f32 / 255.0,
+                                g: rgb_color.g as f32 / 255.0,
+                                b: rgb_color.b as f32 / 255.0,
+                                icc_profile: None,
+                            }
+                        ));
+                    }
+                    Style::TextOutlineColor(rgb_color) => {
+                        layer2.set_outline_color(Color::Rgb(
+                            Rgb {
+                                r: rgb_color.r as f32 / 255.0,
+                                g: rgb_color.g as f32 / 255.0,
+                                b: rgb_color.b as f32 / 255.0,
+                                icc_profile: None,
+                            }
+                        ));
+                    }
+                    Style::TextStyle(text_style) => {
+                        match text_style {
+                            TextStyle::Fill => {
+                                layer2.set_text_rendering_mode(TextRenderingMode::Fill);
+                            }
+                            TextStyle::Stroke => {
+                                layer2.set_text_rendering_mode(TextRenderingMode::Stroke);
+                            }
+                            TextStyle::FillStroke => {
+                                layer2.set_text_rendering_mode(TextRenderingMode::FillStroke);
+                            }
+                        }
+                    }
+                    Style::TextOutlineStyle(text_outline_style) => {
+                        match text_outline_style {
+                            TextOutlineStyle::Dash(i) => {
+                                layer2.set_line_dash_pattern(LineDashPattern {
+                                    dash_1: Some(*i),
+                                    ..Default::default()
+                                });
+                            }
+                            _ => {}
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            layer2.use_text(
                 block_text.text.clone(),
                 block_text.font_size,
                 Mm(lb_bounds.min_x()),
                 Mm(lb_bounds.min_y()),
                 &font,
             );
-
-            // DEBUG
-            layer.set_outline_color(Color::Rgb(Rgb {
-                r: 0.9,
-                g: 0.9,
-                b: 0.9,
-                icc_profile: None,
-            }));
-            layer.set_line_dash_pattern(LineDashPattern {
-                dash_1: Some(2),
-                ..Default::default()
-            });
-            layer.set_outline_thickness(1.0);
-            layer.add_line(Line {
-                points: vec![
-                    (
-                        Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
-                        false,
-                    ),
-                    (
-                        Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
-                        false,
-                    ),
-                    (
-                        Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
-                        false,
-                    ),
-                    (
-                        Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
-                        false,
-                    ),
-                ],
-                is_closed: true,
-            });
-            // DEBUG
         }
     }
 }
