@@ -130,18 +130,76 @@ fn draw_rectangle(
             // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
             let layer = doc.get_page(*page_index).add_layer("Layer");
-            layer.set_fill_color(Color::Rgb(Rgb {
-                r: 255.0,
-                g: 0.0,
-                b: 0.0,
-                icc_profile: None,
-            }));
+
+            let mut border_required = false;
+
+            for style in &block_rectangle.styles {
+                match style {
+                    Style::BackgroundColor(rgb_color) => {
+                        layer.set_fill_color(Color::Rgb(Rgb {
+                            r: rgb_color.r as f32 / 255.0,
+                            g: rgb_color.g as f32 / 255.0,
+                            b: rgb_color.b as f32 / 255.0,
+                            icc_profile: None,
+                        }));
+                    }
+                    Style::BorderColor(rgb_color) => {
+                        border_required = true;
+                        layer.set_outline_color(Color::Rgb(Rgb {
+                            r: rgb_color.r as f32 / 255.0,
+                            g: rgb_color.g as f32 / 255.0,
+                            b: rgb_color.b as f32 / 255.0,
+                            icc_profile: None,
+                        }));
+                    }
+                    Style::BorderWidth(width) => {
+                        border_required = true;
+                        layer.set_outline_thickness(*width);
+                    }
+                    Style::BorderStyle(border_style) => match border_style {
+                        BorderStyle::Dash(i) => {
+                            border_required = true;
+                            layer.set_line_dash_pattern(LineDashPattern {
+                                dash_1: Some(*i),
+                                ..Default::default()
+                            });
+                        }
+                        _ => {}
+                    },
+                    _ => {}
+                }
+            }
+
             layer.add_rect(Rect::new(
                 Mm(lb_bounds.min_x()), // 左上X
                 Mm(lb_bounds.max_y()), // 左上Y
                 Mm(lb_bounds.max_x()), // 右下X
                 Mm(lb_bounds.min_y()), // 右下Y
             ));
+
+            if border_required {
+                layer.add_line(Line {
+                    points: vec![
+                        (
+                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                            false,
+                        ),
+                    ],
+                    is_closed: true,
+                });
+            }
         }
     }
 }
@@ -211,9 +269,12 @@ fn draw_text(
 
             let layer1 = doc.get_page(*page_index).add_layer("Layer 1");
 
+            let mut border_required = false;
+
             for style in &block_text.styles {
                 match style {
                     Style::BorderColor(rgb_color) => {
+                        border_required = true;
                         layer1.set_outline_color(Color::Rgb(Rgb {
                             r: rgb_color.r as f32 / 255.0,
                             g: rgb_color.g as f32 / 255.0,
@@ -222,31 +283,12 @@ fn draw_text(
                         }));
                     }
                     Style::BorderWidth(width) => {
+                        border_required = true;
                         layer1.set_outline_thickness(*width);
-                        layer1.add_line(Line {
-                            points: vec![
-                                (
-                                    Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
-                                    false,
-                                ),
-                                (
-                                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
-                                    false,
-                                ),
-                                (
-                                    Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
-                                    false,
-                                ),
-                                (
-                                    Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
-                                    false,
-                                ),
-                            ],
-                            is_closed: true,
-                        });
                     }
                     Style::BorderStyle(border_style) => match border_style {
                         BorderStyle::Dash(i) => {
+                            border_required = true;
                             layer1.set_line_dash_pattern(LineDashPattern {
                                 dash_1: Some(*i),
                                 ..Default::default()
@@ -256,6 +298,30 @@ fn draw_text(
                     },
                     _ => {}
                 }
+            }
+
+            if border_required {
+                layer1.add_line(Line {
+                    points: vec![
+                        (
+                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                            false,
+                        ),
+                    ],
+                    is_closed: true,
+                });
             }
 
             let layer2 = doc.get_page(*page_index).add_layer("Layer 2");

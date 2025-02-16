@@ -28,8 +28,9 @@ pub fn parse() -> Document {
     let mut container = Container::new();
 
     // Block Test1 - Rectangle
-    let rectangle = Rectangle::new(Some(Bounds::new(10.0, 10.0, 1.0, 1.0)));
-    container.add_block(BlockType::Rectangle(rectangle));
+    let mut rectangle1 = Rectangle::new(Some(Bounds::new(10.0, 10.0, 1.0, 1.0)));
+    rectangle1.add_style(Style::BackgroundColor(RgbColor { r: 200, g: 200, b: 200 }));
+    container.add_block(BlockType::Rectangle(rectangle1));
 
     // Block Test2 - Line
     let line1 = Line::new(Bounds::new(
@@ -101,10 +102,14 @@ pub fn parse() -> Document {
             height: 50.0,
         }), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
     }));
-    let rectangle2 = Rectangle::new(Some(Bounds::new(
+    let mut rectangle2 = Rectangle::new(Some(Bounds::new(
         50.0, 50.0, 0.0, // NOTE: BlockContainer からの座標
         0.0, // NOTE: BlockContainer からの座標
     )));
+    rectangle2.add_style(Style::BackgroundColor(RgbColor { r: 200, g: 255, b: 255 }));
+    rectangle2.add_style(Style::BorderColor(RgbColor { r: 0, g: 200, b: 255 }));
+    rectangle2.add_style(Style::BorderWidth(1.0));
+    rectangle2.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
     block_container.add_block(BlockType::Rectangle(rectangle2));
     let text_size2 = measure_text(
         &String::from("Hi!!"),
