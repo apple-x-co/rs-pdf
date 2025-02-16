@@ -218,13 +218,33 @@ fn draw_line(
     // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
     let layer = doc.get_page(*page_index).add_layer("Layer");
-    layer.set_outline_color(Color::Rgb(Rgb {
-        r: 0.0,
-        g: 255.0,
-        b: 0.0,
-        icc_profile: None,
-    }));
-    layer.set_outline_thickness(1.0);
+
+    for style in &block_line.styles {
+        match style {
+            Style::BorderColor(rgb_color) => {
+                layer.set_outline_color(Color::Rgb(Rgb {
+                    r: rgb_color.r as f32 / 255.0,
+                    g: rgb_color.g as f32 / 255.0,
+                    b: rgb_color.b as f32 / 255.0,
+                    icc_profile: None,
+                }));
+            }
+            Style::BorderWidth(width) => {
+                layer.set_outline_thickness(*width);
+            }
+            Style::BorderStyle(border_style) => match border_style {
+                BorderStyle::Dash(i) => {
+                    layer.set_line_dash_pattern(LineDashPattern {
+                        dash_1: Some(*i),
+                        ..Default::default()
+                    });
+                }
+                _ => {}
+            },
+            _ => {}
+        }
+    }
+
     if lb_bounds.min_x() == lb_bounds.max_x() {
         layer.add_line(Line {
             points: vec![

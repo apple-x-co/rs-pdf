@@ -40,12 +40,15 @@ pub fn parse() -> Document {
         PAGE_A4_HEIGHT - 1.0,
     ));
     container.add_block(BlockType::Line(line1));
-    let line2 = Line::new(Bounds::new(
+    let mut line2 = Line::new(Bounds::new(
         0.0,
         10.0,
         PAGE_A4_WIDTH - 1.0,
         PAGE_A4_HEIGHT - 11.0,
     ));
+    line2.add_style(Style::BorderWidth(2.0));
+    line2.add_style(Style::BorderColor(RgbColor { r: 200, g: 200, b: 200 }));
+    line2.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
     container.add_block(BlockType::Line(line2));
 
     // Block Test3 - Text
