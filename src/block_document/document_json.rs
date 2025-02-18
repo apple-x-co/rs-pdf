@@ -83,7 +83,7 @@ pub fn parse() -> Document {
         .decode()
         .unwrap();
     let (image_width, image_height) = image.dimensions();
-    let image = Image::new(
+    let mut image = Image::new(
         String::from("assets/images/channel.png"),
         Some(Bounds::new(
             px_to_mm(image_width as f32), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
@@ -92,6 +92,9 @@ pub fn parse() -> Document {
             1.0,
         )),
     );
+    image.add_style(Style::BorderWidth(1.0));
+    image.add_style(Style::BorderColor(RgbColor { r: 200, g: 0, b: 200 }));
+    image.add_style(Style::BorderStyle(BorderStyle::Solid));
     container.add_block(BlockType::Image(image));
 
     // Block Test5 - BlockContainer

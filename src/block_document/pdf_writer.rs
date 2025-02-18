@@ -63,17 +63,6 @@ fn draw(
 ) {
     match block {
         BlockType::Container(block_container) => {
-            // TEST
-            // draw_rectangle(
-            //     doc,
-            //     page_index,
-            //     &BlockRectangle::new(
-            //         block_container.bounds.clone()
-            //     ),
-            //     parent_bounds,
-            // );
-            // TEST
-
             for block in block_container.blocks.iter() {
                 draw(
                     doc,
@@ -427,8 +416,6 @@ fn draw_image(
             let lb_bounds = bounds.transform(geo_bounds);
             // println!("  - lb_bounds: {:?}", lb_bounds);
 
-            let layer = doc.get_page(*page_index).add_layer("Layer");
-
             let image = image::io::Reader::open(&block_image.path)
                 .unwrap()
                 .decode()
@@ -438,15 +425,72 @@ fn draw_image(
             let pdf_image = Image::from_dynamic_image(&image);
 
             let transform = ImageTransform {
-                translate_x: Option::from(Mm(lb_bounds.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                translate_y: Option::from(Mm(lb_bounds.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                scale_x: Some(1.0),                               // NOTE: 水平方向の拡縮小
-                scale_y: Some(1.0),                               // NOTE: 垂直方向の拡縮小
+                translate_x: Some(Mm(lb_bounds.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
+                translate_y: Some(Mm(lb_bounds.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
+                scale_x: None,                                    // NOTE: 水平方向の拡縮小
+                scale_y: None,                                    // NOTE: 垂直方向の拡縮小
                 rotate: None,                                     // 回転なし
-                dpi: Option::from(BlockDPI),
+                dpi: Some(BlockDPI),
             };
 
-            pdf_image.add_to_layer(layer, transform);
+            let layer1 = doc.get_page(*page_index).add_layer("Layer");
+            pdf_image.add_to_layer(layer1, transform);
+
+            let layer2 = doc.get_page(*page_index).add_layer("Layer");
+            let mut border_required = false;
+
+            for style in &block_image.styles {
+                match style {
+                    Style::BorderColor(rgb_color) => {
+                        border_required = true;
+                        layer2.set_outline_color(Color::Rgb(Rgb {
+                            r: rgb_color.r as f32 / 255.0,
+                            g: rgb_color.g as f32 / 255.0,
+                            b: rgb_color.b as f32 / 255.0,
+                            icc_profile: None,
+                        }));
+                    }
+                    Style::BorderWidth(width) => {
+                        border_required = true;
+                        layer2.set_outline_thickness(*width);
+                    }
+                    Style::BorderStyle(border_style) => match border_style {
+                        BorderStyle::Dash(i) => {
+                            border_required = true;
+                            layer2.set_line_dash_pattern(LineDashPattern {
+                                dash_1: Some(*i),
+                                ..Default::default()
+                            });
+                        }
+                        _ => {}
+                    },
+                    _ => {}
+                }
+            }
+
+            if border_required {
+                layer2.add_line(Line {
+                    points: vec![
+                        (
+                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                            false,
+                        ),
+                        (
+                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                            false,
+                        ),
+                    ],
+                    is_closed: true,
+                });
+            }
         }
     }
 }
