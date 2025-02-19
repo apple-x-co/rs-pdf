@@ -62,10 +62,10 @@ pub fn parse() -> Document {
         48.0,
         String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
         Some(Bounds::new(
-            text_size1.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            text_size1.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            1.0,
-            PAGE_A4_HEIGHT - text_size1.height - 1.0,
+            text_size1.width,
+            text_size1.height,
+            1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            PAGE_A4_HEIGHT - text_size1.height - 1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
         )),
     );
     text1.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
@@ -87,10 +87,10 @@ pub fn parse() -> Document {
         20.0,
         String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
         Some(Bounds::new(
-            text_size2.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            text_size2.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            30.0,
-            30.0,
+            text_size2.width,
+            text_size2.height,
+            30.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            30.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
         )),
     );
     text2.add_style(Style::BorderColor(RgbColor { r: 200, g: 200, b: 200 }));
@@ -147,10 +147,10 @@ pub fn parse() -> Document {
         20.0,
         String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
         Some(Bounds::new(
-            text_size2.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            text_size2.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            1.0,               // NOTE: BlockContainer からの座標
-            1.0,               // NOTE: BlockContainer からの座標
+            text_size2.width,
+            text_size2.height,
+            1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
         )),
     );
     block_container.add_block(BlockType::Text(text2));
