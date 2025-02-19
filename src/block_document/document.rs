@@ -7,6 +7,7 @@ pub fn px_to_mm(pixel: f32) -> f32 {
     pixel / (DPI / 25.4)
 }
 
+#[derive(Clone)]
 pub struct Document {
     pub title: String,
     pub size: Size,

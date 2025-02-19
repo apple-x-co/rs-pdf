@@ -7,7 +7,7 @@ use std::any::TypeId;
 
 pub trait Block: std::fmt::Debug {}
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum BlockType {
     Container(BlockContainer),
     Line(Line),

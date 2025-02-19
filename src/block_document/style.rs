@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Style {
     TextFillColor(RgbColor),
     TextOutlineColor(RgbColor),
@@ -10,27 +10,27 @@ pub enum Style {
     BorderStyle(BorderStyle),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RgbColor {
     pub r: u8, // NOTE: 0-255
     pub g: u8, // NOTE: 0-255
     pub b: u8, // NOTE: 0-255
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TextStyle {
     Fill,
     Stroke,
     FillStroke,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum TextOutlineStyle {
     Solid,
     Dash(i64),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum BorderStyle {
     Solid,
     Dash(i64),

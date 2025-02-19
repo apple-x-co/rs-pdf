@@ -2,7 +2,7 @@ use crate::block_document::block::{Block, BlockType};
 use crate::block_document::geometry::Bounds;
 use crate::block_document::style::Style;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Text {
     pub text: String,
     pub font_size: f32, // NOTE: PT

@@ -1,5 +1,4 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::block::BlockType::Rectangle;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
 use crate::block_document::image::Image as BlockImage;
@@ -17,38 +16,39 @@ use std::fs::File;
 use std::io::BufWriter;
 
 pub fn save(block_document: BlockDocument, file: File) {
-    let (doc, mut page_index, mut _layer_index) = PdfDocument::new(
-        block_document.title.clone(),
-        Mm(block_document.size.width),
-        Mm(block_document.size.height),
+    let mut working_block_document = block_document.clone();
+
+    let (doc, mut page_index, _) = PdfDocument::new(
+        working_block_document.title.clone(),
+        Mm(working_block_document.size.width),
+        Mm(working_block_document.size.height),
         "Layer 1",
     );
-    // let _layer = doc.get_page(page_index).get_layer(layer_index);
 
-    // TODO: Bounds を調整
-    // ...
-    // ...
-    // ...
+    let page_bounds = GeoBounds::new(
+        working_block_document.size.width,
+        working_block_document.size.height,
+        0.0,
+        0.0,
+    );
 
-    // TODO: 描画（Bounds が確定している）
+    // NOTE: レイアウト（Bounds が確定する）
+    for mut container in working_block_document.containers.iter_mut() {
+        container.apply_constraints(&page_bounds);
+    }
+
+    // NOTE: 描画（Bounds が確定している）
     let mut i = 0;
-    for container in block_document.containers.iter() {
+    for container in working_block_document.containers.iter() {
         if i > 0 {
-            (page_index, _layer_index) = doc.add_page(
-                Mm(block_document.size.width),
-                Mm(block_document.size.height),
+            (page_index, _) = doc.add_page(
+                Mm(working_block_document.size.width),
+                Mm(working_block_document.size.height),
                 "Layer 1",
             );
         }
 
         i += 1;
-
-        let page_bounds = GeoBounds::new(
-            block_document.size.width,
-            block_document.size.height,
-            0.0,
-            0.0,
-        );
 
         for block in container.blocks.iter() {
             draw(&doc, &page_index, &page_bounds, block);

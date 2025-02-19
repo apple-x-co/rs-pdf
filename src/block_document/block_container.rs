@@ -2,7 +2,7 @@ use crate::block_document::block::{Block, BlockType};
 use crate::block_document::direction::Direction;
 use crate::block_document::geometry::Bounds;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BlockContainer {
     pub blocks: Vec<BlockType>,
     pub bounds: Option<Bounds>,

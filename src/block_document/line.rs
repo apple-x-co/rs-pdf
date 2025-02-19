@@ -2,7 +2,7 @@ use crate::block_document::block::Block;
 use crate::block_document::geometry::Bounds;
 use crate::block_document::style::Style;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Line {
     pub bounds: Bounds,
     pub styles: Vec<Style>,
