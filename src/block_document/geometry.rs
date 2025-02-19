@@ -40,6 +40,10 @@ impl Bounds {
         }
     }
 
+    pub fn height(&self) -> f32 {
+        self.size.as_ref().map(|s| s.height).unwrap_or(0.0)
+    }
+
     pub fn min_x(&self) -> f32 {
         self.point.as_ref().unwrap_or(&Default::default()).x
     }

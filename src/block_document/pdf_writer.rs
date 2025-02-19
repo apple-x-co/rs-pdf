@@ -8,7 +8,10 @@ use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::style::{BorderStyle, Style, TextOutlineStyle, TextStyle};
 use crate::block_document::text::Text as BlockText;
 use image::GenericImageView;
-use printpdf::{Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference, PdfPageIndex, Point, Rect, Rgb, TextRenderingMode};
+use printpdf::{
+    Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
+    PdfPageIndex, Point, Rect, Rgb, TextRenderingMode,
+};
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
@@ -342,59 +345,72 @@ fn draw_text(
             for style in &block_text.styles {
                 match style {
                     Style::TextFillColor(rgb_color) => {
-                        layer2.set_fill_color(Color::Rgb(
-                            Rgb {
-                                r: rgb_color.r as f32 / 255.0,
-                                g: rgb_color.g as f32 / 255.0,
-                                b: rgb_color.b as f32 / 255.0,
-                                icc_profile: None,
-                            }
-                        ));
+                        layer2.set_fill_color(Color::Rgb(Rgb {
+                            r: rgb_color.r as f32 / 255.0,
+                            g: rgb_color.g as f32 / 255.0,
+                            b: rgb_color.b as f32 / 255.0,
+                            icc_profile: None,
+                        }));
                     }
                     Style::TextOutlineColor(rgb_color) => {
-                        layer2.set_outline_color(Color::Rgb(
-                            Rgb {
-                                r: rgb_color.r as f32 / 255.0,
-                                g: rgb_color.g as f32 / 255.0,
-                                b: rgb_color.b as f32 / 255.0,
-                                icc_profile: None,
-                            }
-                        ));
+                        layer2.set_outline_color(Color::Rgb(Rgb {
+                            r: rgb_color.r as f32 / 255.0,
+                            g: rgb_color.g as f32 / 255.0,
+                            b: rgb_color.b as f32 / 255.0,
+                            icc_profile: None,
+                        }));
                     }
-                    Style::TextStyle(text_style) => {
-                        match text_style {
-                            TextStyle::Fill => {
-                                layer2.set_text_rendering_mode(TextRenderingMode::Fill);
-                            }
-                            TextStyle::Stroke => {
-                                layer2.set_text_rendering_mode(TextRenderingMode::Stroke);
-                            }
-                            TextStyle::FillStroke => {
-                                layer2.set_text_rendering_mode(TextRenderingMode::FillStroke);
-                            }
+                    Style::TextStyle(text_style) => match text_style {
+                        TextStyle::Fill => {
+                            layer2.set_text_rendering_mode(TextRenderingMode::Fill);
                         }
-                    }
-                    Style::TextOutlineStyle(text_outline_style) => {
-                        match text_outline_style {
-                            TextOutlineStyle::Dash(i) => {
-                                layer2.set_line_dash_pattern(LineDashPattern {
-                                    dash_1: Some(*i),
-                                    ..Default::default()
-                                });
-                            }
-                            _ => {}
+                        TextStyle::Stroke => {
+                            layer2.set_text_rendering_mode(TextRenderingMode::Stroke);
                         }
-                    }
+                        TextStyle::FillStroke => {
+                            layer2.set_text_rendering_mode(TextRenderingMode::FillStroke);
+                        }
+                    },
+                    Style::TextOutlineStyle(text_outline_style) => match text_outline_style {
+                        TextOutlineStyle::Dash(i) => {
+                            layer2.set_line_dash_pattern(LineDashPattern {
+                                dash_1: Some(*i),
+                                ..Default::default()
+                            });
+                        }
+                        _ => {}
+                    },
                     _ => {}
                 }
             }
-            layer2.use_text(
-                block_text.text.clone(),
-                block_text.font_size,
-                Mm(lb_bounds.min_x()),
-                Mm(lb_bounds.min_y()),
-                &font,
-            );
+
+            // NOTE: 改行を考慮無し
+            if !block_text.text.contains("\n") {
+                layer2.use_text(
+                    block_text.text.clone(),
+                    block_text.font_size,
+                    Mm(lb_bounds.min_x()),
+                    Mm(lb_bounds.min_y()),
+                    &font,
+                );
+
+                return;
+            }
+
+            // NOTE: 改行を考慮して描画
+            let mut texts: Vec<&str> = block_text.text.split("\n").collect();
+            let line_height = lb_bounds.height() / texts.iter().count() as f32;
+            let mut current_y = lb_bounds.max_y() - line_height;
+            for line in texts {
+                layer2.use_text(
+                    line,
+                    block_text.font_size,
+                    Mm(lb_bounds.min_x()),
+                    Mm(current_y),
+                    &font,
+                );
+                current_y -= line_height;
+            }
         }
     }
 }
@@ -427,9 +443,9 @@ fn draw_image(
             let transform = ImageTransform {
                 translate_x: Some(Mm(lb_bounds.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
                 translate_y: Some(Mm(lb_bounds.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                scale_x: None,                                    // NOTE: 水平方向の拡縮小
-                scale_y: None,                                    // NOTE: 垂直方向の拡縮小
-                rotate: None,                                     // 回転なし
+                scale_x: None,                            // NOTE: 水平方向の拡縮小
+                scale_y: None,                            // NOTE: 垂直方向の拡縮小
+                rotate: None,                             // 回転なし
                 dpi: Some(BlockDPI),
             };
 

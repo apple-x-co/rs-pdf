@@ -52,30 +52,50 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Line(line2));
 
     // Block Test3 - Text
-    let text_size = measure_text(
+    let text_size1 = measure_text(
         &String::from("HELLO WORLD"),
         48.0,
         &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
     );
-    let mut text = Text::new(
+    let mut text1 = Text::new(
         String::from("HELLO WORLD"),
         48.0,
         String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
         Some(Bounds::new(
-            text_size.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            text_size.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            text_size1.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            text_size1.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
             1.0,
-            PAGE_A4_HEIGHT - text_size.height - 1.0,
+            PAGE_A4_HEIGHT - text_size1.height - 1.0,
         )),
     );
-    text.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
-    text.add_style(Style::BorderColor(RgbColor { r: 0, g: 0, b: 255 }));
-    text.add_style(Style::BorderWidth(1.0)); // NOTE: 太さを設定すると描画される...
-    text.add_style(Style::TextFillColor(RgbColor { r: 0, g: 255, b: 0 }));
-    text.add_style(Style::TextOutlineColor(RgbColor { r: 255, g: 255, b: 0 }));
-    text.add_style(Style::TextStyle(TextStyle::FillStroke));
-    text.add_style(Style::TextOutlineStyle(TextOutlineStyle::Dash(2)));
-    container.add_block(BlockType::Text(text));
+    text1.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
+    text1.add_style(Style::BorderColor(RgbColor { r: 0, g: 0, b: 255 }));
+    text1.add_style(Style::BorderWidth(1.0));
+    text1.add_style(Style::TextFillColor(RgbColor { r: 0, g: 255, b: 0 }));
+    text1.add_style(Style::TextOutlineColor(RgbColor { r: 255, g: 255, b: 0 }));
+    text1.add_style(Style::TextStyle(TextStyle::FillStroke));
+    text1.add_style(Style::TextOutlineStyle(TextOutlineStyle::Dash(2)));
+    container.add_block(BlockType::Text(text1));
+
+    let text_size2 = measure_text(
+        &String::from("HELLO WORLD\nGOOD NIGHT :)"),
+        48.0,
+        &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+    );
+    let mut text2 = Text::new(
+        String::from("HELLO WORLD\nGOOD NIGHT :)"), // FIXME: 改行を反映するには!?
+        48.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        Some(Bounds::new(
+            text_size2.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            text_size2.height, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            30.0,
+            30.0,
+        )),
+    );
+    text2.add_style(Style::BorderColor(RgbColor { r: 200, g: 200, b: 200 }));
+    text2.add_style(Style::BorderWidth(1.0));
+    container.add_block(BlockType::Text(text2));
 
     // Block Test4 - Image
     let image = image::io::Reader::open("assets/images/channel.png")
