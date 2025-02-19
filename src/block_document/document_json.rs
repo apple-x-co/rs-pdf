@@ -78,13 +78,13 @@ pub fn parse() -> Document {
     container.add_block(BlockType::Text(text1));
 
     let text_size2 = measure_text(
-        &String::from("HELLO WORLD\nGOOD NIGHT :)"),
-        48.0,
+        &String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"),
+        20.0,
         &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
     );
     let mut text2 = Text::new(
-        String::from("HELLO WORLD\nGOOD NIGHT :)"), // FIXME: 改行を反映するには!?
-        48.0,
+        String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"), // FIXME: 改行を反映するには!?
+        20.0,
         String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
         Some(Bounds::new(
             text_size2.width,  // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
