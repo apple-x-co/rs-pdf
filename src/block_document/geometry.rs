@@ -16,16 +16,8 @@ pub struct Size {
     pub height: f32, // NOTE: mm
 }
 
-// #[derive(Debug, Default, Clone)]
-// pub struct Margin {
-//     pub top: f32,    // NOTE: mm
-//     pub right: f32,  // NOTE: mm
-//     pub bottom: f32, // NOTE: mm
-//     pub left: f32,   // NOTE: mm
-// }
-
 #[derive(Debug, Default, Clone)]
-pub struct Insets {
+pub struct Space {
     pub top: f32,    // NOTE: mm
     pub right: f32,  // NOTE: mm
     pub bottom: f32, // NOTE: mm
@@ -62,19 +54,20 @@ impl Bounds {
             + self.size.as_ref().unwrap_or(&Default::default()).height
     }
 
-    pub fn inset(&self, insets: &Insets) -> Bounds {
+    // NOTE: 内側に余白を作る
+    pub fn inset(&self, space: &Space) -> Bounds {
         Bounds {
             point: Some(Point {
-                x: self.point.as_ref().unwrap_or(&Default::default()).x + insets.left,
-                y: self.point.as_ref().unwrap_or(&Default::default()).y + insets.top,
+                x: self.point.as_ref().unwrap_or(&Default::default()).x + space.left,
+                y: self.point.as_ref().unwrap_or(&Default::default()).y + space.top,
             }),
             size: Some(Size {
                 width: self.size.as_ref().unwrap_or(&Default::default()).width
-                    - insets.left
-                    - insets.right,
+                    - space.left
+                    - space.right,
                 height: self.size.as_ref().unwrap_or(&Default::default()).height
-                    - insets.top
-                    - insets.bottom,
+                    - space.top
+                    - space.bottom,
             }),
         }
     }
