@@ -1,3 +1,5 @@
+use crate::block_document::geometry::Space;
+
 #[derive(Debug, Clone)]
 pub enum Style {
     TextFillColor(RgbColor),
@@ -8,6 +10,7 @@ pub enum Style {
     BorderColor(RgbColor),
     BorderWidth(f32),
     BorderStyle(BorderStyle),
+    Space(Space),
 }
 
 #[derive(Debug, Clone)]

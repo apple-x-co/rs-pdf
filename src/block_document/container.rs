@@ -18,6 +18,7 @@ impl Container {
     }
 
     pub fn apply_constraints(&mut self, bounds: &Bounds) {
-        // FIXME
+        // FIXME: 実装する
+        // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
     }
 }

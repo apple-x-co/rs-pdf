@@ -2,7 +2,7 @@ use crate::block_document::block::BlockType;
 use crate::block_document::block_container::BlockContainer;
 use crate::block_document::container::Container;
 use crate::block_document::document::{px_to_mm, Document};
-use crate::block_document::geometry::{Bounds, Point, Size};
+use crate::block_document::geometry::{Bounds, Point, Size, Space};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
@@ -29,8 +29,26 @@ pub fn parse() -> Document {
 
     // Block Test1 - Rectangle
     let mut rectangle1 = Rectangle::new(Some(Bounds::new(10.0, 10.0, 1.0, 1.0)));
-    rectangle1.add_style(Style::BackgroundColor(RgbColor { r: 200, g: 200, b: 200 }));
+    rectangle1.add_style(Style::BackgroundColor(RgbColor {
+        r: 200,
+        g: 200,
+        b: 200,
+    }));
     container.add_block(BlockType::Rectangle(rectangle1));
+
+    let mut rectangle3 = Rectangle::new(Some(Bounds::new(10.0, 10.0, 1.0, 1.0)));
+    rectangle3.add_style(Style::BackgroundColor(RgbColor {
+        r: 230,
+        g: 230,
+        b: 230,
+    }));
+    rectangle3.add_style(Style::Space(Space {
+        top: 2.0,
+        right: 2.0,
+        bottom: 2.0,
+        left: 2.0,
+    }));
+    container.add_block(BlockType::Rectangle(rectangle3));
 
     // Block Test2 - Line
     let line1 = Line::new(Bounds::new(
@@ -47,7 +65,11 @@ pub fn parse() -> Document {
         PAGE_A4_HEIGHT - 11.0,
     ));
     line2.add_style(Style::BorderWidth(2.0));
-    line2.add_style(Style::BorderColor(RgbColor { r: 200, g: 200, b: 200 }));
+    line2.add_style(Style::BorderColor(RgbColor {
+        r: 200,
+        g: 200,
+        b: 200,
+    }));
     line2.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
     container.add_block(BlockType::Line(line2));
 
@@ -72,7 +94,11 @@ pub fn parse() -> Document {
     text1.add_style(Style::BorderColor(RgbColor { r: 0, g: 0, b: 255 }));
     text1.add_style(Style::BorderWidth(1.0));
     text1.add_style(Style::TextFillColor(RgbColor { r: 0, g: 255, b: 0 }));
-    text1.add_style(Style::TextOutlineColor(RgbColor { r: 255, g: 255, b: 0 }));
+    text1.add_style(Style::TextOutlineColor(RgbColor {
+        r: 255,
+        g: 255,
+        b: 0,
+    }));
     text1.add_style(Style::TextStyle(TextStyle::FillStroke));
     text1.add_style(Style::TextOutlineStyle(TextOutlineStyle::Dash(2)));
     container.add_block(BlockType::Text(text1));
@@ -93,7 +119,11 @@ pub fn parse() -> Document {
             30.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
         )),
     );
-    text2.add_style(Style::BorderColor(RgbColor { r: 200, g: 200, b: 200 }));
+    text2.add_style(Style::BorderColor(RgbColor {
+        r: 200,
+        g: 200,
+        b: 200,
+    }));
     text2.add_style(Style::BorderWidth(1.0));
     container.add_block(BlockType::Text(text2));
 
@@ -113,7 +143,11 @@ pub fn parse() -> Document {
         )),
     );
     image.add_style(Style::BorderWidth(1.0));
-    image.add_style(Style::BorderColor(RgbColor { r: 200, g: 0, b: 200 }));
+    image.add_style(Style::BorderColor(RgbColor {
+        r: 200,
+        g: 0,
+        b: 200,
+    }));
     image.add_style(Style::BorderStyle(BorderStyle::Solid));
     container.add_block(BlockType::Image(image));
 
@@ -132,8 +166,16 @@ pub fn parse() -> Document {
         50.0, 50.0, 0.0, // NOTE: BlockContainer からの座標
         0.0, // NOTE: BlockContainer からの座標
     )));
-    rectangle2.add_style(Style::BackgroundColor(RgbColor { r: 200, g: 255, b: 255 }));
-    rectangle2.add_style(Style::BorderColor(RgbColor { r: 0, g: 200, b: 255 }));
+    rectangle2.add_style(Style::BackgroundColor(RgbColor {
+        r: 200,
+        g: 255,
+        b: 255,
+    }));
+    rectangle2.add_style(Style::BorderColor(RgbColor {
+        r: 0,
+        g: 200,
+        b: 255,
+    }));
     rectangle2.add_style(Style::BorderWidth(1.0));
     rectangle2.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
     block_container.add_block(BlockType::Rectangle(rectangle2));
