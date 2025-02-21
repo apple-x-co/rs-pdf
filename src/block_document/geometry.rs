@@ -26,6 +26,13 @@ impl Bounds {
         }
     }
 
+    pub fn none() -> Bounds {
+        Bounds {
+            point: None,
+            size: None,
+        }
+    }
+
     pub fn is_point_none(&self) -> bool {
         self.point.is_none()
     }

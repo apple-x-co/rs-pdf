@@ -70,37 +70,21 @@ fn draw(
                 draw(
                     doc,
                     page_index,
-                    block_container.bounds.as_ref().unwrap(),
+                    block_container.bounds.as_ref().unwrap_or(&Bounds::none()),
                     block,
                 );
             }
         }
         BlockType::Line(line) => {
-            // println!("- This is a BlockLine!");
-            // line 変数を使って BlockLine の情報にアクセスできます
-            // println!("  - bounds: {:?}", line.bounds); // 例えば、bounds にアクセス
-
             draw_line(doc, page_index, line, parent_bounds)
         }
         BlockType::Rectangle(rectangle) => {
-            // println!("- This is a Rectangle!");
-            // rectangle 変数を使って Rectangle の情報にアクセスできます
-            // println!("  - bounds: {:?}", rectangle.bounds); // 例えば、bounds にアクセス
-
             draw_rectangle(doc, page_index, rectangle, parent_bounds)
         }
         BlockType::Text(text) => {
-            // println!("- This is a Text!");
-            // text 変数を使って Text の情報にアクセスできます
-            // println!("  - bounds: {:?}", text.bounds); // 例えば、bounds にアクセス
-
             draw_text(doc, page_index, text, parent_bounds);
         }
         BlockType::Image(image) => {
-            // println!("- This is an Image!");
-            // image 変数を使って Image の情報にアクセスできます
-            // println!("  - bounds: {:?}", image.bounds); // 例えば、bounds にアクセス
-
             draw_image(doc, page_index, image, parent_bounds);
         }
     }
@@ -115,11 +99,6 @@ fn draw_rectangle(
     if let Some(bounds) = &block_rectangle.bounds {
         if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
-            // println!("  - lb_bounds: {:?}", lb_bounds);
-            // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
-            // println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
-            // println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
-            // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
             let layer = doc.get_page(*page_index).add_layer("Layer");
 
@@ -203,11 +182,6 @@ fn draw_line(
     geo_bounds: &GeoBounds,
 ) {
     let lb_bounds = block_line.bounds.transform(geo_bounds);
-    // println!("  - lb_bounds: {:?}", lb_bounds);
-    // println!("  - lb_bounds.min_x: {:?}", lb_bounds.min_x());
-    // println!("  - lb_bounds.max_y: {:?}", lb_bounds.max_y());
-    // println!("  - lb_bounds.max_x {:?}", lb_bounds.max_x());
-    // println!("  - lb_bounds.min_y: {:?}", lb_bounds.min_y());
 
     let layer = doc.get_page(*page_index).add_layer("Layer");
 
@@ -277,7 +251,6 @@ fn draw_text(
     if let Some(bounds) = &block_text.bounds {
         if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
-            // println!("  - lb_bounds: {:?}", lb_bounds);
 
             let layer1 = doc.get_page(*page_index).add_layer("Layer 1");
 
@@ -430,13 +403,11 @@ fn draw_image(
     if let Some(bounds) = &block_image.bounds {
         if bounds.point.is_some() {
             let lb_bounds = bounds.transform(geo_bounds);
-            // println!("  - lb_bounds: {:?}", lb_bounds);
 
             let image = image::io::Reader::open(&block_image.path)
                 .unwrap()
                 .decode()
                 .unwrap();
-            // let (image_width, image_height) = image.dimensions();
 
             let pdf_image = Image::from_dynamic_image(&image);
 
