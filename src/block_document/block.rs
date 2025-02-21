@@ -5,8 +5,6 @@ use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
 use std::any::TypeId;
 
-pub trait Block: std::fmt::Debug {}
-
 #[derive(Debug, Clone)]
 pub enum BlockType {
     Container(BlockContainer),
@@ -16,7 +14,7 @@ pub enum BlockType {
     Image(Image),
 }
 
-impl Block for BlockType {}
+// impl Block for BlockType {}
 
 impl BlockType {
     fn type_id(&self) -> TypeId {

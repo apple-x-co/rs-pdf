@@ -1,4 +1,4 @@
-use crate::block_document::block::{BlockType};
+use crate::block_document::block::BlockType;
 use crate::block_document::geometry::Bounds;
 
 #[derive(Debug, Clone)]

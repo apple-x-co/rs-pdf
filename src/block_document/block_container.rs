@@ -1,4 +1,4 @@
-use crate::block_document::block::{Block, BlockType};
+use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
 use crate::block_document::geometry::Bounds;
 
@@ -8,8 +8,6 @@ pub struct BlockContainer {
     pub bounds: Option<Bounds>,
     pub direction: Direction,
 }
-
-impl Block for BlockContainer {}
 
 impl BlockContainer {
     pub fn new(bounds: Option<Bounds>) -> BlockContainer {

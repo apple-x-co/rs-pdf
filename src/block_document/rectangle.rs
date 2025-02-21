@@ -1,4 +1,3 @@
-use crate::block_document::block::Block;
 use crate::block_document::geometry::Bounds;
 use crate::block_document::style::Style;
 
@@ -7,8 +6,6 @@ pub struct Rectangle {
     pub bounds: Option<Bounds>,
     pub styles: Vec<Style>,
 }
-
-impl Block for Rectangle {}
 
 impl Rectangle {
     pub fn new(bounds: Option<Bounds>) -> Rectangle {

@@ -1,4 +1,3 @@
-use crate::block_document::block::Block;
 use crate::block_document::geometry::Bounds;
 use crate::block_document::style::Style;
 
@@ -8,8 +7,6 @@ pub struct Image {
     pub bounds: Option<Bounds>,
     pub styles: Vec<Style>,
 }
-
-impl Block for Image {}
 
 impl Image {
     pub fn new(path: String, bounds: Option<Bounds>) -> Image {

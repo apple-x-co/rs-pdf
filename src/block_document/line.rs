@@ -1,4 +1,4 @@
-use crate::block_document::block::Block;
+// use crate::block_document::block::Block;
 use crate::block_document::geometry::Bounds;
 use crate::block_document::style::Style;
 
@@ -8,10 +8,12 @@ pub struct Line {
     pub styles: Vec<Style>,
 }
 
-impl Block for Line {}
-
 impl Line {
     pub fn new(bounds: Bounds) -> Line {
+        if bounds.size.is_none() || bounds.point.is_none() {
+            panic!("The bounds and points are not supported!");
+        }
+
         Line {
             bounds,
             styles: Vec::new(),

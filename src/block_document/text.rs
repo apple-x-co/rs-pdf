@@ -1,4 +1,3 @@
-use crate::block_document::block::{Block, BlockType};
 use crate::block_document::geometry::Bounds;
 use crate::block_document::style::Style;
 
@@ -10,8 +9,6 @@ pub struct Text {
     pub bounds: Option<Bounds>,
     pub styles: Vec<Style>,
 }
-
-impl Block for Text {}
 
 impl Text {
     pub fn new(
