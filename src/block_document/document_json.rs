@@ -6,7 +6,9 @@ use crate::block_document::geometry::{Bounds, Point, Size};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
-use crate::block_document::style::{BorderStyle, RgbColor, Space, Style, TextOutlineStyle, TextStyle};
+use crate::block_document::style::{
+    BorderStyle, RgbColor, Space, Style, TextOutlineStyle, TextStyle,
+};
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
 use image::GenericImageView;
@@ -25,16 +27,17 @@ pub fn parse() -> Document {
         },
     );
 
-    let mut container = Container::new();
+    // NOTE: 1ページ目
+    let mut container1 = Container::new();
 
-    // Block Test1 - Rectangle
+    // NOTE: Block Test1 - Rectangle
     let mut rectangle1 = Rectangle::new(Some(Bounds::new(10.0, 10.0, 1.0, 1.0)));
     rectangle1.add_style(Style::BackgroundColor(RgbColor {
         r: 200,
         g: 200,
         b: 200,
     }));
-    container.add_block(BlockType::Rectangle(rectangle1));
+    container1.add_block(BlockType::Rectangle(rectangle1));
 
     let mut rectangle3 = Rectangle::new(Some(Bounds::new(10.0, 10.0, 1.0, 1.0)));
     rectangle3.add_style(Style::BackgroundColor(RgbColor {
@@ -48,16 +51,16 @@ pub fn parse() -> Document {
         bottom: 2.0,
         left: 2.0,
     }));
-    container.add_block(BlockType::Rectangle(rectangle3));
+    container1.add_block(BlockType::Rectangle(rectangle3));
 
-    // Block Test2 - Line
+    // NOTE: Block Test2 - Line
     let line1 = Line::new(Bounds::new(
         10.0,
         0.0,
         PAGE_A4_WIDTH - 11.0,
         PAGE_A4_HEIGHT - 1.0,
     ));
-    container.add_block(BlockType::Line(line1));
+    container1.add_block(BlockType::Line(line1));
     let mut line2 = Line::new(Bounds::new(
         0.0,
         10.0,
@@ -71,9 +74,9 @@ pub fn parse() -> Document {
         b: 200,
     }));
     line2.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
-    container.add_block(BlockType::Line(line2));
+    container1.add_block(BlockType::Line(line2));
 
-    // Block Test3 - Text
+    // NOTE: Block Test3 - Text
     let text_size1 = measure_text(
         &String::from("HELLO WORLD"),
         48.0,
@@ -101,7 +104,7 @@ pub fn parse() -> Document {
     }));
     text1.add_style(Style::TextStyle(TextStyle::FillStroke));
     text1.add_style(Style::TextOutlineStyle(TextOutlineStyle::Dash(2)));
-    container.add_block(BlockType::Text(text1));
+    container1.add_block(BlockType::Text(text1));
 
     let text_size2 = measure_text(
         &String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"),
@@ -125,9 +128,9 @@ pub fn parse() -> Document {
         b: 200,
     }));
     text2.add_style(Style::BorderWidth(1.0));
-    container.add_block(BlockType::Text(text2));
+    container1.add_block(BlockType::Text(text2));
 
-    // Block Test4 - Image
+    // NOTE: Block Test4 - Image
     let image = image::io::Reader::open("assets/images/channel.png")
         .unwrap()
         .decode()
@@ -149,9 +152,9 @@ pub fn parse() -> Document {
         b: 200,
     }));
     image.add_style(Style::BorderStyle(BorderStyle::Solid));
-    container.add_block(BlockType::Image(image));
+    container1.add_block(BlockType::Image(image));
 
-    // Block Test5 - BlockContainer
+    // NOTE: Block Test5 - BlockContainer
     let mut block_container = BlockContainer::new(Some(Bounds {
         point: Some(Point {
             x: (PAGE_A4_WIDTH / 2.0) - (50.0 / 2.0),
@@ -196,9 +199,17 @@ pub fn parse() -> Document {
         )),
     );
     block_container.add_block(BlockType::Text(text2));
-    container.add_block(BlockType::Container(block_container));
+    container1.add_block(BlockType::Container(block_container));
 
-    doc.add_container(container);
+    doc.add_container(container1);
+
+    // 2ページ目
+    let mut container2 = Container::new();
+
+    let image2 = Image::new(String::from("assets/images/channel.png"), None);
+    container2.add_block(BlockType::Image(image2));
+
+    doc.add_container(container2);
 
     doc
 }

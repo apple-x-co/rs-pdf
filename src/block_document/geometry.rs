@@ -1,18 +1,18 @@
 use crate::block_document::style::Space;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Bounds {
     pub point: Option<Point>,
     pub size: Option<Size>,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct Point {
     pub x: f32, // NOTE: mm
     pub y: f32, // NOTE: mm
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct Size {
     pub width: f32,  // NOTE: mm
     pub height: f32, // NOTE: mm
@@ -24,6 +24,14 @@ impl Bounds {
             point: Some(Point { x, y }),
             size: Some(Size { width, height }),
         }
+    }
+
+    pub fn is_point_none(&self) -> bool {
+        self.point.is_none()
+    }
+
+    pub fn is_size_none(&self) -> bool {
+        self.size.is_none()
     }
 
     pub fn height(&self) -> f32 {
@@ -78,6 +86,21 @@ impl Bounds {
                     + parent.point.as_ref().unwrap_or(&Default::default()).y,
             }),
             size: self.size.clone(),
+        }
+    }
+}
+
+impl Default for Point {
+    fn default() -> Point {
+        Self { x: 0.0, y: 0.0 }
+    }
+}
+
+impl Default for Size {
+    fn default() -> Size {
+        Size {
+            width: 0.0,
+            height: 0.0,
         }
     }
 }

@@ -20,4 +20,16 @@ impl Image {
     pub fn add_style(&mut self, style: Style) {
         self.styles.push(style);
     }
+
+    pub fn is_point_none(&self) -> bool {
+        self.bounds.is_none() || self.bounds.as_ref().unwrap().point.is_none()
+    }
+
+    pub fn is_size_none(&self) -> bool {
+        self.bounds.is_none() || self.bounds.as_ref().unwrap().size.is_none()
+    }
+
+    pub fn set_bounds(&mut self, bounds: Bounds) {
+        self.bounds = Some(bounds);
+    }
 }
