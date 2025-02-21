@@ -1,3 +1,5 @@
+use crate::block_document::style::Space;
+
 #[derive(Debug, Clone)]
 pub struct Bounds {
     pub point: Option<Point>,
@@ -14,14 +16,6 @@ pub struct Point {
 pub struct Size {
     pub width: f32,  // NOTE: mm
     pub height: f32, // NOTE: mm
-}
-
-#[derive(Debug, Default, Clone)]
-pub struct Space {
-    pub top: f32,    // NOTE: mm
-    pub right: f32,  // NOTE: mm
-    pub bottom: f32, // NOTE: mm
-    pub left: f32,   // NOTE: mm
 }
 
 impl Bounds {

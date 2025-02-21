@@ -1,5 +1,3 @@
-use crate::block_document::geometry::Space;
-
 #[derive(Debug, Clone)]
 pub enum Style {
     TextFillColor(RgbColor),
@@ -11,6 +9,7 @@ pub enum Style {
     BorderWidth(f32),
     BorderStyle(BorderStyle),
     Space(Space),
+    Alignment(Alignment)
 }
 
 #[derive(Debug, Clone)]
@@ -37,4 +36,32 @@ pub enum TextOutlineStyle {
 pub enum BorderStyle {
     Solid,
     Dash(i64),
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct Space {
+    pub top: f32,    // NOTE: mm
+    pub right: f32,  // NOTE: mm
+    pub bottom: f32, // NOTE: mm
+    pub left: f32,   // NOTE: mm
+}
+
+#[derive(Debug, Clone)]
+pub enum HorizontalAlignment {
+    Left,
+    Center,
+    Right,
+}
+
+#[derive(Debug, Clone)]
+pub enum VerticalAlignment {
+    Top,
+    Center,
+    Bottom,
+}
+
+#[derive(Debug, Clone)]
+pub struct Alignment {
+    pub horizontal: HorizontalAlignment,
+    pub vertical: VerticalAlignment,
 }
