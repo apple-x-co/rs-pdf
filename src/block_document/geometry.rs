@@ -6,13 +6,13 @@ pub struct Bounds {
     pub size: Option<Size>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Point {
     pub x: f32, // NOTE: mm
     pub y: f32, // NOTE: mm
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Size {
     pub width: f32,  // NOTE: mm
     pub height: f32, // NOTE: mm
@@ -86,21 +86,6 @@ impl Bounds {
                     + parent.point.as_ref().unwrap_or(&Default::default()).y,
             }),
             size: self.size.clone(),
-        }
-    }
-}
-
-impl Default for Point {
-    fn default() -> Point {
-        Self { x: 0.0, y: 0.0 }
-    }
-}
-
-impl Default for Size {
-    fn default() -> Size {
-        Size {
-            width: 0.0,
-            height: 0.0,
         }
     }
 }

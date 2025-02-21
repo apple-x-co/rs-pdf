@@ -1,7 +1,7 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::document::px_to_mm;
 use crate::block_document::geometry::{Bounds, Point};
-use image::GenericImageView;
+use image::{GenericImageView, ImageError};
 
 #[derive(Debug, Clone)]
 pub struct Container {
@@ -35,38 +35,38 @@ impl Container {
                 BlockType::Rectangle(_) => {}
                 BlockType::Text(_) => {}
                 BlockType::Image(block_image) => {
-                    if !block_image.is_size_none() && !block_image.is_point_none() {
-                        break;
+                    if block_image.bounds.is_some()
+                        && block_image.bounds.as_ref().unwrap().point.is_some()
+                        && block_image.bounds.as_ref().unwrap().size.is_some()
+                    {
+                        continue;
                     }
 
-                    let bounds = block_image
-                        .bounds
-                        .clone()
-                        .unwrap_or_default();
-                    let size = bounds.size
-                        .clone()
-                        .unwrap_or_default();
-                    let point = bounds.point
-                        .clone()
-                        .unwrap_or_default();
+                    let (mut width, mut height, mut x, mut y) = {
+                        let bounds = block_image.bounds.as_ref();
+                        (
+                            bounds.and_then(|b| b.size.as_ref().map(|s| s.width)).unwrap_or(0.0),
+                            bounds.and_then(|b| b.size.as_ref().map(|s| s.height)).unwrap_or(0.0),
+                            bounds.and_then(|b| b.point.as_ref().map(|p| p.x)).unwrap_or(0.0),
+                            bounds.and_then(|b| b.point.as_ref().map(|p| p.y)).unwrap_or(0.0),
+                        )
+                    };
 
-                    let mut width = size.width;
-                    let mut height = size.height;
-                    let mut x = point.x;
-                    let mut y = point.y;
-
-                    if block_image.is_size_none() {
-                        let image = image::io::Reader::open(block_image.path.clone())
-                            .unwrap()
-                            .decode()
-                            .unwrap();
-                        let (image_width, image_height) = image.dimensions();
-
-                        width = px_to_mm(image_width as f32);
-                        height = px_to_mm(image_height as f32);
+                    // サイズが未指定の場合は画像を読み込んでサイズを取得
+                    if block_image.bounds.as_ref().map_or(true, |b| b.size.is_none()) {
+                        match Self::get_image_dimensions(&block_image.path) {
+                            Ok((image_width, image_height)) => {
+                                width = px_to_mm(image_width as f32);
+                                height = px_to_mm(image_height as f32);
+                            }
+                            Err(e) => {
+                                panic!("Error reading image dimensions for {}: {}", block_image.path, e);
+                            }
+                        }
                     }
 
-                    if block_image.is_point_none() {
+                    // 位置が未指定の場合は block_point を使用
+                    if block_image.bounds.as_ref().map_or(true, |b| b.point.is_none()) {
                         x = block_point.x;
                         y = block_point.y;
 
@@ -77,5 +77,13 @@ impl Container {
                 }
             }
         }
+    }
+
+    fn get_image_dimensions(path: &str) -> Result<(u32, u32), ImageError> {
+        image::io::Reader::open(path)
+            .map_err(|e| ImageError::from(e))?
+            .decode()
+            .map(|image| image.dimensions())
+            .map_err(ImageError::from)
     }
 }
