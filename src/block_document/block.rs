@@ -16,14 +16,14 @@ pub enum BlockType {
 
 // impl Block for BlockType {}
 
-impl BlockType {
-    fn type_id(&self) -> TypeId {
-        match self {
-            BlockType::Container(_) => TypeId::of::<BlockContainer>(),
-            BlockType::Line(_) => TypeId::of::<Line>(),
-            BlockType::Rectangle(_) => TypeId::of::<Rectangle>(),
-            BlockType::Text(_) => TypeId::of::<Text>(),
-            BlockType::Image(_) => TypeId::of::<Image>(),
-        }
-    }
-}
+// impl BlockType {
+//     fn type_id(&self) -> TypeId {
+//         match self {
+//             BlockType::Container(_) => TypeId::of::<BlockContainer>(),
+//             BlockType::Line(_) => TypeId::of::<Line>(),
+//             BlockType::Rectangle(_) => TypeId::of::<Rectangle>(),
+//             BlockType::Text(_) => TypeId::of::<Text>(),
+//             BlockType::Image(_) => TypeId::of::<Image>(),
+//         }
+//     }
+// }

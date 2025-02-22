@@ -33,7 +33,7 @@ pub fn save(block_document: BlockDocument, file: File) {
     );
 
     // NOTE: レイアウト（Bounds が確定する）
-    for mut container in working_block_document.containers.iter_mut() {
+    for container in working_block_document.containers.iter_mut() {
         container.apply_constraints(&page_bounds);
     }
 
@@ -371,7 +371,7 @@ fn draw_text(
             }
 
             // NOTE: 改行を考慮して描画
-            let mut texts: Vec<&str> = block_text.text.split("\n").collect();
+            let texts: Vec<&str> = block_text.text.split("\n").collect();
             let line_height = lb_bounds.height() / texts.iter().count() as f32;
             let mut current_y = lb_bounds.max_y() - line_height;
             for line in texts {

@@ -1,7 +1,7 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::px_to_mm;
-use crate::block_document::geometry::{Bounds, Point};
+use crate::block_document::geometry::Bounds;
 use crate::block_document::image::Image;
 use image::{GenericImageView, ImageError};
 
@@ -28,7 +28,8 @@ impl Container {
         // FIXME: 実装する
         // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
         for block in self.blocks.iter_mut() {
-            let (is_fixed, bounds) = Self::calculate_constraints(block, &current_bounds, Direction::Vertical);
+            let (is_fixed, bounds) =
+                Self::calculate_constraints(block, &current_bounds, Direction::Vertical);
             if is_fixed {
                 continue;
             }
@@ -55,14 +56,8 @@ impl Container {
                     return (true, None);
                 }
 
-                let is_fixed = block_image.bounds.is_some()
-                    && block_image.bounds.as_ref().unwrap().point.is_some();
-
-                let (width, height, x, y) = Self::calculate_image_constraints(
-                    block_image,
-                    &current_bounds,
-                    direction,
-                );
+                let (is_fixed, width, height, x, y) =
+                    Self::calculate_image_constraints(block_image, &current_bounds, direction);
                 block_image.set_bounds(Bounds::new(width, height, x, y));
 
                 if is_fixed {
@@ -87,7 +82,11 @@ impl Container {
         block_image: &Image,
         current_bounds: &Bounds,
         direction: Direction,
-    ) -> (f32, f32, f32, f32) {
+    ) -> (bool, f32, f32, f32, f32) {
+        // NOTE: 絶対配置
+        let is_fixed =
+            block_image.bounds.is_some() && block_image.bounds.as_ref().unwrap().point.is_some();
+
         let (mut width, mut height, mut x, mut y) = {
             let bounds = block_image.bounds.as_ref();
             (
@@ -126,7 +125,7 @@ impl Container {
             }
         }
 
-        // 位置が未指定の場合は current_bounds を使用
+        // 位置が未指定の場合は current_bounds を基準に座標を決定
         if block_image
             .bounds
             .as_ref()
@@ -144,6 +143,6 @@ impl Container {
             };
         }
 
-        (width, height, x, y)
+        (is_fixed, width, height, x, y)
     }
 }

@@ -212,11 +212,11 @@ pub fn parse() -> Document {
     let image3 = Image::new(String::from("assets/images/channel.png"), None);
     container2.add_block(BlockType::Image(image3));
 
-    let b1 = Bounds::new(10.0, 10.0, 50.0, 50.0);;
+    let b1 = Bounds::new(10.0, 10.0, 50.0, 50.0);
     let mut r1 = Rectangle::new(Some(b1.clone()));
     r1.add_style(Style::BackgroundColor(RgbColor{ r: 255, g: 200, b: 200, }));
 
-    let b2 = Bounds::new(10.0, 10.0, 55.0, 55.0);;
+    let b2 = Bounds::new(10.0, 10.0, 55.0, 55.0);
     let mut r2 = Rectangle::new(Some(b2.clone()));
     r2.add_style(Style::BackgroundColor(RgbColor{ r: 200, g: 255, b: 200, }));
 

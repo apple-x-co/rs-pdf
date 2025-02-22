@@ -33,9 +33,9 @@ impl Bounds {
         }
     }
 
-    pub fn width(&self) -> f32 {
-        self.size.as_ref().map(|s| s.width).unwrap_or(0.0)
-    }
+    // pub fn width(&self) -> f32 {
+    //     self.size.as_ref().map(|s| s.width).unwrap_or(0.0)
+    // }
 
     pub fn height(&self) -> f32 {
         self.size.as_ref().map(|s| s.height).unwrap_or(0.0)
