@@ -33,12 +33,8 @@ impl Bounds {
         }
     }
 
-    pub fn is_point_none(&self) -> bool {
-        self.point.is_none()
-    }
-
-    pub fn is_size_none(&self) -> bool {
-        self.size.is_none()
+    pub fn width(&self) -> f32 {
+        self.size.as_ref().map(|s| s.width).unwrap_or(0.0)
     }
 
     pub fn height(&self) -> f32 {
@@ -79,6 +75,16 @@ impl Bounds {
                     - space.bottom,
             }),
         }
+    }
+
+    // NOTE: 2の矩形を満たす新しい矩形を作る
+    pub fn union(&self, bounds: &Bounds) -> Bounds {
+        Bounds::new(
+            if self.max_x() > bounds.max_x() { self.max_x() - bounds.min_x() } else { bounds.max_x() - self.min_x() },
+            if self.max_y() > bounds.max_y() { self.max_y() - bounds.min_y() } else { bounds.max_y() - self.min_y() },
+            if self.min_x() < bounds.min_x() { self.min_x() } else { bounds.min_x() },
+            if self.min_y() < bounds.min_y() { self.min_y() } else { bounds.min_y() },
+        )
     }
 
     // NOTE: 左上座標から左下座標に変換をする
