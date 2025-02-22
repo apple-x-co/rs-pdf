@@ -28,36 +28,49 @@ impl Container {
         // FIXME: 実装する
         // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
         for block in self.blocks.iter_mut() {
-            match block {
-                BlockType::Container(_) => {}
-                BlockType::Line(_) => {}
-                BlockType::Rectangle(_) => {}
-                BlockType::Text(_) => {}
-                BlockType::Image(block_image) => {
-                    if block_image.bounds.is_some()
-                        && block_image.bounds.as_ref().unwrap().point.is_some()
-                        && block_image.bounds.as_ref().unwrap().size.is_some()
-                    {
-                        continue;
-                    }
-
-                    let is_fixed = block_image.bounds.is_some()
-                        && block_image.bounds.as_ref().unwrap().point.is_some();
-
-                    let (width, height, x, y) = Self::calculate_image_constraints(
-                        block_image,
-                        &current_bounds,
-                        Direction::Vertical,
-                    );
-                    let image_bounds = Bounds::new(width, height, x, y);
-                    block_image.set_bounds(image_bounds.clone());
-                    if is_fixed {
-                        continue;
-                    }
-
-                    current_bounds = current_bounds.union(&image_bounds);
-                }
+            let (is_fixed, bounds) = Self::calculate_constraints(block, &current_bounds);
+            if is_fixed {
+                continue;
             }
+
+            current_bounds = current_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
+        }
+    }
+
+    fn calculate_constraints(
+        block: &mut BlockType,
+        current_bounds: &Bounds,
+    ) -> (bool, Option<Bounds>) {
+        match block {
+            // BlockType::Container(_) => {}
+            // BlockType::Line(_) => {}
+            // BlockType::Rectangle(_) => {}
+            // BlockType::Text(_) => {}
+            BlockType::Image(block_image) => {
+                if block_image.bounds.is_some()
+                    && block_image.bounds.as_ref().unwrap().point.is_some()
+                    && block_image.bounds.as_ref().unwrap().size.is_some()
+                {
+                    return (true, None);
+                }
+
+                let is_fixed = block_image.bounds.is_some()
+                    && block_image.bounds.as_ref().unwrap().point.is_some();
+
+                let (width, height, x, y) = Self::calculate_image_constraints(
+                    block_image,
+                    &current_bounds,
+                    Direction::Vertical,
+                );
+                block_image.set_bounds(Bounds::new(width, height, x, y));
+
+                if is_fixed {
+                    return (true, None);
+                }
+
+                (false, Some(Bounds::new(width, height, x, y)))
+            }
+            _ => (false, None),
         }
     }
 
@@ -70,7 +83,7 @@ impl Container {
     }
 
     fn calculate_image_constraints(
-        block_image: &mut Image,
+        block_image: &Image,
         current_bounds: &Bounds,
         direction: Direction,
     ) -> (f32, f32, f32, f32) {
@@ -118,8 +131,6 @@ impl Container {
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
-            if direction == Direction::Vertical {}
-
             x = if direction == Direction::Vertical {
                 current_bounds.min_x()
             } else {
