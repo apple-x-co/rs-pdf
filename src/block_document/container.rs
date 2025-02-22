@@ -1,4 +1,5 @@
 use crate::block_document::block::BlockType;
+use crate::block_document::direction::Direction;
 use crate::block_document::document::px_to_mm;
 use crate::block_document::geometry::{Bounds, Point};
 use crate::block_document::image::Image;
@@ -19,11 +20,9 @@ impl Container {
     }
 
     // NOTE: 座標を計算する
-    pub fn apply_constraints(&mut self, bounds: &Bounds) {
-        let mut block_point = Point {
-            x: bounds.min_x(),
-            y: bounds.min_y(),
-        };
+    pub fn apply_constraints(&mut self, parent_bounds: &Bounds) {
+        let mut current_bounds =
+            Bounds::new(0.0, 0.0, parent_bounds.min_x(), parent_bounds.min_y());
 
         // NOTE: Y軸方向（上から下）に描画していく。固定の座標がある場合は無視する。横レイアウトは block_container を使う
         // FIXME: 実装する
@@ -35,9 +34,28 @@ impl Container {
                 BlockType::Rectangle(_) => {}
                 BlockType::Text(_) => {}
                 BlockType::Image(block_image) => {
-                    let (width, height, x, y) =
-                        Self::calculate_image_constraints(block_image, &mut block_point);
-                    block_image.set_bounds(Bounds::new(width, height, x, y));
+                    if block_image.bounds.is_some()
+                        && block_image.bounds.as_ref().unwrap().point.is_some()
+                        && block_image.bounds.as_ref().unwrap().size.is_some()
+                    {
+                        continue;
+                    }
+
+                    let is_fixed = block_image.bounds.is_some()
+                        && block_image.bounds.as_ref().unwrap().point.is_some();
+
+                    let (width, height, x, y) = Self::calculate_image_constraints(
+                        block_image,
+                        &current_bounds,
+                        Direction::Vertical,
+                    );
+                    let image_bounds = Bounds::new(width, height, x, y);
+                    block_image.set_bounds(image_bounds.clone());
+                    if is_fixed {
+                        continue;
+                    }
+
+                    current_bounds = current_bounds.union(&image_bounds);
                 }
             }
         }
@@ -53,28 +71,24 @@ impl Container {
 
     fn calculate_image_constraints(
         block_image: &mut Image,
-        block_point: &mut Point,
+        current_bounds: &Bounds,
+        direction: Direction,
     ) -> (f32, f32, f32, f32) {
-        if block_image.bounds.is_some()
-            && block_image.bounds.as_ref().unwrap().point.is_some()
-            && block_image.bounds.as_ref().unwrap().size.is_some()
-        {
-            let bounds = block_image.bounds.as_ref().unwrap();
-            return (
-                bounds.size.as_ref().unwrap().width,
-                bounds.size.as_ref().unwrap().height,
-                bounds.point.as_ref().unwrap().x,
-                bounds.point.as_ref().unwrap().y,
-            );
-        }
-
         let (mut width, mut height, mut x, mut y) = {
             let bounds = block_image.bounds.as_ref();
             (
-                bounds.and_then(|b| b.size.as_ref().map(|s| s.width)).unwrap_or(0.0),
-                bounds.and_then(|b| b.size.as_ref().map(|s| s.height)).unwrap_or(0.0),
-                bounds.and_then(|b| b.point.as_ref().map(|p| p.x)).unwrap_or(0.0),
-                bounds.and_then(|b| b.point.as_ref().map(|p| p.y)).unwrap_or(0.0),
+                bounds
+                    .and_then(|b| b.size.as_ref().map(|s| s.width))
+                    .unwrap_or(0.0),
+                bounds
+                    .and_then(|b| b.size.as_ref().map(|s| s.height))
+                    .unwrap_or(0.0),
+                bounds
+                    .and_then(|b| b.point.as_ref().map(|p| p.x))
+                    .unwrap_or(0.0),
+                bounds
+                    .and_then(|b| b.point.as_ref().map(|p| p.y))
+                    .unwrap_or(0.0),
             )
         };
 
@@ -98,16 +112,24 @@ impl Container {
             }
         }
 
-        // 位置が未指定の場合は block_point を使用
+        // 位置が未指定の場合は current_bounds を使用
         if block_image
             .bounds
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
-            x = block_point.x;
-            y = block_point.y;
+            if direction == Direction::Vertical {}
 
-            block_point.y += height;
+            x = if direction == Direction::Vertical {
+                current_bounds.min_x()
+            } else {
+                current_bounds.max_x()
+            };
+            y = if direction == Direction::Vertical {
+                current_bounds.max_y()
+            } else {
+                current_bounds.min_y()
+            };
         }
 
         (width, height, x, y)
