@@ -28,7 +28,7 @@ impl Container {
         // FIXME: 実装する
         // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
         for block in self.blocks.iter_mut() {
-            let (is_fixed, bounds) = Self::calculate_constraints(block, &current_bounds);
+            let (is_fixed, bounds) = Self::calculate_constraints(block, &current_bounds, Direction::Vertical);
             if is_fixed {
                 continue;
             }
@@ -40,6 +40,7 @@ impl Container {
     fn calculate_constraints(
         block: &mut BlockType,
         current_bounds: &Bounds,
+        direction: Direction,
     ) -> (bool, Option<Bounds>) {
         match block {
             // BlockType::Container(_) => {}
@@ -60,7 +61,7 @@ impl Container {
                 let (width, height, x, y) = Self::calculate_image_constraints(
                     block_image,
                     &current_bounds,
-                    Direction::Vertical,
+                    direction,
                 );
                 block_image.set_bounds(Bounds::new(width, height, x, y));
 
