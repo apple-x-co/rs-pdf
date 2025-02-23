@@ -1,4 +1,5 @@
 use crate::block_document::block::BlockType;
+use crate::block_document::direction::Direction;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
 use crate::block_document::image::Image as BlockImage;
@@ -35,7 +36,7 @@ pub fn save(block_document: BlockDocument, file: File) {
 
     // NOTE: レイアウト（Bounds が確定する）
     for container in working_block_document.containers.iter_mut() {
-        container.apply_constraints(&page_bounds);
+        container.apply_constraints(&page_bounds, &Direction::Horizontal);
     }
 
     // NOTE: 描画（Bounds が確定している）

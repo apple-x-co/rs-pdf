@@ -20,13 +20,13 @@ impl Container {
     }
 
     // NOTE: 座標を計算する
-    pub fn apply_constraints(&mut self, parent_bounds: &Bounds) {
+    pub fn apply_constraints(&mut self, parent_bounds: &Bounds, direction: &Direction) {
         let mut drawn_bounds =
             Bounds::new(0.0, 0.0, parent_bounds.min_x(), parent_bounds.min_y());
 
         for block in self.blocks.iter_mut() {
             let (is_fixed, bounds) =
-                Self::apply_block_constraints(block, &drawn_bounds, Direction::Vertical);
+                Self::apply_block_constraints(block, &drawn_bounds, direction);
             if is_fixed {
                 continue;
             }
@@ -40,7 +40,7 @@ impl Container {
     fn apply_block_constraints(
         block: &mut BlockType,
         drawn_bounds: &Bounds,
-        direction: Direction,
+        direction: &Direction,
     ) -> (bool, Option<Bounds>) {
         match block {
             BlockType::Container(block_container) => {
@@ -62,7 +62,7 @@ impl Container {
                     let (is_fixed, bounds) = Self::apply_block_constraints(
                         block,
                         &inner_drawn_bounds,
-                        block_container.direction.clone(),
+                        &block_container.direction.clone(),
                     );
 
                     if is_fixed {
@@ -137,7 +137,7 @@ impl Container {
     fn calculate_image_constraints(
         block_image: &Image,
         drawn_bounds: &Bounds,
-        direction: Direction,
+        direction: &Direction,
     ) -> (bool, f32, f32, f32, f32) {
         // NOTE: 絶対配置
         let is_fixed =
