@@ -94,8 +94,8 @@ impl Container {
                 let container_drawn_bounds = Bounds::new(
                     inner_drawn_bounds.width(),
                     inner_drawn_bounds.height(),
-                    if direction == Direction::Vertical { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
-                    if direction == Direction::Vertical { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
+                    if direction.is_vertical() { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
+                    if direction.is_vertical() { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
                 );
                 block_container.set_bounds(container_drawn_bounds.clone());
 
@@ -187,16 +187,8 @@ impl Container {
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
-            x = if direction == Direction::Vertical {
-                drawn_bounds.min_x()
-            } else {
-                drawn_bounds.max_x()
-            };
-            y = if direction == Direction::Vertical {
-                drawn_bounds.max_y()
-            } else {
-                drawn_bounds.min_y()
-            };
+            x = if direction.is_vertical() { drawn_bounds.min_x() } else { drawn_bounds.max_x() };
+            y = if direction.is_vertical() { drawn_bounds.max_y() } else { drawn_bounds.min_y() };
         }
 
         (is_fixed, width, height, x, y)
