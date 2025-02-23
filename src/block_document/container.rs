@@ -61,7 +61,7 @@ impl Container {
                 for block in block_container.blocks.iter_mut() {
                     let (is_fixed, bounds) = Self::apply_block_constraints(
                         block,
-                        &inner_drawn_bounds, // FIXME: ここ?
+                        &inner_drawn_bounds,
                         block_container.direction.clone(),
                     );
 
@@ -74,14 +74,14 @@ impl Container {
                             Direction::Horizontal => {
                                 inner_drawn_bounds = Bounds::new(
                                     inner_drawn_bounds.width() + bounds.width(),
-                                    inner_drawn_bounds.height().max(bounds.height()), // 最大の高さを保持
+                                    inner_drawn_bounds.height().max(bounds.height()), // NOTE: 最大の高さを保持
                                     0.0,
                                     0.0
                                 );
                             }
                             Direction::Vertical => {
                                 inner_drawn_bounds = Bounds::new(
-                                    inner_drawn_bounds.width().max(bounds.width()), // 最大の幅を保持
+                                    inner_drawn_bounds.width().max(bounds.width()), // NOTE: 最大の幅を保持
                                     inner_drawn_bounds.height() + bounds.height(),
                                     0.0,
                                     0.0
