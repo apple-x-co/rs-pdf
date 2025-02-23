@@ -51,17 +51,24 @@ impl Container {
                     return (true, None);
                 }
 
-                let mut container_drawn_bounds = Bounds::new(
+                // let mut container_drawn_bounds = Bounds::new(
+                //     0.0,
+                //     0.0,
+                //     if direction == Direction::Vertical { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
+                //     if direction == Direction::Vertical { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
+                // );
+
+                let mut inner_drawn_bounds = Bounds::new(
                     0.0,
                     0.0,
-                    if direction == Direction::Vertical { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
-                    if direction == Direction::Vertical { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
+                    0.0,
+                    0.0,
                 );
 
                 for block in block_container.blocks.iter_mut() {
                     let (is_fixed, bounds) = Self::apply_block_constraints(
                         block,
-                        &container_drawn_bounds, // FIXME: ここ?
+                        &inner_drawn_bounds, // FIXME: ここ?
                         block_container.direction.clone(),
                     );
 
@@ -69,9 +76,23 @@ impl Container {
                         continue;
                     }
 
-                    container_drawn_bounds = container_drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
+                    // inner_drawn_bounds = inner_drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
+                    inner_drawn_bounds = Bounds::new(
+                        inner_drawn_bounds.width() + bounds.as_ref().unwrap().width(),
+                        bounds.as_ref().unwrap().height(),
+                        bounds.as_ref().unwrap().point.as_ref().unwrap().x,
+                        bounds.as_ref().unwrap().point.as_ref().unwrap().y
+                    );
+
+                    // container_drawn_bounds = container_drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
                 }
 
+                let container_drawn_bounds = Bounds::new(
+                    inner_drawn_bounds.width(),
+                    inner_drawn_bounds.height(),
+                    if direction == Direction::Vertical { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
+                    if direction == Direction::Vertical { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
+                );
                 block_container.set_bounds(container_drawn_bounds.clone());
 
                 (false, Some(container_drawn_bounds))
