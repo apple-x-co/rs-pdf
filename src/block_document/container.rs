@@ -35,7 +35,6 @@ impl Container {
         }
     }
 
-    // FIXME: 実装する
     // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
     fn apply_block_constraints(
         block: &mut BlockType,
