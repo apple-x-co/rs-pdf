@@ -157,8 +157,8 @@ pub fn parse() -> Document {
     // NOTE: Block Test5 - BlockContainer
     let mut block_container = BlockContainer::new(Some(Bounds {
         point: Some(Point {
-            x: (PAGE_A4_WIDTH / 2.0) - (50.0 / 2.0),
-            y: (PAGE_A4_HEIGHT / 2.0) - (50.0 / 2.0),
+            x: PAGE_A4_WIDTH - 50.0 - 1.0,
+            y: 50.0 + 1.0,
         }), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
         size: Some(Size {
             width: 50.0,
@@ -211,6 +211,13 @@ pub fn parse() -> Document {
 
     let image3 = Image::new(String::from("assets/images/channel.png"), None);
     container2.add_block(BlockType::Image(image3));
+
+    let mut block_container2 = BlockContainer::new(None);
+    let image4 = Image::new(String::from("assets/images/channel.png"), None);
+    let image5 = Image::new(String::from("assets/images/channel.png"), None);
+    block_container2.add_block(BlockType::Image(image4));
+    block_container2.add_block(BlockType::Image(image5));
+    container2.add_block(BlockType::Container(block_container2));
 
     let b1 = Bounds::new(10.0, 10.0, 50.0, 50.0);
     let mut r1 = Rectangle::new(Some(b1.clone()));

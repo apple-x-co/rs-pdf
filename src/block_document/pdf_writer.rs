@@ -25,6 +25,7 @@ pub fn save(block_document: BlockDocument, file: File) {
         "Layer 1",
     );
 
+    // NOTE: 基準点は左下
     let page_bounds = GeoBounds::new(
         working_block_document.size.width,
         working_block_document.size.height,
@@ -58,6 +59,7 @@ pub fn save(block_document: BlockDocument, file: File) {
     doc.save(&mut BufWriter::new(file)).unwrap();
 }
 
+// NOTE: parent_bounds の基準点は左下
 fn draw(
     doc: &PdfDocumentReference,
     page_index: &PdfPageIndex,
@@ -66,18 +68,16 @@ fn draw(
 ) {
     match block {
         BlockType::Container(block_container) => {
+            let lb_bounds = block_container
+                .bounds
+                .as_ref()
+                .unwrap_or(&Bounds::none())
+                .transform(parent_bounds);
             for block in block_container.blocks.iter() {
-                draw(
-                    doc,
-                    page_index,
-                    block_container.bounds.as_ref().unwrap_or(&Bounds::none()),
-                    block,
-                );
+                draw(doc, page_index, &lb_bounds, block);
             }
         }
-        BlockType::Line(line) => {
-            draw_line(doc, page_index, line, parent_bounds)
-        }
+        BlockType::Line(line) => draw_line(doc, page_index, line, parent_bounds),
         BlockType::Rectangle(rectangle) => {
             draw_rectangle(doc, page_index, rectangle, parent_bounds)
         }

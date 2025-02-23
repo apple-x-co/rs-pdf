@@ -21,4 +21,8 @@ impl BlockContainer {
     pub fn add_block(&mut self, block: BlockType) {
         self.blocks.push(block);
     }
+
+    pub fn set_bounds(&mut self, bounds: Bounds) {
+        self.bounds = Some(bounds);
+    }
 }

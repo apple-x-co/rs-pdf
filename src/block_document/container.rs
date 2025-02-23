@@ -21,30 +21,61 @@ impl Container {
 
     // NOTE: 座標を計算する
     pub fn apply_constraints(&mut self, parent_bounds: &Bounds) {
-        let mut current_bounds =
+        let mut drawn_bounds =
             Bounds::new(0.0, 0.0, parent_bounds.min_x(), parent_bounds.min_y());
 
-        // NOTE: Y軸方向（上から下）に描画していく。固定の座標がある場合は無視する。横レイアウトは block_container を使う
-        // FIXME: 実装する
-        // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
         for block in self.blocks.iter_mut() {
             let (is_fixed, bounds) =
-                Self::calculate_constraints(block, &current_bounds, Direction::Vertical);
+                Self::apply_block_constraints(block, &drawn_bounds, Direction::Vertical);
             if is_fixed {
                 continue;
             }
 
-            current_bounds = current_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
+            drawn_bounds = drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
         }
     }
 
-    fn calculate_constraints(
+    // FIXME: 実装する
+    // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
+    fn apply_block_constraints(
         block: &mut BlockType,
-        current_bounds: &Bounds,
+        drawn_bounds: &Bounds,
         direction: Direction,
     ) -> (bool, Option<Bounds>) {
         match block {
-            // BlockType::Container(_) => {}
+            BlockType::Container(block_container) => {
+                if block_container.bounds.is_some()
+                    && block_container.bounds.as_ref().unwrap().point.is_some()
+                    && block_container.bounds.as_ref().unwrap().size.is_some()
+                {
+                    return (true, None);
+                }
+
+                let mut container_drawn_bounds = Bounds::new(
+                    0.0,
+                    0.0,
+                    if direction == Direction::Vertical { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
+                    if direction == Direction::Vertical { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
+                );
+
+                for block in block_container.blocks.iter_mut() {
+                    let (is_fixed, bounds) = Self::apply_block_constraints(
+                        block,
+                        &container_drawn_bounds, // FIXME: ここ?
+                        block_container.direction.clone(),
+                    );
+
+                    if is_fixed {
+                        continue;
+                    }
+
+                    container_drawn_bounds = container_drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
+                }
+
+                block_container.set_bounds(container_drawn_bounds.clone());
+
+                (false, Some(container_drawn_bounds))
+            }
             // BlockType::Line(_) => {}
             // BlockType::Rectangle(_) => {}
             // BlockType::Text(_) => {}
@@ -57,7 +88,7 @@ impl Container {
                 }
 
                 let (is_fixed, width, height, x, y) =
-                    Self::calculate_image_constraints(block_image, &current_bounds, direction);
+                    Self::calculate_image_constraints(block_image, &drawn_bounds, direction);
                 block_image.set_bounds(Bounds::new(width, height, x, y));
 
                 if is_fixed {
@@ -80,7 +111,7 @@ impl Container {
 
     fn calculate_image_constraints(
         block_image: &Image,
-        current_bounds: &Bounds,
+        drawn_bounds: &Bounds,
         direction: Direction,
     ) -> (bool, f32, f32, f32, f32) {
         // NOTE: 絶対配置
@@ -125,21 +156,21 @@ impl Container {
             }
         }
 
-        // 位置が未指定の場合は current_bounds を基準に座標を決定
+        // 位置が未指定の場合は drawn_bounds を基準に座標を決定
         if block_image
             .bounds
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
             x = if direction == Direction::Vertical {
-                current_bounds.min_x()
+                drawn_bounds.min_x()
             } else {
-                current_bounds.max_x()
+                drawn_bounds.max_x()
             };
             y = if direction == Direction::Vertical {
-                current_bounds.max_y()
+                drawn_bounds.max_y()
             } else {
-                current_bounds.min_y()
+                drawn_bounds.min_y()
             };
         }
 
