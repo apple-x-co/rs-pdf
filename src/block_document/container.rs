@@ -96,8 +96,16 @@ impl Container {
 
                 (false, Some(container_drawn_bounds))
             }
-            // BlockType::Line(_) => {}
-            // BlockType::Rectangle(_) => {}
+            BlockType::Rectangle(block_rectangle) => {
+                if block_rectangle.bounds.is_some()
+                    && block_rectangle.bounds.as_ref().unwrap().point.is_some()
+                    && block_rectangle.bounds.as_ref().unwrap().size.is_some()
+                {
+                    return (true, None);
+                }
+
+                (false, Some(Bounds::zero()))
+            }
             // BlockType::Text(_) => {}
             BlockType::Image(block_image) => {
                 if block_image.bounds.is_some()
