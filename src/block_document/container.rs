@@ -51,12 +51,7 @@ impl Container {
                     return (true, None);
                 }
 
-                let mut inner_drawn_bounds = Bounds::new(
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                );
+                let mut inner_drawn_bounds = Bounds::zero();
 
                 for block in block_container.blocks.iter_mut() {
                     let (is_fixed, bounds) = Self::apply_block_constraints(

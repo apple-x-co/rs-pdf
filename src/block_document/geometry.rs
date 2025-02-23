@@ -26,6 +26,13 @@ impl Bounds {
         }
     }
 
+    pub fn zero() -> Bounds {
+        Bounds {
+            point: Some(Point { x: 0.0, y: 0.0 }),
+            size: Some(Size { width: 0.0, height: 0.0 }),
+        }
+    }
+
     pub fn none() -> Bounds {
         Bounds {
             point: None,
@@ -80,10 +87,26 @@ impl Bounds {
     // NOTE: 2の矩形を満たす新しい矩形を作る
     pub fn union(&self, bounds: &Bounds) -> Bounds {
         Bounds::new(
-            if self.max_x() > bounds.max_x() { self.max_x() - bounds.min_x() } else { bounds.max_x() - self.min_x() },
-            if self.max_y() > bounds.max_y() { self.max_y() - bounds.min_y() } else { bounds.max_y() - self.min_y() },
-            if self.min_x() < bounds.min_x() { self.min_x() } else { bounds.min_x() },
-            if self.min_y() < bounds.min_y() { self.min_y() } else { bounds.min_y() },
+            if self.max_x() > bounds.max_x() {
+                self.max_x() - bounds.min_x()
+            } else {
+                bounds.max_x() - self.min_x()
+            },
+            if self.max_y() > bounds.max_y() {
+                self.max_y() - bounds.min_y()
+            } else {
+                bounds.max_y() - self.min_y()
+            },
+            if self.min_x() < bounds.min_x() {
+                self.min_x()
+            } else {
+                bounds.min_x()
+            },
+            if self.min_y() < bounds.min_y() {
+                self.min_y()
+            } else {
+                bounds.min_y()
+            },
         )
     }
 

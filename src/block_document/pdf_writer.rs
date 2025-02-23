@@ -36,7 +36,7 @@ pub fn save(block_document: BlockDocument, file: File) {
 
     // NOTE: レイアウト（Bounds が確定する）
     for container in working_block_document.containers.iter_mut() {
-        container.apply_constraints(&page_bounds, &Direction::Horizontal);
+        container.apply_constraints(&page_bounds, &Direction::Vertical);
     }
 
     // NOTE: 描画（Bounds が確定している）
