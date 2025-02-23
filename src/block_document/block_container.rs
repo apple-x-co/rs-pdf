@@ -22,6 +22,10 @@ impl BlockContainer {
         self.blocks.push(block);
     }
 
+    pub fn set_direction(&mut self, direction: Direction) {
+        self.direction = direction;
+    }
+
     pub fn set_bounds(&mut self, bounds: Bounds) {
         self.bounds = Some(bounds);
     }

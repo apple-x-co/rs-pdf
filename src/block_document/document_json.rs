@@ -12,6 +12,7 @@ use crate::block_document::style::{
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
 use image::GenericImageView;
+use crate::block_document::direction::Direction;
 
 const PAGE_A4_WIDTH: f32 = 210.0;
 const PAGE_A4_HEIGHT: f32 = 297.0;
@@ -215,6 +216,7 @@ pub fn parse() -> Document {
     let mut block_container2 = BlockContainer::new(None);
     let image4 = Image::new(String::from("assets/images/channel.png"), None);
     let image5 = Image::new(String::from("assets/images/channel.png"), None);
+    // block_container2.set_direction(Direction::Vertical);
     block_container2.add_block(BlockType::Image(image4));
     block_container2.add_block(BlockType::Image(image5));
     container2.add_block(BlockType::Container(block_container2));

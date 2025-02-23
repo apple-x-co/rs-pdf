@@ -51,13 +51,6 @@ impl Container {
                     return (true, None);
                 }
 
-                // let mut container_drawn_bounds = Bounds::new(
-                //     0.0,
-                //     0.0,
-                //     if direction == Direction::Vertical { drawn_bounds.min_x() } else { drawn_bounds.max_x() },
-                //     if direction == Direction::Vertical { drawn_bounds.max_y() } else { drawn_bounds.min_y() },
-                // );
-
                 let mut inner_drawn_bounds = Bounds::new(
                     0.0,
                     0.0,
@@ -76,15 +69,26 @@ impl Container {
                         continue;
                     }
 
-                    // inner_drawn_bounds = inner_drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
-                    inner_drawn_bounds = Bounds::new(
-                        inner_drawn_bounds.width() + bounds.as_ref().unwrap().width(),
-                        bounds.as_ref().unwrap().height(),
-                        bounds.as_ref().unwrap().point.as_ref().unwrap().x,
-                        bounds.as_ref().unwrap().point.as_ref().unwrap().y
-                    );
-
-                    // container_drawn_bounds = container_drawn_bounds.union(bounds.as_ref().unwrap_or(&Bounds::default()));
+                    if let Some(bounds) = bounds {
+                        match block_container.direction {
+                            Direction::Horizontal => {
+                                inner_drawn_bounds = Bounds::new(
+                                    inner_drawn_bounds.width() + bounds.width(),
+                                    inner_drawn_bounds.height().max(bounds.height()), // 最大の高さを保持
+                                    0.0,
+                                    0.0
+                                );
+                            }
+                            Direction::Vertical => {
+                                inner_drawn_bounds = Bounds::new(
+                                    inner_drawn_bounds.width().max(bounds.width()), // 最大の幅を保持
+                                    inner_drawn_bounds.height() + bounds.height(),
+                                    0.0,
+                                    0.0
+                                );
+                            }
+                        }
+                    }
                 }
 
                 let container_drawn_bounds = Bounds::new(
