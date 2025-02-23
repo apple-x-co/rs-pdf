@@ -12,7 +12,6 @@ use crate::block_document::style::{
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
 use image::GenericImageView;
-use crate::block_document::direction::Direction;
 
 const PAGE_A4_WIDTH: f32 = 210.0;
 const PAGE_A4_HEIGHT: f32 = 297.0;
@@ -90,8 +89,8 @@ pub fn parse() -> Document {
         Some(Bounds::new(
             text_size1.width,
             text_size1.height,
-            1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            PAGE_A4_HEIGHT - text_size1.height - 1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            1.0,
+            PAGE_A4_HEIGHT - text_size1.height - 1.0,
         )),
     );
     text1.add_style(Style::BorderStyle(BorderStyle::Dash(2)));
@@ -119,8 +118,8 @@ pub fn parse() -> Document {
         Some(Bounds::new(
             text_size2.width,
             text_size2.height,
-            30.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            30.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            30.0,
+            30.0,
         )),
     );
     text2.add_style(Style::BorderColor(RgbColor {
@@ -140,8 +139,8 @@ pub fn parse() -> Document {
     let mut image = Image::new(
         String::from("assets/images/channel.png"),
         Some(Bounds::new(
-            px_to_mm(image_width as f32), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            px_to_mm(image_height as f32), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            px_to_mm(image_width as f32),
+            px_to_mm(image_height as f32),
             PAGE_A4_WIDTH - px_to_mm(image_width as f32) - 1.0,
             1.0,
         )),
@@ -160,11 +159,11 @@ pub fn parse() -> Document {
         point: Some(Point {
             x: PAGE_A4_WIDTH - 50.0 - 1.0,
             y: 50.0 + 1.0,
-        }), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+        }),
         size: Some(Size {
             width: 50.0,
             height: 50.0,
-        }), // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+        }),
     }));
     let mut rectangle2 = Rectangle::new(Some(Bounds::new(
         50.0, 50.0, 0.0, // NOTE: BlockContainer からの座標
@@ -195,8 +194,8 @@ pub fn parse() -> Document {
         Some(Bounds::new(
             text_size2.width,
             text_size2.height,
-            1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
-            1.0, // NOTE: 指定なしの場合は自動計算する予定だが、今は指定必須
+            1.0,
+            1.0,
         )),
     );
     block_container.add_block(BlockType::Text(text2));
@@ -236,6 +235,38 @@ pub fn parse() -> Document {
     container2.add_block(BlockType::Rectangle(r3));
     container2.add_block(BlockType::Rectangle(r1));
     container2.add_block(BlockType::Rectangle(r2));
+
+    let text3 = Text::new(
+        String::from("GOOD AFTERNOON1"),
+        20.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
+    );
+    let text4 = Text::new(
+        String::from("GOOD AFTERNOON2"),
+        20.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
+    );
+    container2.add_block(BlockType::Text(text3));
+    container2.add_block(BlockType::Text(text4));
+
+    let text5 = Text::new(
+        String::from("GOOD AFTERNOON3"),
+        20.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
+    );
+    let text6 = Text::new(
+        String::from("GOOD AFTERNOON4"),
+        20.0,
+        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
+    );
+    let mut block_container3 = BlockContainer::new(None);
+    block_container3.add_block(BlockType::Text(text5));
+    block_container3.add_block(BlockType::Text(text6));
+    container2.add_block(BlockType::Container(block_container3));
 
     doc.add_container(container2);
 

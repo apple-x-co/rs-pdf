@@ -29,4 +29,8 @@ impl Text {
     pub fn add_style(&mut self, style: Style) {
         self.styles.push(style);
     }
+
+    pub fn set_bounds(&mut self, bounds: Bounds) {
+        self.bounds = Some(bounds);
+    }
 }
