@@ -1,13 +1,26 @@
 use crate::block_document::geometry::Size;
-use ab_glyph::{Font, FontVec, ScaleFont};
+use ab_glyph::{Font, FontRef, FontVec, ScaleFont};
 use std::fs::File;
 use std::io::Read;
 
 pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
-    let mut file = File::open(font_path).unwrap();
-    let mut font_data = Vec::new();
-    file.read_to_end(&mut font_data).expect("Cannot read font");
-    let font = FontVec::try_from_vec(font_data).unwrap();
+    let file = File::open(font_path).map_err(|e| {
+        eprintln!(
+            "Failed to open font file: {}. Use default font instead. {}",
+            font_path, e
+        );
+    });
+    let font = match file {
+        Ok(mut file) => {
+            let mut font_data = Vec::new();
+            file.read_to_end(&mut font_data).expect("Cannot read font");
+            FontVec::try_from_vec(font_data).unwrap()
+        }
+        Err(_) => {
+            let font_data = include_bytes!("../../assets/fonts/NotoSansJP-VariableFont_wght.ttf");
+            FontVec::try_from_vec(font_data.to_vec()).unwrap()
+        }
+    };
     let scaled_font = font.as_scaled(font.pt_to_px_scale(font_size).unwrap());
 
     let mut max_width_px: f32 = 0.0;
@@ -34,7 +47,8 @@ pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
     max_width_px = max_width_px.max(current_width_px);
 
     let num_lines = text.lines().count() as f32;
-    let height_px: f32 = (scaled_font.ascent() + scaled_font.descent() + scaled_font.line_gap()) * num_lines;
+    let height_px: f32 =
+        (scaled_font.ascent() + scaled_font.descent() + scaled_font.line_gap()) * num_lines;
 
     // let width_px: f32 = text.chars().map(|c| scaled_font.h_advance(scaled_font.glyph_id(c))).sum();
     // let height_px: f32 = scaled_font.ascent() - scaled_font.descent() + scaled_font.line_gap();
