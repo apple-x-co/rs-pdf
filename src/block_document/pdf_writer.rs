@@ -16,7 +16,7 @@ use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
 
-pub fn save(block_document: BlockDocument, file: File) {
+pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     let mut working_block_document = block_document.clone();
 
     let (doc, mut page_index, _) = PdfDocument::new(
@@ -51,6 +51,10 @@ pub fn save(block_document: BlockDocument, file: File) {
         }
 
         i += 1;
+
+        if is_debug {
+            draw_grid(&doc, &page_index, &page_bounds)
+        }
 
         for block in container.blocks.iter() {
             draw(&doc, &page_index, &page_bounds, block);
@@ -480,5 +484,83 @@ fn draw_image(
                 });
             }
         }
+    }
+}
+
+fn draw_grid(
+    doc: &PdfDocumentReference,
+    page_index: &PdfPageIndex,
+    parent_bounds: &Bounds,
+) {
+    let layer1 = doc.get_page(*page_index).add_layer("Layer");
+    layer1.set_outline_thickness(0.1);
+    layer1.set_outline_color(Color::Rgb(Rgb {
+        r: 200.0 / 255.0,
+        g: 200.0 / 255.0,
+        b: 200.0 / 255.0,
+        icc_profile: None,
+    }));
+
+    let layer2 = doc.get_page(*page_index).add_layer("Layer");
+    layer2.set_outline_thickness(0.1);
+    layer2.set_outline_color(Color::Rgb(Rgb {
+        r: 220.0 / 255.0,
+        g: 220.0 / 255.0,
+        b: 220.0 / 255.0,
+        icc_profile: None,
+    }));
+    layer2.set_line_dash_pattern(LineDashPattern {
+        dash_1: Some(1),
+        ..Default::default()
+    });
+
+    let mut i = 0.0;
+    while i < parent_bounds.max_y() {
+        i += 1.0;
+
+        if i % 5.0 == 0.0 {
+            layer1.add_line(Line {
+                points: vec![
+                    (Point::new(Mm(parent_bounds.min_x()), Mm(parent_bounds.max_y() - i)), false),
+                    (Point::new(Mm(parent_bounds.max_x()), Mm(parent_bounds.max_y() - i)), false),
+                ],
+                is_closed: false,
+            });
+
+            continue;
+        }
+
+        layer2.add_line(Line {
+            points: vec![
+                (Point::new(Mm(parent_bounds.min_x()), Mm(parent_bounds.max_y() - i)), false),
+                (Point::new(Mm(parent_bounds.max_x()), Mm(parent_bounds.max_y() - i)), false),
+            ],
+            is_closed: false,
+        });
+    }
+
+    i = 0.0;
+    while i < parent_bounds.max_x() {
+        i += 1.0;
+
+        if i % 5.0 == 0.0 {
+            layer1.add_line(Line {
+                points: vec![
+                    (Point::new(Mm(parent_bounds.max_x() - i), Mm(parent_bounds.min_y())), false),
+                    (Point::new(Mm(parent_bounds.max_x() - i), Mm(parent_bounds.max_y())), false),
+                ],
+                is_closed: false,
+            });
+
+            continue;
+        }
+
+        layer2.add_line(Line {
+            points: vec![
+                (Point::new(Mm(parent_bounds.max_x() - i), Mm(parent_bounds.min_y())), false),
+                (Point::new(Mm(parent_bounds.max_x() - i), Mm(parent_bounds.max_y())), false),
+            ],
+            is_closed: false,
+        });
     }
 }

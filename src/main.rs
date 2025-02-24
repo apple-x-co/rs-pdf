@@ -8,5 +8,6 @@ fn main() {
     pdf_writer::save(
         document,
         File::create("output/printpdf_output.pdf").unwrap(),
+        true,
     ); // TODO: 実行時パラメータの 出力ファイル名 を渡す
 }
