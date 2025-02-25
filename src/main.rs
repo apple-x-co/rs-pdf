@@ -8,8 +8,9 @@ use std::process::exit;
 fn main() {
     let output_path = "output/printpdf_output.pdf"; // TODO: 実行時パラメータの 出力ファイル名 を渡す
     let is_debug = true; // TODO: 実行時パラメーターの デバッグ を渡す
+    let is_override = true; // TODO: 実行時パラメーターの 上書き を渡す
 
-    if Path::new(output_path).exists() {
+    if !is_override && Path::new(output_path).exists() {
         eprintln!("The output path already exists!");
         exit(1);
     }

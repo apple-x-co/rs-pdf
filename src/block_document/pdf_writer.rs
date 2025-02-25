@@ -399,9 +399,10 @@ fn draw_image(
     block_image: &BlockImage,
     geo_bounds: &GeoBounds,
 ) {
-    if !fs::exists(&block_image.path).unwrap() {
+    if !fs::exists(&block_image.path).map_err(|e|{
+        eprintln!("Failed to check if file {} exists due to {}", block_image.path, e);
+    }).unwrap_or(false) {
         eprintln!("No such file or directory -> {:?}", &block_image.path);
-
         return;
     }
 
