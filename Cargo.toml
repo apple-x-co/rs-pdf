@@ -7,3 +7,10 @@ edition = "2021"
 ab_glyph = "0.2.29"
 image = { version = "0.24", default-features = false, features = ["png"] }
 printpdf = { version = "0.7", features = ["embedded_images"] }
+
+[profile.release]
+opt-level = "s"       # サイズと速度のバランスを取る最適化
+lto = "fat"           # 最大限のリンク時最適化を有効化
+codegen-units = 1     # コード生成ユニットを減らし、最適化を強化
+panic = "abort"       # panic 時に 'unwind' ではなく 'abort' を使用
+strip = "symbols"     # シンボル情報を削除し、必要なデバッグ情報は保持
