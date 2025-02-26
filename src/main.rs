@@ -1,22 +1,36 @@
 mod block_document;
 use block_document::document_json;
 use block_document::pdf_writer;
+use clap::Parser;
 use std::fs::File;
 use std::path::Path;
 use std::process::exit;
 
-fn main() {
-    let output_path = "output/printpdf_output.pdf"; // TODO: 実行時パラメータの 出力ファイル名 を渡す
-    let font_path = "assets/fonts/NotoSansJP-VariableFont_wght.ttf"; // TODO: 実行時パラメータの フォントパス を渡す
-    let is_debug = true; // TODO: 実行時パラメーターの デバッグ を渡す
-    let is_override = true; // TODO: 実行時パラメーターの 上書き を渡す
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    output_path: String,
 
-    if !is_override && Path::new(output_path).exists() {
+    #[arg(short, long)]
+    font_path: String,
+
+    #[arg(short, long, default_value_t=false)]
+    debug: bool,
+
+    #[arg(short, long, default_value_t=false)]
+    allow_override: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    if !args.allow_override && Path::new(args.output_path.as_str()).exists() {
         eprintln!("The output path already exists!");
         exit(1);
     }
 
-    let output_file = File::create(output_path).map_err(|e|{
+    let output_file = File::create(args.output_path.as_str()).map_err(|e|{
         eprintln!("Could not create output file! {}", e);
         e
     });
@@ -28,6 +42,6 @@ fn main() {
         }
     };
 
-    let document = document_json::parse(font_path); // TODO: 実行時パラメータの JSON ファイル名を渡す
-    pdf_writer::save(document, file, is_debug);
+    let document = document_json::parse(args.font_path.as_str()); // TODO: 実行時パラメータの JSON ファイル名を渡す
+    pdf_writer::save(document, file, args.debug);
 }
