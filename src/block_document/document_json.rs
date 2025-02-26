@@ -19,14 +19,14 @@ const PAGE_A4_HEIGHT: f32 = 297.0;
 
 // TODO: JSON ファイルをパースして Document 構造体を返す
 // NOTE: BlockDocument の座標基準は左上（printpdf は左下）
-pub fn parse() -> Document {
+pub fn parse(font_path: &str) -> Document {
     let mut doc = Document::new(
         String::from("HELLO"),
         Size {
             width: PAGE_A4_WIDTH,
             height: PAGE_A4_HEIGHT,
         },
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        String::from(font_path),
     );
 
     // NOTE: 1ページ目
@@ -111,7 +111,7 @@ pub fn parse() -> Document {
     let text_size2 = measure_text(
         &String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"),
         20.0,
-        &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        &doc.font_path,
     );
     let mut text2 = Text::new(
         String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"), // FIXME: 改行を反映するには!?
@@ -187,7 +187,7 @@ pub fn parse() -> Document {
     let text_size2 = measure_text(
         &String::from("Hi!!"),
         20.0,
-        &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        &doc.font_path,
     );
     let text2 = Text::new(
         String::from("Hi!!"),

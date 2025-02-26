@@ -2,13 +2,11 @@ use crate::block_document::geometry::Size;
 use ab_glyph::{Font, FontVec, ScaleFont};
 use std::fs::File;
 use std::io::Read;
+use std::process::exit;
 
 pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
     let file = File::open(font_path).map_err(|e| {
-        eprintln!(
-            "Failed to open font file: {}. Use default font instead. {}",
-            font_path, e
-        );
+        eprintln!("Failed to open font file: {}.", font_path);
     });
     let font = match file {
         Ok(mut file) => {
@@ -17,8 +15,8 @@ pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
             FontVec::try_from_vec(font_data).unwrap()
         }
         Err(_) => {
-            let font_data = include_bytes!("../../assets/fonts/NotoSansJP-VariableFont_wght.ttf");
-            FontVec::try_from_vec(font_data.to_vec()).unwrap()
+            eprintln!("Failed to open font file: {}.", font_path);
+            exit(1);
         }
     };
     let scaled_font = font.as_scaled(font.pt_to_px_scale(font_size).unwrap());

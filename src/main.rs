@@ -7,6 +7,7 @@ use std::process::exit;
 
 fn main() {
     let output_path = "output/printpdf_output.pdf"; // TODO: 実行時パラメータの 出力ファイル名 を渡す
+    let font_path = "assets/fonts/NotoSansJP-VariableFont_wght.ttf"; // TODO: 実行時パラメータの フォントパス を渡す
     let is_debug = true; // TODO: 実行時パラメーターの デバッグ を渡す
     let is_override = true; // TODO: 実行時パラメーターの 上書き を渡す
 
@@ -15,7 +16,7 @@ fn main() {
         exit(1);
     }
 
-    let output_file = File::create(&output_path).map_err(|e|{
+    let output_file = File::create(output_path).map_err(|e|{
         eprintln!("Could not create output file! {}", e);
         e
     });
@@ -27,6 +28,6 @@ fn main() {
         }
     };
 
-    let document = document_json::parse(); // TODO: 実行時パラメータの JSON ファイル名を渡す
+    let document = document_json::parse(font_path); // TODO: 実行時パラメータの JSON ファイル名を渡す
     pdf_writer::save(document, file, is_debug);
 }
