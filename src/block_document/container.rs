@@ -1,6 +1,6 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
-use crate::block_document::document::px_to_mm;
+use crate::block_document::document::{px_to_mm, Document};
 use crate::block_document::geometry::Bounds;
 use crate::block_document::image::Image;
 use crate::block_document::text::Text;
@@ -22,11 +22,11 @@ impl Container {
     }
 
     // NOTE: 座標を計算する
-    pub fn apply_constraints(&mut self, parent_bounds: &Bounds, direction: &Direction) {
+    pub fn apply_constraints(&mut self, parent_bounds: &Bounds, direction: &Direction, font_path: &String) {
         let mut drawn_bounds = Bounds::new(0.0, 0.0, parent_bounds.min_x(), parent_bounds.min_y());
 
         for block in self.blocks.iter_mut() {
-            let (is_fixed, bounds) = Self::apply_block_constraints(block, &drawn_bounds, direction);
+            let (is_fixed, bounds) = Self::apply_block_constraints(block, &drawn_bounds, direction, font_path);
             if is_fixed {
                 continue;
             }
@@ -40,6 +40,7 @@ impl Container {
         block: &mut BlockType,
         drawn_bounds: &Bounds,
         direction: &Direction,
+        font_path: &String,
     ) -> (bool, Option<Bounds>) {
         match block {
             BlockType::Container(block_container) => {
@@ -57,6 +58,7 @@ impl Container {
                         block,
                         &inner_drawn_bounds,
                         &block_container.direction.clone(),
+                        font_path,
                     );
 
                     if is_fixed {
@@ -122,7 +124,7 @@ impl Container {
                 }
 
                 let (is_fixed, width, height, x, y) =
-                    Self::calculate_text_constraints(block_text, &drawn_bounds, direction);
+                    Self::calculate_text_constraints(block_text, &drawn_bounds, direction, font_path);
                 block_text.set_bounds(Bounds::new(width, height, x, y));
 
                 if is_fixed {
@@ -231,6 +233,7 @@ impl Container {
         block_text: &Text,
         drawn_bounds: &Bounds,
         direction: &Direction,
+        font_path: &String,
     ) -> (bool, f32, f32, f32, f32) {
         // NOTE: 絶対配置
         let is_fixed =
@@ -263,7 +266,7 @@ impl Container {
             let text_size = measure_text(
                 &block_text.text,
                 block_text.font_size,
-                &block_text.font_path,
+                block_text.font_path.as_ref().unwrap_or(&font_path),
             );
 
             width = text_size.width;

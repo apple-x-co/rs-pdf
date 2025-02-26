@@ -5,7 +5,7 @@ use crate::block_document::style::Style;
 pub struct Text {
     pub text: String,
     pub font_size: f32, // NOTE: PT
-    pub font_path: String, // TODO: Option にする
+    pub font_path: Option<String>,
     pub bounds: Option<Bounds>,
     pub styles: Vec<Style>,
 }
@@ -14,7 +14,7 @@ impl Text {
     pub fn new(
         text: String,
         font_size: f32,
-        font_path: String,
+        font_path: Option<String>,
         bounds: Option<Bounds>,
     ) -> Text {
         Text {

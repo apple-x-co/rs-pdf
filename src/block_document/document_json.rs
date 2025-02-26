@@ -82,12 +82,12 @@ pub fn parse() -> Document {
     let text_size1 = measure_text(
         &String::from("HELLO WORLD"),
         48.0,
-        &String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        &doc.font_path,
     );
     let mut text1 = Text::new(
         String::from("HELLO WORLD"),
         48.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         Some(Bounds::new(
             text_size1.width,
             text_size1.height,
@@ -116,7 +116,7 @@ pub fn parse() -> Document {
     let mut text2 = Text::new(
         String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"), // FIXME: 改行を反映するには!?
         20.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         Some(Bounds::new(
             text_size2.width,
             text_size2.height,
@@ -192,7 +192,7 @@ pub fn parse() -> Document {
     let text2 = Text::new(
         String::from("Hi!!"),
         20.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         Some(Bounds::new(
             text_size2.width,
             text_size2.height,
@@ -241,13 +241,13 @@ pub fn parse() -> Document {
     let text3 = Text::new(
         String::from("GOOD AFTERNOON1"),
         20.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         None,
     );
     let text4 = Text::new(
         String::from("GOOD AFTERNOON2"),
         20.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         None,
     );
     container2.add_block(BlockType::Text(text3));
@@ -256,13 +256,13 @@ pub fn parse() -> Document {
     let text5 = Text::new(
         String::from("GOOD AFTERNOON3"),
         20.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         None,
     );
     let text6 = Text::new(
         String::from("GOOD AFTERNOON4"),
         20.0,
-        String::from("assets/fonts/NotoSansJP-VariableFont_wght.ttf"),
+        None,
         None,
     );
     let mut block_container3 = BlockContainer::new(None);

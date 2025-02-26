@@ -35,7 +35,7 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
 
     // NOTE: レイアウト（Bounds が確定する）
     for container in working_block_document.containers.iter_mut() {
-        container.apply_constraints(&page_bounds, &Direction::Vertical);
+        container.apply_constraints(&page_bounds, &Direction::Vertical, &working_block_document.font_path);
     }
 
     // NOTE: 描画（Bounds が確定している）
@@ -56,7 +56,7 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
         }
 
         for block in container.blocks.iter() {
-            draw(&doc, &page_index, &page_bounds, block);
+            draw(&doc, &page_index, &page_bounds, &working_block_document.font_path, block);
         }
     }
 
@@ -68,6 +68,7 @@ fn draw(
     doc: &PdfDocumentReference,
     page_index: &PdfPageIndex,
     parent_bounds: &Bounds,
+    font_path: &String,
     block: &BlockType,
 ) {
     match block {
@@ -78,7 +79,7 @@ fn draw(
                 .unwrap_or(&Bounds::none())
                 .transform(parent_bounds);
             for block in block_container.blocks.iter() {
-                draw(doc, page_index, &lb_bounds, block);
+                draw(doc, page_index, &lb_bounds, font_path, block);
             }
         }
         BlockType::Line(line) => draw_line(doc, page_index, line, parent_bounds),
@@ -86,7 +87,7 @@ fn draw(
             draw_rectangle(doc, page_index, rectangle, parent_bounds)
         }
         BlockType::Text(text) => {
-            draw_text(doc, page_index, text, parent_bounds);
+            draw_text(doc, page_index, font_path, text, parent_bounds);
         }
         BlockType::Image(image) => {
             draw_image(doc, page_index, image, parent_bounds);
@@ -249,6 +250,7 @@ fn draw_line(
 fn draw_text(
     doc: &PdfDocumentReference,
     page_index: &PdfPageIndex,
+    font_path: &String,
     block_text: &BlockText,
     geo_bounds: &GeoBounds,
 ) {
@@ -315,9 +317,8 @@ fn draw_text(
 
             let layer2 = doc.get_page(*page_index).add_layer("Layer 2");
 
-            // let font = doc.add_builtin_font(BuiltinFont::HelveticaBold).unwrap();
             let font = doc
-                .add_external_font(File::open(&block_text.font_path).unwrap())
+                .add_external_font(File::open(block_text.font_path.as_ref().unwrap_or(font_path)).unwrap())
                 .unwrap();
             for style in &block_text.styles {
                 match style {
