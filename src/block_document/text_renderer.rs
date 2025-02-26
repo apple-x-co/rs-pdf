@@ -1,5 +1,5 @@
 use crate::block_document::geometry::Size;
-use ab_glyph::{Font, FontRef, FontVec, ScaleFont};
+use ab_glyph::{Font, FontVec, ScaleFont};
 use std::fs::File;
 use std::io::Read;
 

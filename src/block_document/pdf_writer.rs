@@ -7,7 +7,6 @@ use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::style::{BorderStyle, Style, TextOutlineStyle, TextStyle};
 use crate::block_document::text::Text as BlockText;
-use image::GenericImageView;
 use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
     PdfPageIndex, Point, Rect, Rgb, TextRenderingMode,
@@ -21,15 +20,15 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
 
     let (doc, mut page_index, _) = PdfDocument::new(
         working_block_document.title.clone(),
-        Mm(working_block_document.size.width),
-        Mm(working_block_document.size.height),
+        Mm(working_block_document.page_size.width),
+        Mm(working_block_document.page_size.height),
         "Layer 1",
     );
 
     // NOTE: 基準点は左下
     let page_bounds = GeoBounds::new(
-        working_block_document.size.width,
-        working_block_document.size.height,
+        working_block_document.page_size.width,
+        working_block_document.page_size.height,
         0.0,
         0.0,
     );
@@ -44,8 +43,8 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     for container in working_block_document.containers.iter() {
         if i > 0 {
             (page_index, _) = doc.add_page(
-                Mm(working_block_document.size.width),
-                Mm(working_block_document.size.height),
+                Mm(working_block_document.page_size.width),
+                Mm(working_block_document.page_size.height),
                 "Layer 1",
             );
         }

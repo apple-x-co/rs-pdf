@@ -85,18 +85,18 @@ impl Container {
                     }
                 }
 
+
+
                 let container_drawn_bounds = Bounds::new(
                     inner_drawn_bounds.width(),
                     inner_drawn_bounds.height(),
-                    if direction.is_vertical() {
-                        drawn_bounds.min_x()
-                    } else {
-                        drawn_bounds.max_x()
+                    match direction {
+                        Direction::Vertical => { drawn_bounds.min_x() }
+                        Direction::Horizontal => { drawn_bounds.max_x() },
                     },
-                    if direction.is_vertical() {
-                        drawn_bounds.max_y()
-                    } else {
-                        drawn_bounds.min_y()
+                    match direction {
+                        Direction::Vertical => { drawn_bounds.max_y() }
+                        Direction::Horizontal => { drawn_bounds.min_y() },
                     },
                 );
                 block_container.set_bounds(container_drawn_bounds.clone());
@@ -214,15 +214,13 @@ impl Container {
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
-            x = if direction.is_vertical() {
-                drawn_bounds.min_x()
-            } else {
-                drawn_bounds.max_x()
+            x =  match direction {
+                Direction::Vertical => { drawn_bounds.min_x() },
+                Direction::Horizontal => { drawn_bounds.max_x() }
             };
-            y = if direction.is_vertical() {
-                drawn_bounds.max_y()
-            } else {
-                drawn_bounds.min_y()
+            y = match direction {
+                Direction::Vertical => { drawn_bounds.max_y() },
+                Direction::Horizontal => { drawn_bounds.min_y() }
             };
         }
 
@@ -278,15 +276,13 @@ impl Container {
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
-            x = if direction.is_vertical() {
-                drawn_bounds.min_x()
-            } else {
-                drawn_bounds.max_x()
+            x = match direction {
+                Direction::Vertical => { drawn_bounds.min_x() },
+                Direction::Horizontal => { drawn_bounds.max_x() }
             };
-            y = if direction.is_vertical() {
-                drawn_bounds.max_y()
-            } else {
-                drawn_bounds.min_y()
+            y =  match direction {
+                Direction::Vertical => { drawn_bounds.max_y() },
+                Direction::Horizontal => { drawn_bounds.min_y() }
             };
         }
 

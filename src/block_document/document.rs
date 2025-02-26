@@ -10,15 +10,17 @@ pub fn px_to_mm(pixel: f32) -> f32 {
 #[derive(Clone)]
 pub struct Document {
     pub title: String,
-    pub size: Size,
+    pub page_size: Size,
+    pub font_path: String,
     pub containers: Vec<Container>,
 }
 
 impl Document {
-    pub fn new(title: String, size: Size) -> Document {
+    pub fn new(title: String, page_size: Size, font_path: String) -> Document {
         Document {
             title,
-            size,
+            page_size,
+            font_path,
             containers: Vec::new(),
         }
     }

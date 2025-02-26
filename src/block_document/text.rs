@@ -5,7 +5,7 @@ use crate::block_document::style::Style;
 pub struct Text {
     pub text: String,
     pub font_size: f32, // NOTE: PT
-    pub font_path: String,
+    pub font_path: String, // TODO: Option にする
     pub bounds: Option<Bounds>,
     pub styles: Vec<Style>,
 }
