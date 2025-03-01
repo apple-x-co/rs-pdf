@@ -1,0 +1,48 @@
+{
+  "$schema": "schema.json",
+  "document": {
+    "title": "rs-pdf",
+    "font_path": "assets/fonts/NotoSansJP-VariableFont_wght.ttf",
+    "pages": [
+      {
+        "objects": [
+          {
+            "type": "text",
+            "text": "HELLO WORLD",
+            "font_size": 10
+          },
+          {
+            "type": "image",
+            "path": "assets/images/channel.png"
+          },
+          {
+            "type": "line",
+            "bounds": {
+              "point": {
+                "x": 1,
+                "y": 1
+              },
+              "size": {
+                "width": 100,
+                "height": 100
+              }
+            }
+          },
+          {
+            "type": "rectangle"
+          },
+          {
+            "type": "objects",
+            "objects": [
+              {
+                "type": "text",
+                "text": "GOOD NIGHT!",
+                "font_size": 10
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

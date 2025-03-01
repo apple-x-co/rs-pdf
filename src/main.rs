@@ -10,6 +10,9 @@ use std::process::exit;
 #[command(version, about, long_about = None)]
 struct Args {
     #[arg(short, long)]
+    input_path: String,
+
+    #[arg(short, long)]
     output_path: String,
 
     #[arg(short, long)]
@@ -30,6 +33,11 @@ fn main() {
         exit(1);
     }
 
+    if !Path::new(args.input_path.as_str()).exists() {
+        eprintln!("The input path does not exist!");
+        exit(1);
+    }
+
     let output_file = File::create(args.output_path.as_str()).map_err(|e|{
         eprintln!("Could not create output file! {}", e);
         e
@@ -42,6 +50,9 @@ fn main() {
         }
     };
 
-    let document = document_json::parse(args.font_path.as_str()); // TODO: 実行時パラメータの JSON ファイル名を渡す
+    let document = document_json::parse(
+        args.input_path.as_str(),
+        args.font_path.as_str(),
+    );
     pdf_writer::save(document, file, args.debug);
 }

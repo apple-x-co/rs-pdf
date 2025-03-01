@@ -1,6 +1,7 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::block_container::BlockContainer;
 use crate::block_document::container::Container;
+use crate::block_document::direction::Direction;
 use crate::block_document::document::{px_to_mm, Document};
 use crate::block_document::geometry::{Bounds, Point, Size};
 use crate::block_document::image::Image;
@@ -12,14 +13,28 @@ use crate::block_document::style::{
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
 use image::GenericImageView;
-use crate::block_document::direction::Direction;
+use std::fs::read_to_string;
+use std::process::exit;
+use serde_json::Value;
 
 const PAGE_A4_WIDTH: f32 = 210.0;
 const PAGE_A4_HEIGHT: f32 = 297.0;
 
-// TODO: JSON ファイルをパースして Document 構造体を返す
+const JSON_SCHEMA_BYTES: &'static [u8] = include_bytes!("../../schema/schema.json");
+
 // NOTE: BlockDocument の座標基準は左上（printpdf は左下）
-pub fn parse(font_path: &str) -> Document {
+pub fn parse(json_path: &str, font_path: &str) -> Document {
+    let json_string = read_to_string(json_path).unwrap();
+    let json: Value = serde_json::from_str(&json_string).unwrap();
+    let schema = serde_json::from_slice(JSON_SCHEMA_BYTES).unwrap();
+
+    if !jsonschema::is_valid(&schema, &json) {
+        eprintln!("Invalid schema: {:?}", json.to_string());
+        exit(1);
+    }
+
+    // TODO: JSON を Document に展開する
+
     let mut doc = Document::new(
         String::from("HELLO"),
         Size {

@@ -1,0 +1,250 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "geometry_point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ]
+    },
+    "geometry_size": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ]
+    },
+    "geometry_bounds": {
+      "type": "object",
+      "properties": {
+        "point": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "$ref": "#/definitions/geometry_point"
+        },
+        "size": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "$ref": "#/definitions/geometry_size"
+        }
+      },
+      "required": [
+        "point",
+        "size"
+      ]
+    },
+    "text_object": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "text"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "font_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "font_path": {
+          "type": "string"
+        },
+        "bounds": {
+          "$ref": "#/definitions/geometry_bounds"
+        }
+      },
+      "required": [
+        "type",
+        "text",
+        "font_size"
+      ]
+    },
+    "image_object": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "image"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bounds": {
+          "$ref": "#/definitions/geometry_bounds"
+        }
+      },
+      "required": [
+        "type",
+        "path"
+      ]
+    },
+    "line_object": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "line"
+          ]
+        },
+        "bounds": {
+          "$ref": "#/definitions/geometry_bounds"
+        }
+      },
+      "required": [
+        "type",
+        "bounds"
+      ]
+    },
+    "rectangle_object": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "rectangle"
+          ]
+        },
+        "bounds": {
+          "$ref": "#/definitions/geometry_bounds"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "objects_object": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "objects"
+          ]
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/text_object"
+              },
+              {
+                "$ref": "#/definitions/image_object"
+              },
+              {
+                "$ref": "#/definitions/line_object"
+              },
+              {
+                "$ref": "#/definitions/rectangle_object"
+              },
+              {
+                "$ref": "#/definitions/objects_object"
+              }
+            ]
+          }
+        },
+        "bounds": {
+          "$ref": "#/definitions/geometry_bounds"
+        },
+        "direction": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "horizontal",
+            "vertical"
+          ]
+        }
+      },
+      "required": [
+        "objects"
+      ]
+    }
+  },
+  "properties": {
+    "document": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "font_path": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "objects": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/text_object"
+                    },
+                    {
+                      "$ref": "#/definitions/image_object"
+                    },
+                    {
+                      "$ref": "#/definitions/line_object"
+                    },
+                    {
+                      "$ref": "#/definitions/rectangle_object"
+                    },
+                    {
+                      "$ref": "#/definitions/objects_object"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "title",
+        "font_path",
+        "pages"
+      ]
+    }
+  },
+  "required": [
+    "document"
+  ]
+}
