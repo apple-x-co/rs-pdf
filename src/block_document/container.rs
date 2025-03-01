@@ -1,6 +1,6 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
-use crate::block_document::document::{px_to_mm, Document};
+use crate::block_document::document::{px_to_mm};
 use crate::block_document::geometry::Bounds;
 use crate::block_document::image::Image;
 use crate::block_document::text::Text;
