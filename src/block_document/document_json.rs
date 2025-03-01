@@ -27,9 +27,14 @@ pub fn parse(json_path: &str, font_path: &str) -> Document {
     let json_string = read_to_string(json_path).unwrap();
     let json: Value = serde_json::from_str(&json_string).unwrap();
     let schema = serde_json::from_slice(JSON_SCHEMA_BYTES).unwrap();
+    let validator = jsonschema::validator_for(&schema).unwrap();
 
-    if !jsonschema::is_valid(&schema, &json) {
-        eprintln!("Invalid schema: {:?}", json.to_string());
+    if !validator.validate(&json).is_ok() {
+        eprintln!("Invalid schema");
+        for error in validator.iter_errors(&json) {
+            eprintln!("Error: {error}");
+            eprintln!("Location: {}", error.instance_path);
+        }
         exit(1);
     }
 
