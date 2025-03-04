@@ -2,198 +2,560 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
-    "geometry_point": {
-      "type": "object",
-      "properties": {
-        "x": {
-          "type": "number",
-          "minimum": 0.0
-        },
-        "y": {
-          "type": "number",
-          "minimum": 0.0
-        }
-      },
-      "required": [
-        "x",
-        "y"
-      ]
-    },
-    "geometry_size": {
-      "type": "object",
-      "properties": {
-        "width": {
-          "type": "number",
-          "minimum": 0.0
-        },
-        "height": {
-          "type": "number",
-          "minimum": 0.0
-        }
-      },
-      "required": [
-        "width",
-        "height"
-      ]
-    },
-    "geometry_bounds": {
-      "type": "object",
-      "properties": {
+    "geometry": {
+      "definitions": {
         "point": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "$ref": "#/definitions/geometry_point"
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "y": {
+              "type": "number",
+              "minimum": 0.0
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
         },
         "size": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "$ref": "#/definitions/geometry_size"
-        }
-      },
-      "required": [
-        "point",
-        "size"
-      ]
-    },
-    "text_object": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "text"
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "height": {
+              "type": "number",
+              "minimum": 0.0
+            }
+          },
+          "required": [
+            "width",
+            "height"
           ]
         },
+        "bounds": {
+          "type": "object",
+          "properties": {
+            "point": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "$ref": "#/definitions/geometry/definitions/point"
+            },
+            "size": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "$ref": "#/definitions/geometry/definitions/size"
+            }
+          },
+          "required": [
+            "point",
+            "size"
+          ]
+        }
+      }
+    },
+    "object": {
+      "definitions": {
         "text": {
-          "type": "string",
-          "minLength": 1
-        },
-        "font_size": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "font_path": {
-          "type": "string"
-        },
-        "bounds": {
-          "$ref": "#/definitions/geometry_bounds"
-        }
-      },
-      "required": [
-        "type",
-        "text",
-        "font_size"
-      ]
-    },
-    "image_object": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "image"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1
+            },
+            "font_size": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "font_path": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "bounds": {
+              "$ref": "#/definitions/geometry/definitions/bounds"
+            },
+            "styles": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/style/definitions/text_fill_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/background_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_width"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/space"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/alignment"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "type",
+            "text",
+            "font_size"
           ]
         },
-        "path": {
-          "type": "string",
-          "minLength": 1
-        },
-        "bounds": {
-          "$ref": "#/definitions/geometry_bounds"
-        }
-      },
-      "required": [
-        "type",
-        "path"
-      ]
-    },
-    "line_object": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "line"
+        "image": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "image"
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "bounds": {
+              "$ref": "#/definitions/geometry/definitions/bounds"
+            },
+            "styles": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/style/definitions/text_fill_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/background_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_width"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/space"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/alignment"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "type",
+            "path"
           ]
         },
-        "bounds": {
-          "$ref": "#/definitions/geometry_bounds"
-        }
-      },
-      "required": [
-        "type",
-        "bounds"
-      ]
-    },
-    "rectangle_object": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "rectangle"
+        "line": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "line"
+            },
+            "bounds": {
+              "$ref": "#/definitions/geometry/definitions/bounds"
+            },
+            "styles": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/style/definitions/text_fill_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/background_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_width"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/space"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/alignment"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "type",
+            "bounds"
           ]
         },
-        "bounds": {
-          "$ref": "#/definitions/geometry_bounds"
-        }
-      },
-      "required": [
-        "type"
-      ]
-    },
-    "objects_object": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "objects"
+        "rectangle": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "rectangle"
+            },
+            "bounds": {
+              "$ref": "#/definitions/geometry/definitions/bounds"
+            },
+            "styles": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/style/definitions/text_fill_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/text_outline_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/background_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_color"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_width"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/border_style"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/space"
+                  },
+                  {
+                    "$ref": "#/definitions/style/definitions/alignment"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "type"
           ]
         },
         "objects": {
-          "type": "array",
-          "items": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/text_object"
-              },
-              {
-                "$ref": "#/definitions/image_object"
-              },
-              {
-                "$ref": "#/definitions/line_object"
-              },
-              {
-                "$ref": "#/definitions/rectangle_object"
-              },
-              {
-                "$ref": "#/definitions/objects_object"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "objects"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/object/definitions/text"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/image"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/line"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/rectangle"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/objects"
+                  }
+                ]
               }
-            ]
+            },
+            "bounds": {
+              "$ref": "#/definitions/geometry/definitions/bounds"
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          },
+          "required": [
+            "objects"
+          ]
+        }
+      }
+    },
+    "style": {
+      "definitions": {
+        "rgb": {
+          "type": "object",
+          "properties": {
+            "red": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "green": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "blue": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "required": [
+            "red",
+            "green",
+            "blue"
+          ]
+        },
+        "text_fill_color": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text_fill_color"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "$ref": "#/definitions/style/definitions/rgb"
+        },
+        "text_outline_color": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text_outline_color"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "$ref": "#/definitions/style/definitions/rgb"
+        },
+        "text_style": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text_style"
+            },
+            "line_style": {
+              "type": "string",
+              "enum": [
+                "fill",
+                "stroke",
+                "fill_stroke"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "line_style"
+          ]
+        },
+        "text_outline_style": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text_outline_style"
+            },
+            "line_style": {
+              "type": "string",
+              "enum": [
+                "solid",
+                "dash"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "line_style"
+          ]
+        },
+        "background_color": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "background_color"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "$ref": "#/definitions/style/definitions/rgb"
+        },
+        "border_color": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "border_color"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "$ref": "#/definitions/style/definitions/rgb"
+        },
+        "border_width": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "border_width"
+            },
+            "width": {
+              "type": "number",
+              "minimum": 0.0
+            }
+          },
+          "required": [
+            "type",
+            "width"
+          ]
+        },
+        "border_style": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "border_style"
+            },
+            "line_style": {
+              "type": "string",
+              "enum": [
+                "solid",
+                "dash"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "line_style"
+          ]
+        },
+        "space": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "space"
+            },
+            "top": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "right": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "bottom": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "left": {
+              "type": "number",
+              "minimum": 0.0
+            }
           }
         },
-        "bounds": {
-          "$ref": "#/definitions/geometry_bounds"
-        },
-        "direction": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "enum": [
+        "alignment": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "alignment"
+            },
+            "horizontal": {
+              "type": "string",
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ]
+            },
+            "vertical": {
+              "type": "string",
+              "enum": [
+                "top",
+                "center",
+                "bottom"
+              ]
+            }
+          },
+          "required": [
             "horizontal",
             "vertical"
           ]
         }
-      },
-      "required": [
-        "objects"
-      ]
+      }
     }
   },
   "properties": {
@@ -201,10 +563,20 @@
       "type": "object",
       "properties": {
         "title": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
+        },
+        "width": {
+          "type": "number",
+          "minimum": 1.0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 1.0
         },
         "font_path": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "pages": {
           "type": "array",
@@ -216,19 +588,19 @@
                 "items": {
                   "anyOf": [
                     {
-                      "$ref": "#/definitions/text_object"
+                      "$ref": "#/definitions/object/definitions/text"
                     },
                     {
-                      "$ref": "#/definitions/image_object"
+                      "$ref": "#/definitions/object/definitions/image"
                     },
                     {
-                      "$ref": "#/definitions/line_object"
+                      "$ref": "#/definitions/object/definitions/line"
                     },
                     {
-                      "$ref": "#/definitions/rectangle_object"
+                      "$ref": "#/definitions/object/definitions/rectangle"
                     },
                     {
-                      "$ref": "#/definitions/objects_object"
+                      "$ref": "#/definitions/object/definitions/objects"
                     }
                   ]
                 }
@@ -239,6 +611,8 @@
       },
       "required": [
         "title",
+        "width",
+        "height",
         "font_path",
         "pages"
       ]
