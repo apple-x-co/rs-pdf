@@ -9,7 +9,120 @@
       {
         "objects": [
           {
-            "type": "rectangle"
+            "type": "rectangle",
+            "bounds": {
+              "point": {
+                "x": 10.0,
+                "y": 10.0
+              },
+              "size": {
+                "width": 1.0,
+                "height": 1.0
+              }
+            },
+            "style": {
+              "background_color": {
+                "red": 200,
+                "green": 200,
+                "blue": 200
+              }
+            }
+          },
+          {
+            "type": "rectangle",
+            "bounds": {
+              "point": {
+                "x": 10.0,
+                "y": 10.0
+              },
+              "size": {
+                "width": 1.0,
+                "height": 1.0
+              }
+            },
+            "style": {
+              "background_color": {
+                "red": 230,
+                "green": 230,
+                "blue": 230
+              }
+            }
+          },
+          {
+            "type": "line",
+            "bounds": {
+              "size": {
+                "width": 10.0,
+                "height": 0.0
+              },
+              "point": {
+                "x": 200.0,
+                "y": 296.0
+              }
+            }
+          },
+          {
+            "type": "line",
+            "bounds": {
+              "size": {
+                "width": 0.0,
+                "height": 10.0
+              },
+              "point": {
+                "x": 200.0,
+                "y": 286.0
+              }
+            },
+            "style": {
+              "border_width": {
+                "width": 2.0
+              },
+              "border_color": {
+                "red": 200,
+                "green": 200,
+                "blue": 200
+              },
+              "border_style": {
+                "line_style": "dash",
+                "dash_1": 2
+              }
+            }
+          },
+          {
+            "type": "text",
+            "text": "HELLO WORLD",
+            "font_size": 48.0,
+            "style": {
+              "border_style": {
+                "line_style": "dash",
+                "dash_1": 2
+              },
+              "border_color": {
+                "red": 0,
+                "green": 0,
+                "blue": 255
+              },
+              "border_width": {
+                "width": 1.0
+              },
+              "text_fill_color": {
+                "red": 0,
+                "green": 255,
+                "blue": 0
+              },
+              "text_outline_color": {
+                "red": 255,
+                "green": 255,
+                "blue": 0
+              },
+              "text_style": {
+                "line_style": "fill_stroke"
+              },
+              "text_outline_style": {
+                "line_style": "dash",
+                "dash_1": 2
+              }
+            }
           }
         ]
       }

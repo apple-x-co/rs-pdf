@@ -77,8 +77,8 @@
               "minLength": 1
             },
             "font_size": {
-              "type": "integer",
-              "minimum": 1
+              "type": "number",
+              "minimum": 1.0
             },
             "font_path": {
               "type": [
@@ -90,7 +90,10 @@
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
             "style": {
-              "type": ["object", "null"],
+              "type": [
+                "object",
+                "null"
+              ],
               "properties": {
                 "border_color": {
                   "$ref": "#/definitions/style/definitions/border_color"
@@ -137,7 +140,10 @@
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
             "style": {
-              "type": ["object", "null"],
+              "type": [
+                "object",
+                "null"
+              ],
               "properties": {
                 "border_color": {
                   "$ref": "#/definitions/style/definitions/border_color"
@@ -167,7 +173,10 @@
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
             "style": {
-              "type": ["object", "null"],
+              "type": [
+                "object",
+                "null"
+              ],
               "properties": {
                 "border_color": {
                   "$ref": "#/definitions/style/definitions/border_color"
@@ -197,7 +206,10 @@
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
             "style": {
-              "type": ["object", "null"],
+              "type": [
+                "object",
+                "null"
+              ],
               "properties": {
                 "background_color": {
                   "$ref": "#/definitions/style/definitions/background_color"
@@ -327,6 +339,13 @@
                 "solid",
                 "dash"
               ]
+            },
+            "dash_1": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
             }
           },
           "required": [
@@ -360,6 +379,13 @@
                 "solid",
                 "dash"
               ]
+            },
+            "dash_1": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
             }
           },
           "required": [
