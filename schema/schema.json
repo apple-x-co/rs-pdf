@@ -89,41 +89,30 @@
             "bounds": {
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
-            "styles": {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/style/definitions/text_fill_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/background_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_width"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/space"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/alignment"
-                  }
-                ]
+            "style": {
+              "type": ["object", "null"],
+              "properties": {
+                "border_color": {
+                  "$ref": "#/definitions/style/definitions/border_color"
+                },
+                "border_width": {
+                  "$ref": "#/definitions/style/definitions/border_width"
+                },
+                "border_style": {
+                  "$ref": "#/definitions/style/definitions/border_style"
+                },
+                "text_fill_color": {
+                  "$ref": "#/definitions/style/definitions/text_fill_color"
+                },
+                "text_outline_color": {
+                  "$ref": "#/definitions/style/definitions/text_outline_color"
+                },
+                "text_style": {
+                  "$ref": "#/definitions/style/definitions/text_style"
+                },
+                "text_outline_style": {
+                  "$ref": "#/definitions/style/definitions/text_outline_style"
+                }
               }
             }
           },
@@ -147,41 +136,18 @@
             "bounds": {
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
-            "styles": {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/style/definitions/text_fill_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/background_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_width"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/space"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/alignment"
-                  }
-                ]
+            "style": {
+              "type": ["object", "null"],
+              "properties": {
+                "border_color": {
+                  "$ref": "#/definitions/style/definitions/border_color"
+                },
+                "border_width": {
+                  "$ref": "#/definitions/style/definitions/border_width"
+                },
+                "border_style": {
+                  "$ref": "#/definitions/style/definitions/border_style"
+                }
               }
             }
           },
@@ -200,41 +166,18 @@
             "bounds": {
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
-            "styles": {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/style/definitions/text_fill_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/background_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_width"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/space"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/alignment"
-                  }
-                ]
+            "style": {
+              "type": ["object", "null"],
+              "properties": {
+                "border_color": {
+                  "$ref": "#/definitions/style/definitions/border_color"
+                },
+                "border_width": {
+                  "$ref": "#/definitions/style/definitions/border_width"
+                },
+                "border_style": {
+                  "$ref": "#/definitions/style/definitions/border_style"
+                }
               }
             }
           },
@@ -253,41 +196,21 @@
             "bounds": {
               "$ref": "#/definitions/geometry/definitions/bounds"
             },
-            "styles": {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/style/definitions/text_fill_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/text_outline_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/background_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_color"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_width"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/border_style"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/space"
-                  },
-                  {
-                    "$ref": "#/definitions/style/definitions/alignment"
-                  }
-                ]
+            "style": {
+              "type": ["object", "null"],
+              "properties": {
+                "background_color": {
+                  "$ref": "#/definitions/style/definitions/background_color"
+                },
+                "border_color": {
+                  "$ref": "#/definitions/style/definitions/border_color"
+                },
+                "border_width": {
+                  "$ref": "#/definitions/style/definitions/border_width"
+                },
+                "border_style": {
+                  "$ref": "#/definitions/style/definitions/border_style"
+                }
               }
             }
           },
@@ -373,37 +296,15 @@
         },
         "text_fill_color": {
           "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "text_fill_color"
-            }
-          },
-          "required": [
-            "type"
-          ],
           "$ref": "#/definitions/style/definitions/rgb"
         },
         "text_outline_color": {
           "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "text_outline_color"
-            }
-          },
-          "required": [
-            "type"
-          ],
           "$ref": "#/definitions/style/definitions/rgb"
         },
         "text_style": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "text_style"
-            },
             "line_style": {
               "type": "string",
               "enum": [
@@ -414,17 +315,12 @@
             }
           },
           "required": [
-            "type",
             "line_style"
           ]
         },
         "text_outline_style": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "text_outline_style"
-            },
             "line_style": {
               "type": "string",
               "enum": [
@@ -434,60 +330,30 @@
             }
           },
           "required": [
-            "type",
             "line_style"
           ]
         },
         "background_color": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "background_color"
-            }
-          },
-          "required": [
-            "type"
-          ],
           "$ref": "#/definitions/style/definitions/rgb"
         },
         "border_color": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "border_color"
-            }
-          },
-          "required": [
-            "type"
-          ],
           "$ref": "#/definitions/style/definitions/rgb"
         },
         "border_width": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "border_width"
-            },
             "width": {
               "type": "number",
               "minimum": 0.0
             }
           },
           "required": [
-            "type",
             "width"
           ]
         },
         "border_style": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "border_style"
-            },
             "line_style": {
               "type": "string",
               "enum": [
@@ -497,17 +363,12 @@
             }
           },
           "required": [
-            "type",
             "line_style"
           ]
         },
         "space": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "space"
-            },
             "top": {
               "type": "number",
               "minimum": 0.0
@@ -524,15 +385,17 @@
               "type": "number",
               "minimum": 0.0
             }
-          }
+          },
+          "required": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
         },
         "alignment": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "alignment"
-            },
             "horizontal": {
               "type": "string",
               "enum": [
