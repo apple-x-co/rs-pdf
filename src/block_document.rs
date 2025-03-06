@@ -4,6 +4,7 @@ pub mod container;
 pub mod direction;
 pub mod document;
 pub mod document_json;
+pub mod flexible_container;
 pub mod geometry;
 pub mod image;
 pub mod line;
