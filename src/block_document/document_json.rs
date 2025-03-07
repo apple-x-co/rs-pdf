@@ -134,7 +134,7 @@ pub fn parse(json_path: &str, font_path: &str) -> Document {
         &doc.font_path,
     );
     let mut text2 = Text::new(
-        String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"), // FIXME: 改行を反映するには!?
+        String::from("------\nHELLO WORLD\nGOOD NIGHT :)\n------"),
         20.0,
         None,
         Some(Bounds::new(

@@ -40,25 +40,49 @@
         },
         "bounds": {
           "type": "object",
-          "properties": {
-            "point": {
-              "type": [
-                "object",
-                "null"
-              ],
-              "$ref": "#/definitions/geometry/definitions/point"
+          "oneOf": [
+            {
+              "properties": {
+                "point": {
+                  "$ref": "#/definitions/geometry/definitions/point"
+                },
+                "size": {
+                  "$ref": "#/definitions/geometry/definitions/size"
+                }
+              },
+              "required": [
+                "point",
+                "size"
+              ]
             },
-            "size": {
-              "type": [
-                "object",
-                "null"
-              ],
-              "$ref": "#/definitions/geometry/definitions/size"
+            {
+              "properties": {
+                "point": {
+                  "type": "null"
+                },
+                "size": {
+                  "$ref": "#/definitions/geometry/definitions/size"
+                }
+              },
+              "required": [
+                "point",
+                "size"
+              ]
+            },
+            {
+              "properties": {
+                "point": {
+                  "$ref": "#/definitions/geometry/definitions/point"
+                },
+                "size": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "point",
+                "size"
+              ]
             }
-          },
-          "required": [
-            "point",
-            "size"
           ]
         }
       }
