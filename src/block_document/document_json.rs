@@ -104,130 +104,61 @@ pub fn parse(json_path: &str) -> Document {
                                 bounds,
                             );
 
-                            // TODO: スタイル
-                            let style_json = object_json["style"].as_object();
-                            match style_json {
-                                Some(style_json) => {
-                                    println!("style_json: {:?}", style_json);
-
+                            let style_map = object_json["style"].as_object();
+                            match style_map {
+                                Some(style_map) => {
                                     // NOTE: border_color
-                                    if style_json.contains_key("border_color") {
-                                        // if let Some(border_color) = parse_border_color_style(style_json);
-                                        text.add_style(Style::BorderColor(RgbColor {
-                                            r: style_json["border_color"]["red"].as_u64().unwrap()
-                                                as u8,
-                                            g: style_json["border_color"]["green"].as_u64().unwrap()
-                                                as u8,
-                                            b: style_json["border_color"]["blue"].as_u64().unwrap()
-                                                as u8,
-                                        }));
+                                    if style_map.contains_key("border_color") {
+                                        if let Some(border_color) = parse_border_color(style_map) {
+                                            text.add_style(border_color);
+                                        }
                                     }
 
                                     // NOTE: border_style
-                                    if style_json.contains_key("border_style") {
-                                        let border_style_json =
-                                            style_json["border_style"].as_object().unwrap();
-                                        let line_style =
-                                            border_style_json["line_style"].as_str().unwrap();
-
-                                        if let Some(border_style) = match line_style {
-                                            "solid" => Some(BorderStyle::Solid),
-                                            "dash" => {
-                                                let dash_1 =
-                                                    border_style_json["dash_1"].as_i64().unwrap();
-                                                Some(BorderStyle::Dash(dash_1))
-                                            }
-                                            _ => None,
-                                        } {
-                                            text.add_style(Style::BorderStyle(border_style));
+                                    if style_map.contains_key("border_style") {
+                                        if let Some(border_style) = parse_border_style(style_map) {
+                                            text.add_style(border_style);
                                         }
                                     }
 
                                     // NOTE: border_width
-                                    if style_json.contains_key("border_width") {
-                                        text.add_style(Style::BorderWidth(
-                                            style_json["border_width"]["width"].as_f64().unwrap()
-                                                as f32,
-                                        ));
+                                    if style_map.contains_key("border_width") {
+                                        if let Some(border_width) = parse_border_width(style_map) {
+                                            text.add_style(border_width);
+                                        }
                                     }
 
                                     // NOTE: text_fill_color
-                                    if style_json.contains_key("text_fill_color") {
-                                        text.add_style(Style::TextFillColor(RgbColor {
-                                            r: style_json["text_fill_color"]["red"]
-                                                .as_u64()
-                                                .unwrap()
-                                                as u8,
-                                            g: style_json["text_fill_color"]["green"]
-                                                .as_u64()
-                                                .unwrap()
-                                                as u8,
-                                            b: style_json["text_fill_color"]["blue"]
-                                                .as_u64()
-                                                .unwrap()
-                                                as u8,
-                                        }));
+                                    if style_map.contains_key("text_fill_color") {
+                                        if let Some(text_fill_color) =
+                                            parse_text_fill_color(style_map)
+                                        {
+                                            text.add_style(text_fill_color);
+                                        }
                                     }
 
                                     // NOTE: text_outline_color
-                                    if style_json.contains_key("text_outline_color") {
-                                        text.add_style(Style::TextOutlineColor(RgbColor {
-                                            r: style_json["text_outline_color"]["red"]
-                                                .as_u64()
-                                                .unwrap()
-                                                as u8,
-                                            g: style_json["text_outline_color"]["green"]
-                                                .as_u64()
-                                                .unwrap()
-                                                as u8,
-                                            b: style_json["text_outline_color"]["blue"]
-                                                .as_u64()
-                                                .unwrap()
-                                                as u8,
-                                        }));
+                                    if style_map.contains_key("text_outline_color") {
+                                        if let Some(text_outline_color) =
+                                            parse_text_outline_color(style_map)
+                                        {
+                                            text.add_style(text_outline_color);
+                                        }
                                     }
 
                                     // NOTE: text_outline_style
-                                    if style_json.contains_key("text_outline_style") {
-                                        let text_outline_style_json =
-                                            style_json["text_outline_style"].as_object().unwrap();
-                                        let line_style =
-                                            text_outline_style_json["line_style"].as_str().unwrap();
-
-                                        if let Some(text_outline_style) = match line_style {
-                                            "solid" => Some(TextOutlineStyle::Solid),
-                                            "dash" => {
-                                                let dash_1 = text_outline_style_json["dash_1"]
-                                                    .as_i64()
-                                                    .unwrap();
-                                                Some(TextOutlineStyle::Dash(dash_1))
-                                            }
-                                            _ => None,
-                                        } {
-                                            text.add_style(Style::TextOutlineStyle(
-                                                text_outline_style,
-                                            ));
+                                    if style_map.contains_key("text_outline_style") {
+                                        if let Some(text_outline_style) =
+                                            parse_text_outline_style(style_map)
+                                        {
+                                            text.add_style(text_outline_style);
                                         }
                                     }
 
                                     // NOTE: text_style
-                                    if style_json.contains_key("text_style") {
-                                        let line_style = style_json["text_style"]["line_style"]
-                                            .as_str()
-                                            .unwrap();
-                                        match line_style {
-                                            "fill" => {
-                                                text.add_style(Style::TextStyle(TextStyle::Fill));
-                                            }
-                                            "stroke" => {
-                                                text.add_style(Style::TextStyle(TextStyle::Stroke));
-                                            }
-                                            "fill_stroke" => {
-                                                text.add_style(Style::TextStyle(
-                                                    TextStyle::FillStroke,
-                                                ));
-                                            }
-                                            _ => {}
+                                    if style_map.contains_key("text_style") {
+                                        if let Some(text_style) = parse_text_style(style_map) {
+                                            text.add_style(text_style);
                                         }
                                     }
                                 }
@@ -502,13 +433,73 @@ pub fn parse(json_path: &str) -> Document {
     // </editor-fold>
 }
 
-// fn parse_border_color_style(style_json: &Value) -> Option<Style> {
-//     Some(Style::BorderColor(RgbColor {
-//         r: style_json["border_color"]["red"].as_u64().unwrap() as u8,
-//         g: style_json["border_color"]["green"].as_u64().unwrap() as u8,
-//         b: style_json["border_color"]["blue"].as_u64().unwrap() as u8,
-//     }));
-// }
+fn parse_border_color(style_map: &Map<String, Value>) -> Option<Style> {
+    Some(Style::BorderColor(RgbColor {
+        r: style_map["border_color"]["red"].as_u64().unwrap() as u8,
+        g: style_map["border_color"]["green"].as_u64().unwrap() as u8,
+        b: style_map["border_color"]["blue"].as_u64().unwrap() as u8,
+    }))
+}
+
+fn parse_border_style(style_map: &Map<String, Value>) -> Option<Style> {
+    let border_style_map = style_map["border_style"].as_object().unwrap();
+    let line_style = border_style_map["line_style"].as_str().unwrap();
+
+    match line_style {
+        "solid" => Some(Style::BorderStyle(BorderStyle::Solid)),
+        "dash" => {
+            let dash_1 = border_style_map["dash_1"].as_i64().unwrap();
+            Some(Style::BorderStyle(BorderStyle::Dash(dash_1)))
+        }
+        _ => None,
+    }
+}
+
+fn parse_border_width(style_map: &Map<String, Value>) -> Option<Style> {
+    Some(Style::BorderWidth(
+        style_map["border_width"]["width"].as_f64().unwrap() as f32,
+    ))
+}
+
+fn parse_text_fill_color(style_map: &Map<String, Value>) -> Option<Style> {
+    Some(Style::TextFillColor(RgbColor {
+        r: style_map["text_fill_color"]["red"].as_u64().unwrap() as u8,
+        g: style_map["text_fill_color"]["green"].as_u64().unwrap() as u8,
+        b: style_map["text_fill_color"]["blue"].as_u64().unwrap() as u8,
+    }))
+}
+
+fn parse_text_outline_color(style_map: &Map<String, Value>) -> Option<Style> {
+    Some(Style::TextOutlineColor(RgbColor {
+        r: style_map["text_outline_color"]["red"].as_u64().unwrap() as u8,
+        g: style_map["text_outline_color"]["green"].as_u64().unwrap() as u8,
+        b: style_map["text_outline_color"]["blue"].as_u64().unwrap() as u8,
+    }))
+}
+
+fn parse_text_outline_style(style_map: &Map<String, Value>) -> Option<Style> {
+    let text_outline_style_map = style_map["text_outline_style"].as_object().unwrap();
+    let line_style = text_outline_style_map["line_style"].as_str().unwrap();
+
+    match line_style {
+        "solid" => Some(Style::TextOutlineStyle(TextOutlineStyle::Solid)),
+        "dash" => {
+            let dash_1 = text_outline_style_map["dash_1"].as_i64().unwrap();
+            Some(Style::TextOutlineStyle(TextOutlineStyle::Dash(dash_1)))
+        }
+        _ => None,
+    }
+}
+
+fn parse_text_style(style_map: &Map<String, Value>) -> Option<Style> {
+    let line_style = style_map["text_style"]["line_style"].as_str().unwrap();
+    match line_style {
+        "fill" => Some(Style::TextStyle(TextStyle::Fill)),
+        "stroke" => Some(Style::TextStyle(TextStyle::Stroke)),
+        "fill_stroke" => Some(Style::TextStyle(TextStyle::FillStroke)),
+        _ => None,
+    }
+}
 
 // TODO: Document 構造体を JSON ファイルに出力
 // pub fn toJson(document: Document) {
