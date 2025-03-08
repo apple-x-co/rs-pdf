@@ -82,6 +82,20 @@
                 "point",
                 "size"
               ]
+            },
+            {
+              "properties": {
+                "point": {
+                  "type": "null"
+                },
+                "size": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "point",
+                "size"
+              ]
             }
           ]
         }

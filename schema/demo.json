@@ -122,11 +122,18 @@
                 "line_style": "dash",
                 "dash_1": 2
               }
+            },
+            "bounds": {
+              "point": {
+                "x": 1.0,
+                "y": 281.0
+              },
+              "size": null
             }
           },
           {
             "type": "text",
-            "text": "------\\nHELLO WORLD\\nGOOD NIGHT :)\\n------",
+            "text": "------\nHELLO WORLD\nGOOD NIGHT :)\n------",
             "font_size": 20.0,
             "bounds": {
               "point": {
