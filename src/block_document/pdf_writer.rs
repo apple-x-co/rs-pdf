@@ -147,10 +147,10 @@ fn draw_rectangle(
             }
 
             layer.add_rect(Rect::new(
-                Mm(lb_bounds.min_x()), // 左上X
-                Mm(lb_bounds.max_y()), // 左上Y
-                Mm(lb_bounds.max_x()), // 右下X
-                Mm(lb_bounds.min_y()), // 右下Y
+                Mm(lb_bounds.min_x()), // NOTE: 左上X
+                Mm(lb_bounds.max_y()), // NOTE: 左上Y
+                Mm(lb_bounds.max_x()), // NOTE: 右下X
+                Mm(lb_bounds.min_y()), // NOTE: 右下Y
             ));
 
             if border_required {
@@ -422,7 +422,7 @@ fn draw_image(
                 translate_y: Some(Mm(lb_bounds.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
                 scale_x: None,                            // NOTE: 水平方向の拡縮小
                 scale_y: None,                            // NOTE: 垂直方向の拡縮小
-                rotate: None,                             // 回転なし
+                rotate: None,                             // NOTE: 回転なし
                 dpi: Some(BlockDPI),
             };
 

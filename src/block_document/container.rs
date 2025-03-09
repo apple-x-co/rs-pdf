@@ -190,7 +190,7 @@ impl Container {
             )
         };
 
-        // サイズが未指定の場合は画像を読み込んでサイズを取得
+        // NOTE: サイズが未指定の場合は画像を読み込んでサイズを取得
         if block_image
             .bounds
             .as_ref()
@@ -210,7 +210,7 @@ impl Container {
             }
         }
 
-        // 位置が未指定の場合は drawn_bounds を基準に座標を決定
+        // NOTE: 位置が未指定の場合は drawn_bounds を基準に座標を決定
         if block_image
             .bounds
             .as_ref()
@@ -257,7 +257,7 @@ impl Container {
             )
         };
 
-        // サイズが未指定の場合はグリフサイズを取得
+        // NOTE: サイズが未指定の場合はグリフサイズを取得
         if block_text
             .bounds
             .as_ref()
@@ -273,7 +273,7 @@ impl Container {
             height = text_size.height;
         }
 
-        // 位置が未指定の場合は drawn_bounds を基準に座標を決定
+        // NOTE: 位置が未指定の場合は drawn_bounds を基準に座標を決定
         if block_text
             .bounds
             .as_ref()
