@@ -437,6 +437,41 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Image(image))
         }
+        "line" => {
+            let bounds = if object_json["bounds"].is_null() {
+                None
+            } else {
+                parse_bounds(&object_json)
+            };
+
+            let style = &object_json["style"];
+
+            let mut line = Line::new(bounds.unwrap());
+
+            if style.is_null() {
+                return Some(BlockType::Line(line));
+            }
+
+            if !style["border_color"].is_null() {
+                if let Some(border_color) = parse_border_color(style) {
+                    line.add_style(border_color);
+                }
+            }
+
+            if !style["border_style"].is_null() {
+                if let Some(border_style) = parse_border_style(style) {
+                    line.add_style(border_style);
+                }
+            }
+
+            if !style["border_width"].is_null() {
+                if let Some(border_width) = parse_border_width(style) {
+                    line.add_style(border_width);
+                }
+            }
+
+            Some(BlockType::Line(line))
+        }
         _ => None,
     }
 }
@@ -446,8 +481,8 @@ fn parse_bounds(object_json: &Value) -> Option<Bounds> {
         Some(bounds) => {
             let point_x = bounds["point"]["x"].as_f64();
             let point_y = bounds["point"]["y"].as_f64();
-            let size_w = bounds["size"]["w"].as_f64();
-            let size_h = bounds["size"]["h"].as_f64();
+            let size_w = bounds["size"]["width"].as_f64();
+            let size_h = bounds["size"]["height"].as_f64();
 
             match (point_x, point_y, size_w, size_h) {
                 (Some(x), Some(y), Some(w), Some(h)) => {
