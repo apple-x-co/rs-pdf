@@ -409,7 +409,33 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 parse_bounds(&object_json)
             };
 
-            Some(BlockType::Image(Image::new(image_path, bounds)))
+            let mut image = Image::new(image_path, bounds);
+
+            let style = &object_json["style"];
+
+            if style.is_null() {
+                return Some(BlockType::Image(image))
+            }
+
+            if !style["border_color"].is_null() {
+                if let Some(border_color) = parse_border_color(style) {
+                    image.add_style(border_color);
+                }
+            }
+
+            if !style["border_style"].is_null() {
+                if let Some(border_style) = parse_border_style(style) {
+                    image.add_style(border_style);
+                }
+            }
+
+            if !style["border_width"].is_null() {
+                if let Some(border_width) = parse_border_width(style) {
+                    image.add_style(border_width);
+                }
+            }
+
+            Some(BlockType::Image(image))
         }
         _ => None,
     }
