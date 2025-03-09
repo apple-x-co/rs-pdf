@@ -15,8 +15,8 @@ use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
 
-const PAGE_A4_WIDTH: f32 = 210.0;
-const PAGE_A4_HEIGHT: f32 = 297.0;
+// const PAGE_A4_WIDTH: f32 = 210.0;
+// const PAGE_A4_HEIGHT: f32 = 297.0;
 
 const JSON_SCHEMA_BYTES: &'static [u8] = include_bytes!("../../schema/schema.json");
 
