@@ -54,7 +54,6 @@ pub fn parse(json_path: &str) -> Document {
         .iter()
         .for_each(|page_json| {
             // println!("{:#?}", json_page);
-
             let mut container = Container::new();
 
             page_json["objects"]
@@ -63,7 +62,6 @@ pub fn parse(json_path: &str) -> Document {
                 .iter()
                 .for_each(|object_json| {
                     // println!("{:#?}", object_json);
-
                     if let Some(object) = parse_object(object_json) {
                         container.add_block(object);
                     }
@@ -352,48 +350,50 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 bounds,
             );
 
-            if object_json["style"].is_null() {
+            let style = &object_json["style"];
+
+            if style.is_null() {
                 return Some(BlockType::Text(text));
             }
 
-            if !object_json["style"]["border_color"].is_null() {
-                if let Some(border_color) = parse_border_color(&object_json["style"]) {
+            if !style["border_color"].is_null() {
+                if let Some(border_color) = parse_border_color(style) {
                     text.add_style(border_color);
                 }
             }
 
-            if !object_json["style"]["border_style"].is_null() {
-                if let Some(border_style) = parse_border_style(&object_json["style"]) {
+            if !style["border_style"].is_null() {
+                if let Some(border_style) = parse_border_style(style) {
                     text.add_style(border_style);
                 }
             }
 
-            if !object_json["style"]["border_width"].is_null() {
-                if let Some(border_width) = parse_border_width(&object_json["style"]) {
+            if !style["border_width"].is_null() {
+                if let Some(border_width) = parse_border_width(style) {
                     text.add_style(border_width);
                 }
             }
 
-            if !object_json["style"]["text_fill_color"].is_null() {
-                if let Some(text_fill_color) = parse_text_fill_color(&object_json["style"]) {
+            if !style["text_fill_color"].is_null() {
+                if let Some(text_fill_color) = parse_text_fill_color(style) {
                     text.add_style(text_fill_color);
                 }
             }
 
-            if !object_json["style"]["text_outline_color"].is_null() {
-                if let Some(text_outline_color) = parse_text_outline_color(&object_json["style"]) {
+            if !style["text_outline_color"].is_null() {
+                if let Some(text_outline_color) = parse_text_outline_color(style) {
                     text.add_style(text_outline_color);
                 }
             }
 
-            if !object_json["style"]["text_outline_style"].is_null() {
-                if let Some(text_outline_style) = parse_text_outline_style(&object_json["style"]) {
+            if !style["text_outline_style"].is_null() {
+                if let Some(text_outline_style) = parse_text_outline_style(style) {
                     text.add_style(text_outline_style);
                 }
             }
 
-            if !object_json["style"]["text_style"].is_null() {
-                if let Some(text_style) = parse_text_style(&object_json["style"]) {
+            if !style["text_style"].is_null() {
+                if let Some(text_style) = parse_text_style(style) {
                     text.add_style(text_style);
                 }
             }
@@ -462,38 +462,35 @@ fn parse_border_width(style_json: &Value) -> Option<Style> {
     ))
 }
 
-fn parse_text_fill_color(style_map: &Value) -> Option<Style> {
+fn parse_text_fill_color(style_json: &Value) -> Option<Style> {
     Some(Style::TextFillColor(RgbColor {
-        r: style_map["text_fill_color"]["red"].as_u64().unwrap() as u8,
-        g: style_map["text_fill_color"]["green"].as_u64().unwrap() as u8,
-        b: style_map["text_fill_color"]["blue"].as_u64().unwrap() as u8,
+        r: style_json["text_fill_color"]["red"].as_u64().unwrap() as u8,
+        g: style_json["text_fill_color"]["green"].as_u64().unwrap() as u8,
+        b: style_json["text_fill_color"]["blue"].as_u64().unwrap() as u8,
     }))
 }
 
-fn parse_text_outline_color(style_map: &Value) -> Option<Style> {
+fn parse_text_outline_color(style_json: &Value) -> Option<Style> {
     Some(Style::TextOutlineColor(RgbColor {
-        r: style_map["text_outline_color"]["red"].as_u64().unwrap() as u8,
-        g: style_map["text_outline_color"]["green"].as_u64().unwrap() as u8,
-        b: style_map["text_outline_color"]["blue"].as_u64().unwrap() as u8,
+        r: style_json["text_outline_color"]["red"].as_u64().unwrap() as u8,
+        g: style_json["text_outline_color"]["green"].as_u64().unwrap() as u8,
+        b: style_json["text_outline_color"]["blue"].as_u64().unwrap() as u8,
     }))
 }
 
-fn parse_text_outline_style(style_map: &Value) -> Option<Style> {
-    let text_outline_style_map = style_map["text_outline_style"].as_object().unwrap();
-    let line_style = text_outline_style_map["line_style"].as_str().unwrap();
-
-    match line_style {
+fn parse_text_outline_style(style_json: &Value) -> Option<Style> {
+    match style_json["text_outline_style"]["line_style"].as_str().unwrap() {
         "solid" => Some(Style::TextOutlineStyle(TextOutlineStyle::Solid)),
         "dash" => {
-            let dash_1 = text_outline_style_map["dash_1"].as_i64().unwrap();
+            let dash_1 = style_json["text_outline_style"]["dash_1"].as_i64().unwrap();
             Some(Style::TextOutlineStyle(TextOutlineStyle::Dash(dash_1)))
         }
         _ => None,
     }
 }
 
-fn parse_text_style(style_map: &Value) -> Option<Style> {
-    let line_style = style_map["text_style"]["line_style"].as_str().unwrap();
+fn parse_text_style(style_json: &Value) -> Option<Style> {
+    let line_style = style_json["text_style"]["line_style"].as_str().unwrap();
     match line_style {
         "fill" => Some(Style::TextStyle(TextStyle::Fill)),
         "stroke" => Some(Style::TextStyle(TextStyle::Stroke)),
