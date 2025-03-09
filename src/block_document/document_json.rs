@@ -66,30 +66,11 @@ pub fn parse(json_path: &str) -> Document {
 
                     match object_json["type"].as_str().unwrap() {
                         "text" => {
-                            let point_x = object_json["bounds"]["point"]["x"].as_f64();
-                            let point_y = object_json["bounds"]["point"]["y"].as_f64();
-                            let size_w = object_json["bounds"]["size"]["w"].as_f64();
-                            let size_h = object_json["bounds"]["size"]["h"].as_f64();
-
-                            let bounds = match (point_x, point_y, size_w, size_h) {
-                                (Some(x), Some(y), Some(w), Some(h)) => {
-                                    Some(Bounds::new(w as f32, h as f32, x as f32, y as f32))
-                                }
-                                (Some(x), Some(y), None, None) => Some(Bounds {
-                                    point: Some(Point {
-                                        x: x as f32,
-                                        y: y as f32,
-                                    }),
-                                    size: None,
-                                }),
-                                (None, None, Some(w), Some(h)) => Some(Bounds {
-                                    point: None,
-                                    size: Some(Size {
-                                        width: w as f32,
-                                        height: h as f32,
-                                    }),
-                                }),
-                                _ => None,
+                            let object_map = object_json.as_object().unwrap();
+                            let bounds = if object_map.contains_key("bounds") {
+                                parse_bounds(object_map)
+                            } else {
+                                None
                             };
 
                             let font_path: Option<String> = object_json["font_path"]
@@ -431,6 +412,39 @@ pub fn parse(json_path: &str) -> Document {
     //
     // doc
     // </editor-fold>
+}
+
+fn parse_bounds(object_map: &Map<String, Value>) -> Option<Bounds> {
+    match object_map["bounds"].as_object() {
+        Some(bounds) => {
+            let point_x = bounds["point"]["x"].as_f64();
+            let point_y = bounds["point"]["y"].as_f64();
+            let size_w = bounds["size"]["w"].as_f64();
+            let size_h = bounds["size"]["h"].as_f64();
+
+            match (point_x, point_y, size_w, size_h) {
+                (Some(x), Some(y), Some(w), Some(h)) => {
+                    Some(Bounds::new(w as f32, h as f32, x as f32, y as f32))
+                }
+                (Some(x), Some(y), None, None) => Some(Bounds {
+                    point: Some(Point {
+                        x: x as f32,
+                        y: y as f32,
+                    }),
+                    size: None,
+                }),
+                (None, None, Some(w), Some(h)) => Some(Bounds {
+                    point: None,
+                    size: Some(Size {
+                        width: w as f32,
+                        height: h as f32,
+                    }),
+                }),
+                _ => None,
+            }
+        }
+        None => None,
+    }
 }
 
 fn parse_border_color(style_map: &Map<String, Value>) -> Option<Style> {
