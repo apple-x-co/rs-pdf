@@ -2,7 +2,7 @@ use crate::block_document::block::BlockType;
 use crate::block_document::block_container::BlockContainer;
 use crate::block_document::container::Container;
 use crate::block_document::direction::Direction;
-use crate::block_document::document::{Document, px_to_mm};
+use crate::block_document::document::Document;
 use crate::block_document::geometry::{Bounds, Point, Size};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
@@ -11,9 +11,7 @@ use crate::block_document::style::{
     BorderStyle, RgbColor, Space, Style, TextOutlineStyle, TextStyle,
 };
 use crate::block_document::text::Text;
-use crate::block_document::text_renderer::measure_text;
-use image::GenericImageView;
-use serde_json::{Map, Value};
+use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
 
@@ -156,7 +154,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let style = &object_json["style"];
 
             if style.is_null() {
-                return Some(BlockType::Image(image))
+                return Some(BlockType::Image(image));
             }
 
             if !style["border_color"].is_null() {
@@ -226,7 +224,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let style = &object_json["style"];
 
             if style.is_null() {
-                return Some(BlockType::Rectangle(rectangle))
+                return Some(BlockType::Rectangle(rectangle));
             }
 
             if !style["background_color"].is_null() {
@@ -263,6 +261,18 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             };
 
             let mut container = BlockContainer::new(bounds);
+
+            if !object_json["direction"].is_null() {
+                match object_json["direction"].as_str().unwrap() {
+                    "horizontal" => {
+                        container.set_direction(Direction::Horizontal);
+                    }
+                    "vertical" => {
+                        container.set_direction(Direction::Vertical);
+                    }
+                    _ => {}
+                }
+            }
 
             object_json["objects"]
                 .as_array()
@@ -363,7 +373,10 @@ fn parse_text_outline_color(style_json: &Value) -> Option<Style> {
 }
 
 fn parse_text_outline_style(style_json: &Value) -> Option<Style> {
-    match style_json["text_outline_style"]["line_style"].as_str().unwrap() {
+    match style_json["text_outline_style"]["line_style"]
+        .as_str()
+        .unwrap()
+    {
         "solid" => Some(Style::TextOutlineStyle(TextOutlineStyle::Solid)),
         "dash" => {
             let dash_1 = style_json["text_outline_style"]["dash_1"].as_i64().unwrap();
