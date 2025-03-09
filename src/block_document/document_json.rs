@@ -513,6 +513,27 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Rectangle(rectangle))
         }
+        "objects" => {
+            let bounds = if object_json["bounds"].is_null() {
+                None
+            } else {
+                parse_bounds(&object_json)
+            };
+
+            let mut container = BlockContainer::new(bounds);
+
+            object_json["objects"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .for_each(|object_json| {
+                    if let Some(object) = parse_object(object_json) {
+                        container.add_block(object);
+                    }
+                });
+
+            Some(BlockType::Container(container))
+        }
         _ => None,
     }
 }

@@ -214,14 +214,17 @@
               },
               {
                 "type": "text",
-                "text": "HI!!",
+                "text": "Hi!!",
                 "font_size": 20.0,
                 "bounds": {
                   "point": {
                     "x": 1.0,
                     "y": 1.0
                   },
-                  "size": null
+                  "size": {
+                    "width": 10.0,
+                    "height": 6.0
+                  }
                 }
               }
             ],
@@ -231,8 +234,8 @@
                 "y": 51.0
               },
               "size": {
-                "width": 1,
-                "height": 1
+                "width": 50.0,
+                "height": 50.0
               }
             }
           }
