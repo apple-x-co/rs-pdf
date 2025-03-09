@@ -400,6 +400,17 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Text(text))
         }
+        "image" => {
+            let image_path = object_json["path"].as_str().unwrap().to_string();
+
+            let bounds = if object_json["bounds"].is_null() {
+                None
+            } else {
+                parse_bounds(&object_json)
+            };
+
+            Some(BlockType::Image(Image::new(image_path, bounds)))
+        }
         _ => None,
     }
 }
