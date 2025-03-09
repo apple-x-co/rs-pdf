@@ -64,91 +64,8 @@ pub fn parse(json_path: &str) -> Document {
                 .for_each(|object_json| {
                     // println!("{:#?}", object_json);
 
-                    match object_json["type"].as_str().unwrap() {
-                        "text" => {
-                            let object_map = object_json.as_object().unwrap();
-                            let bounds = if object_map.contains_key("bounds") {
-                                parse_bounds(object_map)
-                            } else {
-                                None
-                            };
-
-                            let font_path: Option<String> = object_json["font_path"]
-                                .as_str()
-                                .filter(|s| !s.is_empty())
-                                .map(|s| s.to_string());
-
-                            let mut text = Text::new(
-                                object_json["text"].as_str().unwrap().to_string(),
-                                object_json["font_size"].as_f64().unwrap() as f32,
-                                font_path,
-                                bounds,
-                            );
-
-                            let style_map = object_json["style"].as_object();
-                            match style_map {
-                                Some(style_map) => {
-                                    // NOTE: border_color
-                                    if style_map.contains_key("border_color") {
-                                        if let Some(border_color) = parse_border_color(style_map) {
-                                            text.add_style(border_color);
-                                        }
-                                    }
-
-                                    // NOTE: border_style
-                                    if style_map.contains_key("border_style") {
-                                        if let Some(border_style) = parse_border_style(style_map) {
-                                            text.add_style(border_style);
-                                        }
-                                    }
-
-                                    // NOTE: border_width
-                                    if style_map.contains_key("border_width") {
-                                        if let Some(border_width) = parse_border_width(style_map) {
-                                            text.add_style(border_width);
-                                        }
-                                    }
-
-                                    // NOTE: text_fill_color
-                                    if style_map.contains_key("text_fill_color") {
-                                        if let Some(text_fill_color) =
-                                            parse_text_fill_color(style_map)
-                                        {
-                                            text.add_style(text_fill_color);
-                                        }
-                                    }
-
-                                    // NOTE: text_outline_color
-                                    if style_map.contains_key("text_outline_color") {
-                                        if let Some(text_outline_color) =
-                                            parse_text_outline_color(style_map)
-                                        {
-                                            text.add_style(text_outline_color);
-                                        }
-                                    }
-
-                                    // NOTE: text_outline_style
-                                    if style_map.contains_key("text_outline_style") {
-                                        if let Some(text_outline_style) =
-                                            parse_text_outline_style(style_map)
-                                        {
-                                            text.add_style(text_outline_style);
-                                        }
-                                    }
-
-                                    // NOTE: text_style
-                                    if style_map.contains_key("text_style") {
-                                        if let Some(text_style) = parse_text_style(style_map) {
-                                            text.add_style(text_style);
-                                        }
-                                    }
-                                }
-                                _ => {}
-                            }
-
-                            container.add_block(BlockType::Text(text));
-                        }
-                        _ => {}
+                    if let Some(object) = parse_object(object_json) {
+                        container.add_block(object);
                     }
                 });
 
@@ -412,6 +329,97 @@ pub fn parse(json_path: &str) -> Document {
     //
     // doc
     // </editor-fold>
+}
+
+fn parse_object(object_json: &Value) -> Option<BlockType> {
+    match object_json["type"].as_str().unwrap() {
+        "text" => {
+            // TODO: map を作らなくてもできるようにする
+
+            let object_map = object_json.as_object().unwrap();
+            let bounds = if object_map.contains_key("bounds") {
+                parse_bounds(object_map)
+            } else {
+                None
+            };
+
+            let font_path: Option<String> = object_json["font_path"]
+                .as_str()
+                .filter(|s| !s.is_empty())
+                .map(|s| s.to_string());
+
+            let mut text = Text::new(
+                object_json["text"].as_str().unwrap().to_string(),
+                object_json["font_size"].as_f64().unwrap() as f32,
+                font_path,
+                bounds,
+            );
+
+            let style_map = object_json["style"].as_object();
+            match style_map {
+                Some(style_map) => {
+                    // NOTE: border_color
+                    if style_map.contains_key("border_color") {
+                        if let Some(border_color) = parse_border_color(style_map) {
+                            text.add_style(border_color);
+                        }
+                    }
+
+                    // NOTE: border_style
+                    if style_map.contains_key("border_style") {
+                        if let Some(border_style) = parse_border_style(style_map) {
+                            text.add_style(border_style);
+                        }
+                    }
+
+                    // NOTE: border_width
+                    if style_map.contains_key("border_width") {
+                        if let Some(border_width) = parse_border_width(style_map) {
+                            text.add_style(border_width);
+                        }
+                    }
+
+                    // NOTE: text_fill_color
+                    if style_map.contains_key("text_fill_color") {
+                        if let Some(text_fill_color) =
+                            parse_text_fill_color(style_map)
+                        {
+                            text.add_style(text_fill_color);
+                        }
+                    }
+
+                    // NOTE: text_outline_color
+                    if style_map.contains_key("text_outline_color") {
+                        if let Some(text_outline_color) =
+                            parse_text_outline_color(style_map)
+                        {
+                            text.add_style(text_outline_color);
+                        }
+                    }
+
+                    // NOTE: text_outline_style
+                    if style_map.contains_key("text_outline_style") {
+                        if let Some(text_outline_style) =
+                            parse_text_outline_style(style_map)
+                        {
+                            text.add_style(text_outline_style);
+                        }
+                    }
+
+                    // NOTE: text_style
+                    if style_map.contains_key("text_style") {
+                        if let Some(text_style) = parse_text_style(style_map) {
+                            text.add_style(text_style);
+                        }
+                    }
+                }
+                _ => {}
+            }
+
+            Some(BlockType::Text(text))
+        }
+        _ => None
+    }
 }
 
 fn parse_bounds(object_map: &Map<String, Value>) -> Option<Bounds> {
