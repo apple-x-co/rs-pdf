@@ -472,6 +472,47 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Line(line))
         }
+        "rectangle" => {
+            let bounds = if object_json["bounds"].is_null() {
+                None
+            } else {
+                parse_bounds(&object_json)
+            };
+
+            let mut rectangle = Rectangle::new(bounds);
+
+            let style = &object_json["style"];
+
+            if style.is_null() {
+                return Some(BlockType::Rectangle(rectangle))
+            }
+
+            if !style["background_color"].is_null() {
+                if let Some(background_color) = parse_background_color(style) {
+                    rectangle.add_style(background_color);
+                }
+            }
+
+            if !style["border_color"].is_null() {
+                if let Some(border_color) = parse_border_color(style) {
+                    rectangle.add_style(border_color);
+                }
+            }
+
+            if !style["border_style"].is_null() {
+                if let Some(border_style) = parse_border_style(style) {
+                    rectangle.add_style(border_style);
+                }
+            }
+
+            if !style["border_width"].is_null() {
+                if let Some(border_width) = parse_border_width(style) {
+                    rectangle.add_style(border_width);
+                }
+            }
+
+            Some(BlockType::Rectangle(rectangle))
+        }
         _ => None,
     }
 }
@@ -507,6 +548,14 @@ fn parse_bounds(object_json: &Value) -> Option<Bounds> {
         }
         None => None,
     }
+}
+
+fn parse_background_color(style_json: &Value) -> Option<Style> {
+    Some(Style::BackgroundColor(RgbColor {
+        r: style_json["background_color"]["red"].as_u64().unwrap() as u8,
+        g: style_json["background_color"]["green"].as_u64().unwrap() as u8,
+        b: style_json["background_color"]["blue"].as_u64().unwrap() as u8,
+    }))
 }
 
 fn parse_border_color(style_json: &Value) -> Option<Style> {
