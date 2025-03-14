@@ -4,7 +4,7 @@
     "title": "rs-pdf",
     "width": 210.0,
     "height": 297.0,
-    "font_path": "assets/fonts/NotoSansJP-VariableFont_wght.ttf",
+    "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf",
     "pages": [
       {
         "objects": [
