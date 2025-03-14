@@ -45,8 +45,8 @@ pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
     max_width_px = max_width_px.max(current_width_px);
 
     let num_lines = text.lines().count() as f32;
-    let height_px: f32 =
-        (scaled_font.ascent() + scaled_font.descent() + scaled_font.line_gap()) * num_lines;
+    let height_px: f32 = ((scaled_font.ascent() + scaled_font.descent()) * num_lines)
+        + (scaled_font.line_gap() * (num_lines - 1.0));
 
     // let width_px: f32 = text.chars().map(|c| scaled_font.h_advance(scaled_font.glyph_id(c))).sum();
     // let height_px: f32 = scaled_font.ascent() - scaled_font.descent() + scaled_font.line_gap();
