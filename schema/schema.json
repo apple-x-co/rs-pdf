@@ -293,6 +293,59 @@
                   },
                   {
                     "$ref": "#/definitions/object/definitions/objects"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/flexible"
+                  }
+                ]
+              }
+            },
+            "bounds": {
+              "$ref": "#/definitions/geometry/definitions/bounds"
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          },
+          "required": [
+            "objects"
+          ]
+        },
+        "flexible": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "flexible"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/object/definitions/text"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/image"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/line"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/rectangle"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/objects"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/flexible"
                   }
                 ]
               }
@@ -528,6 +581,9 @@
                     },
                     {
                       "$ref": "#/definitions/object/definitions/objects"
+                    },
+                    {
+                      "$ref": "#/definitions/object/definitions/flexible"
                     }
                   ]
                 }

@@ -1,7 +1,7 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
-use crate::block_document::document::{px_to_mm};
-use crate::block_document::geometry::Bounds;
+use crate::block_document::document::px_to_mm;
+use crate::block_document::geometry::{Bounds, Point};
 use crate::block_document::image::Image;
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
@@ -22,11 +22,22 @@ impl Container {
     }
 
     // NOTE: 座標を計算する
-    pub fn apply_constraints(&mut self, parent_bounds: &Bounds, direction: &Direction, font_path: &String) {
+    pub fn apply_constraints(
+        &mut self,
+        parent_bounds: &Bounds,
+        direction: &Direction,
+        font_path: &String,
+    ) {
         let mut drawn_bounds = Bounds::new(0.0, 0.0, parent_bounds.min_x(), parent_bounds.min_y());
 
         for block in self.blocks.iter_mut() {
-            let (is_fixed, bounds) = Self::apply_block_constraints(block, &drawn_bounds, direction, font_path);
+            let (is_fixed, bounds) = Self::apply_block_constraints(
+                block,
+                &parent_bounds,
+                &drawn_bounds,
+                direction,
+                font_path,
+            );
             if is_fixed {
                 continue;
             }
@@ -38,6 +49,7 @@ impl Container {
     // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
     fn apply_block_constraints(
         block: &mut BlockType,
+        parent_bounds: &Bounds,
         drawn_bounds: &Bounds,
         direction: &Direction,
         font_path: &String,
@@ -56,6 +68,7 @@ impl Container {
                 for block in block_container.blocks.iter_mut() {
                     let (is_fixed, bounds) = Self::apply_block_constraints(
                         block,
+                        parent_bounds, // NOTE: 合ってないかも...
                         &inner_drawn_bounds,
                         &block_container.direction.clone(),
                         font_path,
@@ -87,21 +100,100 @@ impl Container {
                     }
                 }
 
+                let container_drawn_bounds = Bounds::new(
+                    inner_drawn_bounds.width(),
+                    inner_drawn_bounds.height(),
+                    match direction {
+                        Direction::Vertical => drawn_bounds.min_x(),
+                        Direction::Horizontal => drawn_bounds.max_x(),
+                    },
+                    match direction {
+                        Direction::Vertical => drawn_bounds.max_y(),
+                        Direction::Horizontal => drawn_bounds.min_y(),
+                    },
+                );
+                block_container.set_bounds(container_drawn_bounds.clone());
 
+                (false, Some(container_drawn_bounds))
+            }
+            BlockType::Flexible(flexible_container) => {
+                let count = flexible_container.blocks.len();
+                let mut width = parent_bounds.width();
+                let mut height = parent_bounds.height();
+
+                if flexible_container.bounds.is_some()
+                    && flexible_container.bounds.as_ref().unwrap().point.is_some()
+                    && flexible_container.bounds.as_ref().unwrap().size.is_some()
+                {
+                    width = flexible_container.bounds.as_ref().unwrap().width();
+                    height = flexible_container.bounds.as_ref().unwrap().height();
+                }
+
+                // TODO: direction 毎で分ける
+                let item_width = width / count as f32;
+                // let item_height = height;
+
+                let mut inner_drawn_bounds = Bounds::zero();
+                let mut i = 0;
+
+                for block in flexible_container.blocks.iter_mut() {
+                    let item_bounds = Bounds {
+                        point: Some(Point {
+                            x: i as f32 * item_width,
+                            y: 0.0,
+                        }), // TODO: direction 毎で分ける
+                        size: None,
+                    };
+                    let (is_fixed, bounds) = Self::apply_block_constraints(
+                        block,
+                        &item_bounds, // NOTE: 合ってないかも...
+                        &inner_drawn_bounds,
+                        &flexible_container.direction.clone(),
+                        font_path,
+                    );
+
+                    if is_fixed {
+                        continue;
+                    }
+
+                    // TODO: direction 毎で分ける
+                    if let Some(bounds) = bounds {
+                        match flexible_container.direction {
+                            Direction::Horizontal => {
+                                inner_drawn_bounds = Bounds::new(
+                                    inner_drawn_bounds.width() + item_width,
+                                    inner_drawn_bounds.height().max(bounds.height()), // NOTE: 最大の高さを保持
+                                    0.0,
+                                    0.0,
+                                );
+                            }
+                            Direction::Vertical => {
+                                inner_drawn_bounds = Bounds::new(
+                                    inner_drawn_bounds.width().max(item_width), // NOTE: 最大の幅を保持
+                                    inner_drawn_bounds.height() + bounds.height(),
+                                    0.0,
+                                    0.0,
+                                );
+                            }
+                        }
+                    }
+
+                    i += 1;
+                }
 
                 let container_drawn_bounds = Bounds::new(
                     inner_drawn_bounds.width(),
                     inner_drawn_bounds.height(),
                     match direction {
-                        Direction::Vertical => { drawn_bounds.min_x() }
-                        Direction::Horizontal => { drawn_bounds.max_x() },
+                        Direction::Vertical => drawn_bounds.min_x(),
+                        Direction::Horizontal => drawn_bounds.max_x(),
                     },
                     match direction {
-                        Direction::Vertical => { drawn_bounds.max_y() }
-                        Direction::Horizontal => { drawn_bounds.min_y() },
+                        Direction::Vertical => drawn_bounds.max_y(),
+                        Direction::Horizontal => drawn_bounds.min_y(),
                     },
                 );
-                block_container.set_bounds(container_drawn_bounds.clone());
+                flexible_container.set_bounds(container_drawn_bounds.clone());
 
                 (false, Some(container_drawn_bounds))
             }
@@ -113,7 +205,7 @@ impl Container {
                     return (true, None);
                 }
 
-                (false, Some(Bounds::zero()))
+                (false, Some(Bounds::zero())) // FIXME: これあってる...?
             }
             BlockType::Text(block_text) => {
                 if block_text.bounds.is_some()
@@ -123,8 +215,12 @@ impl Container {
                     return (true, None);
                 }
 
-                let (is_fixed, width, height, x, y) =
-                    Self::calculate_text_constraints(block_text, &drawn_bounds, direction, font_path);
+                let (is_fixed, width, height, x, y) = Self::calculate_text_constraints(
+                    block_text,
+                    &drawn_bounds,
+                    direction,
+                    font_path,
+                );
                 block_text.set_bounds(Bounds::new(width, height, x, y));
 
                 if is_fixed {
@@ -151,7 +247,7 @@ impl Container {
 
                 (false, Some(Bounds::new(width, height, x, y)))
             }
-            _ => (false, None),
+            BlockType::Line(_) => (false, None),
         }
     }
 
@@ -216,13 +312,13 @@ impl Container {
             .as_ref()
             .map_or(true, |b| b.point.is_none())
         {
-            x =  match direction {
-                Direction::Vertical => { drawn_bounds.min_x() },
-                Direction::Horizontal => { drawn_bounds.max_x() }
+            x = match direction {
+                Direction::Vertical => drawn_bounds.min_x(),
+                Direction::Horizontal => drawn_bounds.max_x(),
             };
             y = match direction {
-                Direction::Vertical => { drawn_bounds.max_y() },
-                Direction::Horizontal => { drawn_bounds.min_y() }
+                Direction::Vertical => drawn_bounds.max_y(),
+                Direction::Horizontal => drawn_bounds.min_y(),
             };
         }
 
@@ -280,12 +376,12 @@ impl Container {
             .map_or(true, |b| b.point.is_none())
         {
             x = match direction {
-                Direction::Vertical => { drawn_bounds.min_x() },
-                Direction::Horizontal => { drawn_bounds.max_x() }
+                Direction::Vertical => drawn_bounds.min_x(),
+                Direction::Horizontal => drawn_bounds.max_x(),
             };
-            y =  match direction {
-                Direction::Vertical => { drawn_bounds.max_y() },
-                Direction::Horizontal => { drawn_bounds.min_y() }
+            y = match direction {
+                Direction::Vertical => drawn_bounds.max_y(),
+                Direction::Horizontal => drawn_bounds.min_y(),
             };
         }
 

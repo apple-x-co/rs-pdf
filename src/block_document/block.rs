@@ -8,7 +8,7 @@ use crate::block_document::text::Text;
 #[derive(Debug, Clone)]
 pub enum BlockType {
     Container(BlockContainer),
-    // Flexible(FlexibleContainer),
+    Flexible(FlexibleContainer),
     Line(Line),
     Rectangle(Rectangle),
     Text(Text),

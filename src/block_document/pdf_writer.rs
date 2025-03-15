@@ -82,6 +82,16 @@ fn draw(
                 draw(doc, page_index, &lb_bounds, font_path, block);
             }
         }
+        BlockType::Flexible(flexible_container) => {
+            let lb_bounds = flexible_container
+                .bounds
+                .as_ref()
+                .unwrap_or(&Bounds::none())
+                .transform(parent_bounds);
+            for block in flexible_container.blocks.iter() {
+                draw(doc, page_index, &lb_bounds, font_path, block);
+            }
+        }
         BlockType::Line(line) => draw_line(doc, page_index, line, parent_bounds),
         BlockType::Rectangle(rectangle) => {
             draw_rectangle(doc, page_index, rectangle, parent_bounds)

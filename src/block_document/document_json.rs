@@ -3,6 +3,7 @@ use crate::block_document::block_container::BlockContainer;
 use crate::block_document::container::Container;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::Document;
+use crate::block_document::flexible_container::FlexibleContainer;
 use crate::block_document::geometry::{Bounds, Point, Size};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
@@ -11,10 +12,9 @@ use crate::block_document::style::{
     BorderStyle, RgbColor, Space, Style, TextOutlineStyle, TextStyle,
 };
 use crate::block_document::text::Text;
-use serde_json::{Map, Value};
+use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
-
 // const PAGE_A4_WIDTH: f32 = 210.0;
 // const PAGE_A4_HEIGHT: f32 = 297.0;
 
@@ -36,7 +36,6 @@ pub fn parse(json_path: &str) -> Document {
         exit(1);
     }
 
-    // TODO: JSON を Document に展開する
     let mut doc = Document::new(
         json["document"]["title"].as_str().unwrap().to_string(),
         Size {
@@ -119,13 +118,17 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             }
 
             if !style["text_outline_color"].is_null() {
-                if let Some(text_outline_color) = parse_text_outline_color(&style["text_outline_color"]) {
+                if let Some(text_outline_color) =
+                    parse_text_outline_color(&style["text_outline_color"])
+                {
                     text.add_style(text_outline_color);
                 }
             }
 
             if !style["text_outline_style"].is_null() {
-                if let Some(text_outline_style) = parse_text_outline_style(&style["text_outline_style"]) {
+                if let Some(text_outline_style) =
+                    parse_text_outline_style(&style["text_outline_style"])
+                {
                     text.add_style(text_outline_style);
                 }
             }
@@ -253,15 +256,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let mut container = BlockContainer::new(bounds);
 
             if !object_json["direction"].is_null() {
-                match object_json["direction"].as_str().unwrap() {
-                    "horizontal" => {
-                        container.set_direction(Direction::Horizontal);
-                    }
-                    "vertical" => {
-                        container.set_direction(Direction::Vertical);
-                    }
-                    _ => {}
-                }
+                container.set_direction(parse_direction(&object_json["direction"]));
             }
 
             object_json["objects"]
@@ -276,7 +271,34 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Container(container))
         }
-        _ => None,
+        "flexible" => {
+            let bounds = object_json["bounds"]
+                .as_object()
+                .map(|_| parse_bounds(&object_json["bounds"]));
+
+            let mut container = FlexibleContainer::new(bounds);
+
+            if !object_json["direction"].is_null() {
+                container.set_direction(parse_direction(&object_json["direction"]));
+            }
+
+            object_json["objects"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .for_each(|object_json| {
+                    if let Some(object) = parse_object(object_json) {
+                        container.add_block(object);
+                    }
+                });
+
+            Some(BlockType::Flexible(container))
+        }
+        _ => {
+            eprintln!("unknown block type");
+
+            None
+        }
     }
 }
 
@@ -306,10 +328,20 @@ fn parse_bounds(bounds_json: &Value) -> Bounds {
                         height: h as f32,
                     }),
                 },
-                _ => Bounds::none()
+                _ => Bounds::none(),
             }
         }
-        _ => Bounds::none()
+        _ => Bounds::none(),
+    }
+}
+
+fn parse_direction(direction_json: &Value) -> Direction {
+    match direction_json.as_str().unwrap() {
+        "horizontal" => Direction::Horizontal,
+        "vertical" => Direction::Vertical,
+        _ => {
+            panic!("unknown direction");
+        }
     }
 }
 
@@ -363,10 +395,7 @@ fn parse_text_outline_color(text_outline_color: &Value) -> Option<Style> {
 }
 
 fn parse_text_outline_style(text_outline_style_json: &Value) -> Option<Style> {
-    match text_outline_style_json["line_style"]
-        .as_str()
-        .unwrap()
-    {
+    match text_outline_style_json["line_style"].as_str().unwrap() {
         "solid" => Some(Style::TextOutlineStyle(TextOutlineStyle::Solid)),
         "dash" => {
             let dash_1 = text_outline_style_json["dash_1"].as_i64().unwrap();
