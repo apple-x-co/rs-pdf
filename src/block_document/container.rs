@@ -119,7 +119,7 @@ impl Container {
             BlockType::Flexible(flexible_container) => {
                 let count = flexible_container.blocks.len();
                 let mut width = parent_bounds.width();
-                let mut height = parent_bounds.height();
+                let mut height = parent_bounds.height() - drawn_bounds.height();
 
                 if flexible_container.bounds.is_some()
                     && flexible_container.bounds.as_ref().unwrap().point.is_some()
@@ -129,20 +129,32 @@ impl Container {
                     height = flexible_container.bounds.as_ref().unwrap().height();
                 }
 
-                // TODO: direction 毎で分ける
                 let item_width = width / count as f32;
-                // let item_height = height;
+                let item_height = height / count as f32;
 
                 let mut inner_drawn_bounds = Bounds::zero();
                 let mut i = 0;
 
                 for block in flexible_container.blocks.iter_mut() {
-                    let item_bounds = Bounds {
-                        point: Some(Point {
-                            x: i as f32 * item_width,
-                            y: 0.0,
-                        }), // TODO: direction 毎で分ける
-                        size: None,
+                    let item_bounds = match flexible_container.direction {
+                        Direction::Horizontal => {
+                            Bounds {
+                                point: Some(Point {
+                                    x: i as f32 * item_width,
+                                    y: 0.0,
+                                }),
+                                size: None,
+                            }
+                        }
+                        Direction::Vertical => {
+                            Bounds {
+                                point: Some(Point {
+                                    x: 0.0,
+                                    y: i as f32 * item_height,
+                                }),
+                                size: None,
+                            }
+                        }
                     };
                     let (is_fixed, bounds) = Self::apply_block_constraints(
                         block,
@@ -156,7 +168,6 @@ impl Container {
                         continue;
                     }
 
-                    // TODO: direction 毎で分ける
                     if let Some(bounds) = bounds {
                         match flexible_container.direction {
                             Direction::Horizontal => {
@@ -169,8 +180,8 @@ impl Container {
                             }
                             Direction::Vertical => {
                                 inner_drawn_bounds = Bounds::new(
-                                    inner_drawn_bounds.width().max(item_width), // NOTE: 最大の幅を保持
-                                    inner_drawn_bounds.height() + bounds.height(),
+                                    inner_drawn_bounds.width().max(bounds.width()), // NOTE: 最大の幅を保持
+                                    inner_drawn_bounds.height() + item_height,
                                     0.0,
                                     0.0,
                                 );

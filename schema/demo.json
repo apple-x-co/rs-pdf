@@ -417,6 +417,29 @@
                 "font_size": 20
               }
             ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "vertical",
+            "objects": [
+              {
+                "type": "text",
+                "text": "flexible (vertical) 1/2",
+                "font_size": 30
+              },
+              {
+                "type": "text",
+                "text": "flexible (vertical) 2/2",
+                "font_size": 30
+              }
+            ]
           }
         ]
       }
