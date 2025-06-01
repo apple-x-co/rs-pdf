@@ -12,8 +12,8 @@
             "type": "rectangle",
             "bounds": {
               "point": {
-                "x": 10.0,
-                "y": 10.0
+                "x": 11.0,
+                "y": 11.0
               },
               "size": {
                 "width": 1.0,
@@ -32,12 +32,12 @@
             "type": "rectangle",
             "bounds": {
               "point": {
-                "x": 10.0,
-                "y": 10.0
+                "x": 1.0,
+                "y": 1.0
               },
               "size": {
-                "width": 1.0,
-                "height": 1.0
+                "width": 10.0,
+                "height": 10.0
               }
             },
             "style": {
@@ -126,7 +126,7 @@
             "bounds": {
               "point": {
                 "x": 1.0,
-                "y": 281.0
+                "y": 283.0
               },
               "size": null
             }
