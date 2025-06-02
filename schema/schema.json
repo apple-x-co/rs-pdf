@@ -133,6 +133,9 @@
                 "null"
               ],
               "properties": {
+                "alignment": {
+                  "$ref": "#/definitions/style/definitions/alignment"
+                },
                 "border_color": {
                   "$ref": "#/definitions/style/definitions/border_color"
                 },
@@ -529,11 +532,7 @@
                 "bottom"
               ]
             }
-          },
-          "required": [
-            "horizontal",
-            "vertical"
-          ]
+          }
         }
       }
     }

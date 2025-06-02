@@ -9,7 +9,8 @@ use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::style::{
-    BorderStyle, RgbColor, Space, Style, TextOutlineStyle, TextStyle,
+    Alignment, BorderStyle, HorizontalAlignment, RgbColor, Style, TextOutlineStyle,
+    TextStyle, VerticalAlignment,
 };
 use crate::block_document::text::Text;
 use serde_json::Value;
@@ -108,6 +109,12 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             if !style["border_width"].is_null() {
                 if let Some(border_width) = parse_border_width(&style["border_width"]) {
                     text.add_style(border_width);
+                }
+            }
+
+            if !style["alignment"].is_null() {
+                if let Some(alignment) = parse_alignment(&style["alignment"]) {
+                    text.add_style(alignment);
                 }
             }
 
@@ -376,6 +383,23 @@ fn parse_border_width(border_width_json: &Value) -> Option<Style> {
     Some(Style::BorderWidth(
         border_width_json["width"].as_f64().unwrap() as f32,
     ))
+}
+
+fn parse_alignment(alignment_json: &Value) -> Option<Style> {
+    Some(Style::Alignment(Alignment {
+        horizontal: match alignment_json["horizontal"].as_str().unwrap() {
+            "left" => Some(HorizontalAlignment::Left),
+            "center" => Some(HorizontalAlignment::Center),
+            "right" => Some(HorizontalAlignment::Right),
+            _ => None,
+        },
+        vertical: match alignment_json["vertical"].as_str().unwrap() {
+            "top" => Some(VerticalAlignment::Top),
+            "center" => Some(VerticalAlignment::Center),
+            "bottom" => Some(VerticalAlignment::Bottom),
+            _ => None,
+        },
+    }))
 }
 
 fn parse_text_fill_color(text_fill_color_json: &Value) -> Option<Style> {

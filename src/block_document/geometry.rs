@@ -29,7 +29,10 @@ impl Bounds {
     pub fn zero() -> Bounds {
         Bounds {
             point: Some(Point { x: 0.0, y: 0.0 }),
-            size: Some(Size { width: 0.0, height: 0.0 }),
+            size: Some(Size {
+                width: 0.0,
+                height: 0.0,
+            }),
         }
     }
 
@@ -123,5 +126,11 @@ impl Bounds {
             }),
             size: self.size.clone(),
         }
+    }
+}
+
+impl Size {
+    pub fn new(width: f32, height: f32) -> Size {
+        Size { width, height }
     }
 }

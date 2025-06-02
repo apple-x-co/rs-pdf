@@ -62,6 +62,6 @@ pub enum VerticalAlignment {
 
 #[derive(Debug, Clone)]
 pub struct Alignment {
-    pub horizontal: HorizontalAlignment,
-    pub vertical: VerticalAlignment,
+    pub horizontal: Option<HorizontalAlignment>,
+    pub vertical: Option<VerticalAlignment>,
 }

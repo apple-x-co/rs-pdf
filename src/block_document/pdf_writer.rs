@@ -5,7 +5,7 @@ use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
-use crate::block_document::style::{BorderStyle, Style, TextOutlineStyle, TextStyle};
+use crate::block_document::style::{Alignment, BorderStyle, Style, TextOutlineStyle, TextStyle};
 use crate::block_document::text::Text as BlockText;
 use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
@@ -326,12 +326,16 @@ fn draw_text(
             }
 
             let layer2 = doc.get_page(*page_index).add_layer("Layer 2");
+            let mut alignment: Option<Alignment> = None;
 
-            let font = doc
-                .add_external_font(File::open(block_text.font_path.as_ref().unwrap_or(font_path)).unwrap())
-                .unwrap();
             for style in &block_text.styles {
                 match style {
+                    Style::Alignment(a) => {
+                        alignment = Some(Alignment {
+                            horizontal: a.horizontal.clone(),
+                            vertical: a.vertical.clone(),
+                        });
+                    }
                     Style::TextFillColor(rgb_color) => {
                         layer2.set_fill_color(Color::Rgb(Rgb {
                             r: rgb_color.r as f32 / 255.0,
@@ -372,8 +376,14 @@ fn draw_text(
                 }
             }
 
+            let font = doc
+                .add_external_font(File::open(block_text.font_path.as_ref().unwrap_or(font_path)).unwrap())
+                .unwrap();
+
             // NOTE: 改行を考慮無し
             if !block_text.text.contains("\n") {
+                // FIXME: Alignment
+
                 layer2.use_text(
                     block_text.text.clone(),
                     block_text.font_size,
@@ -386,6 +396,7 @@ fn draw_text(
             }
 
             // NOTE: 改行を考慮して描画
+            // TODO: Alignment
             let texts: Vec<&str> = block_text.text.split("\n").collect();
             let line_height = lb_bounds.height() / texts.iter().count() as f32;
             let mut current_y = lb_bounds.max_y() - line_height;

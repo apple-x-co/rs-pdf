@@ -1,4 +1,4 @@
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::{Bounds, Size};
 use crate::block_document::style::Style;
 
 #[derive(Debug, Clone)]
@@ -7,6 +7,7 @@ pub struct Text {
     pub font_size: f32, // NOTE: PT
     pub font_path: Option<String>,
     pub bounds: Option<Bounds>,
+    pub text_size: Option<Size>,
     pub styles: Vec<Style>,
 }
 
@@ -22,6 +23,7 @@ impl Text {
             font_size,
             font_path,
             bounds,
+            text_size: None,
             styles: Vec::new(),
         }
     }
@@ -32,5 +34,9 @@ impl Text {
 
     pub fn set_bounds(&mut self, bounds: Bounds) {
         self.bounds = Some(bounds);
+    }
+    
+    pub fn set_text_size(&mut self, size: Size) {
+        self.text_size = Some(size);
     }
 }

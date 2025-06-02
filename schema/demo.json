@@ -350,6 +350,23 @@
                 "font_size": 20.0
               }
             ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "text",
+                "text": "ALIGN CENTER",
+                "font_size": 20.0,
+                "style": {
+                  "alignment": {
+                    "horizontal": "center",
+                    "vertical": "center"
+                  }
+                }
+              }
+            ]
           }
         ]
       },
