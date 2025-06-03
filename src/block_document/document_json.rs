@@ -387,13 +387,13 @@ fn parse_border_width(border_width_json: &Value) -> Option<Style> {
 
 fn parse_alignment(alignment_json: &Value) -> Option<Style> {
     Some(Style::Alignment(Alignment {
-        horizontal: match alignment_json["horizontal"].as_str().unwrap() {
+        horizontal: match alignment_json["horizontal"].as_str().unwrap_or("") {
             "left" => Some(HorizontalAlignment::Left),
             "center" => Some(HorizontalAlignment::Center),
             "right" => Some(HorizontalAlignment::Right),
             _ => None,
         },
-        vertical: match alignment_json["vertical"].as_str().unwrap() {
+        vertical: match alignment_json["vertical"].as_str().unwrap_or("") {
             "top" => Some(VerticalAlignment::Top),
             "center" => Some(VerticalAlignment::Center),
             "bottom" => Some(VerticalAlignment::Bottom),
