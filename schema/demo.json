@@ -356,13 +356,47 @@
             "direction": "horizontal",
             "objects": [
               {
-                "type": "text",
-                "text": "ALIGN CENTER",
-                "font_size": 20.0,
-                "style": {
-                  "alignment": {
-                    "horizontal": "center",
-                    "vertical": "center"
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN CENTER1",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN CENTER 1/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN CENTER 2/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
                   }
                 }
               }
