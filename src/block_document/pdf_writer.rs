@@ -1,11 +1,11 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
-use crate::block_document::geometry::{Bounds as GeoBounds, Bounds, Size};
+use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
-use crate::block_document::style::{Alignment, BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
+use crate::block_document::style::{BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
 use crate::block_document::text::Text as BlockText;
 use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
