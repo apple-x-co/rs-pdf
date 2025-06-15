@@ -473,7 +473,147 @@
             "type": "flexible",
             "direction": "horizontal",
             "objects": [
-
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN CENTER",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN CENTER 1/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN CENTER 1/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN RIGHT",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN RIGHT 1/2",
+                  "font_size": 16.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN RIGHT 2/2",
+                  "font_size": 16.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN 1/3\nRIGHT",
+                  "font_size": 12.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN 2/3\nCENTER",
+                  "font_size": 12.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible - ALIGN 3/3\nLEFT",
+                  "font_size": 12.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "left"
+                    }
+                  }
+                }
+              }
             ]
           },
           {
@@ -489,6 +629,29 @@
                 "type": "text",
                 "text": "flexible (vertical) 2/2",
                 "font_size": 30
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "objects": [
+          {
+            "type": "flexible",
+            "direction": "vertical",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "flexible (vertical) center",
+                  "font_size": 20,
+                  "style": {
+                    "alignment": {
+                      "vertical": "center"
+                    }
+                  }
+                }
               }
             ]
           }
