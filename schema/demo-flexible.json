@@ -1,0 +1,185 @@
+{
+  "$schema": "schema.json",
+  "document": {
+    "title": "rs-pdf",
+    "width": 210.0,
+    "height": 297.0,
+    "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf",
+    "pages": [
+      {
+        "objects": [
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN CENTER",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN CENTER 1/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN CENTER 1/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN RIGHT",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN RIGHT 1/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN RIGHT 2/2",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "flexible",
+            "direction": "horizontal",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN 1/3\nRIGHT",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "right"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN 2/3\nCENTER",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "center"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "ALIGN 3/3\nLEFT",
+                  "font_size": 20.0,
+                  "style": {
+                    "alignment": {
+                      "horizontal": "left"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "objects": [
+          {
+            "type": "flexible",
+            "direction": "vertical",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "CENTER1",
+                  "font_size": 20,
+                  "style": {
+                    "alignment": {
+                      "vertical": "center"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

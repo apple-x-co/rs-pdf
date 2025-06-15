@@ -16,6 +16,7 @@ use crate::block_document::text::Text;
 use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
+use crate::block_document::flexible_item::FlexibleItem;
 // const PAGE_A4_WIDTH: f32 = 210.0;
 // const PAGE_A4_HEIGHT: f32 = 297.0;
 
@@ -300,6 +301,13 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 });
 
             Some(BlockType::Flexible(container))
+        }
+        "flexible_item" => {
+            if let Some(object) = parse_object(&object_json["object"]) {
+                return Some(BlockType::FlexibleItem(Box::from(FlexibleItem::new(object))));
+            }
+            
+            None
         }
         _ => {
             eprintln!("unknown block type");

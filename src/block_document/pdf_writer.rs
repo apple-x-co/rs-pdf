@@ -1,11 +1,11 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
-use crate::block_document::geometry::{Bounds as GeoBounds, Bounds};
+use crate::block_document::geometry::{Bounds as GeoBounds, Bounds, Size};
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
-use crate::block_document::style::{Alignment, BorderStyle, Style, TextOutlineStyle, TextStyle};
+use crate::block_document::style::{Alignment, BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
 use crate::block_document::text::Text as BlockText;
 use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
@@ -91,6 +91,15 @@ fn draw(
             for block in flexible_container.blocks.iter() {
                 draw(doc, page_index, &lb_bounds, font_path, block);
             }
+        }
+        BlockType::FlexibleItem(flexible_item) => {
+            let lb_bounds = flexible_item
+                .bounds
+                .as_ref()
+                .unwrap_or(&Bounds::none())
+                .transform(parent_bounds);
+
+            draw(doc, page_index, &lb_bounds, font_path, &flexible_item.block);
         }
         BlockType::Line(line) => draw_line(doc, page_index, line, parent_bounds),
         BlockType::Rectangle(rectangle) => {
@@ -271,9 +280,21 @@ fn draw_text(
             let layer1 = doc.get_page(*page_index).add_layer("Layer 1");
 
             let mut border_required = false;
+            let mut h_alignment: Option<&HorizontalAlignment> = None;
+            let mut v_alignment: Option<&VerticalAlignment> = None;
 
             for style in &block_text.styles {
                 match style {
+                    Style::Alignment(alignment) => {
+                        match alignment.horizontal.as_ref() {
+                            Some(h_a) => h_alignment = Some(h_a),
+                            _ => {}
+                        }
+                        match alignment.vertical.as_ref() {
+                            Some(v_a) => v_alignment = Some(v_a),
+                            _ => {}
+                        }
+                    }
                     Style::BorderColor(rgb_color) => {
                         border_required = true;
                         layer1.set_outline_color(Color::Rgb(Rgb {
@@ -301,23 +322,40 @@ fn draw_text(
                 }
             }
 
+            let x_offset = match h_alignment {
+                Some(h_a) => match h_a {
+                    HorizontalAlignment::Left => 0.0,
+                    HorizontalAlignment::Center => (geo_bounds.width() - block_text.bounds.as_ref().unwrap_or(&Bounds::zero()).width()) / 2.0,
+                    HorizontalAlignment::Right => geo_bounds.width() - block_text.bounds.as_ref().unwrap_or(&Bounds::zero()).width(),
+                },
+                _ => 0.0,
+            };
+            let y_offset = match v_alignment {
+                Some(v_a) => match v_a {
+                    VerticalAlignment::Top => 0.0,
+                    VerticalAlignment::Center => (geo_bounds.height() - block_text.bounds.as_ref().unwrap_or(&Bounds::zero()).height()) / 2.0,
+                    VerticalAlignment::Bottom => geo_bounds.height() - block_text.bounds.as_ref().unwrap_or(&Bounds::zero()).height(),
+                },
+                _ => 0.0,
+            };
+
             if border_required {
                 layer1.add_line(Line {
                     points: vec![
                         (
-                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.min_y())),
+                            Point::new(Mm(lb_bounds.min_x() + x_offset), Mm(lb_bounds.min_y() - y_offset)),
                             false,
                         ),
                         (
-                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.min_y())),
+                            Point::new(Mm(lb_bounds.max_x() + x_offset), Mm(lb_bounds.min_y() - y_offset)),
                             false,
                         ),
                         (
-                            Point::new(Mm(lb_bounds.max_x()), Mm(lb_bounds.max_y())),
+                            Point::new(Mm(lb_bounds.max_x() + x_offset), Mm(lb_bounds.max_y() - y_offset)),
                             false,
                         ),
                         (
-                            Point::new(Mm(lb_bounds.min_x()), Mm(lb_bounds.max_y())),
+                            Point::new(Mm(lb_bounds.min_x() + x_offset), Mm(lb_bounds.max_y() - y_offset)),
                             false,
                         ),
                     ],
@@ -326,16 +364,9 @@ fn draw_text(
             }
 
             let layer2 = doc.get_page(*page_index).add_layer("Layer 2");
-            let mut alignment: Option<Alignment> = None;
 
             for style in &block_text.styles {
                 match style {
-                    Style::Alignment(a) => {
-                        alignment = Some(Alignment {
-                            horizontal: a.horizontal.clone(),
-                            vertical: a.vertical.clone(),
-                        });
-                    }
                     Style::TextFillColor(rgb_color) => {
                         layer2.set_fill_color(Color::Rgb(Rgb {
                             r: rgb_color.r as f32 / 255.0,
@@ -382,13 +413,11 @@ fn draw_text(
 
             // NOTE: 改行を考慮無し
             if !block_text.text.contains("\n") {
-                // FIXME: Alignment
-
                 layer2.use_text(
                     block_text.text.clone(),
                     block_text.font_size,
-                    Mm(lb_bounds.min_x()),
-                    Mm(lb_bounds.min_y()),
+                    Mm(lb_bounds.min_x() + x_offset),
+                    Mm(lb_bounds.min_y() - y_offset),
                     &font,
                 );
 
@@ -396,15 +425,14 @@ fn draw_text(
             }
 
             // NOTE: 改行を考慮して描画
-            // TODO: Alignment
             let texts: Vec<&str> = block_text.text.split("\n").collect();
             let line_height = lb_bounds.height() / texts.iter().count() as f32;
-            let mut current_y = lb_bounds.max_y() - line_height;
+            let mut current_y = lb_bounds.max_y() - line_height - y_offset;
             for line in texts {
                 layer2.use_text(
                     line,
                     block_text.font_size,
-                    Mm(lb_bounds.min_x()),
+                    Mm(lb_bounds.min_x() + x_offset),
                     Mm(current_y),
                     &font,
                 );

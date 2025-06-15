@@ -189,6 +189,36 @@ impl Container {
                             size: None,
                         },
                     };
+
+                    // NOTE: FlexItem の場合は "アイテム幅 OR アイテム高さ" を設定
+                    match block {
+                        BlockType::FlexibleItem(flexible_item) => {
+                            flexible_item.set_bounds(match flexible_container.direction {
+                                Direction::Horizontal => Bounds {
+                                    point: Some(Point {
+                                        x: i as f32 * item_width,
+                                        y: 0.0,
+                                    }),
+                                    size: Some(Size {
+                                        width: item_width,
+                                        height: 0.0,
+                                    }),
+                                },
+                                Direction::Vertical => Bounds {
+                                    point: Some(Point {
+                                        x: 0.0,
+                                        y: i as f32 * item_height,
+                                    }),
+                                    size: Some(Size {
+                                        width: 0.0,
+                                        height: item_height,
+                                    }),
+                                },
+                            });
+                        }
+                        _ => {}
+                    }
+
                     let (is_fixed, bounds) = Self::apply_block_constraints(
                         block,
                         &item_bounds, // NOTE: 合ってないかも...
@@ -240,6 +270,21 @@ impl Container {
                 flexible_container.set_bounds(container_drawn_bounds.clone());
 
                 (false, Some(container_drawn_bounds))
+            }
+            BlockType::FlexibleItem(flexible_item) => {
+                if let Some(bounds) = flexible_item.bounds.as_ref() {
+                    let (_, bounds) = Self::apply_block_constraints(
+                        &mut flexible_item.block,
+                        bounds,
+                        &Bounds::zero(),
+                        &Direction::Horizontal,
+                        font_path,
+                    );
+                    
+                    return (false, bounds);
+                }
+
+                (false, None)
             }
             BlockType::Rectangle(block_rectangle) => {
                 if block_rectangle.bounds.is_some()
