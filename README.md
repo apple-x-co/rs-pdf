@@ -61,7 +61,7 @@ rs-pdf -i input.json -o output.pdf
   "type": "text",
   "text": "表示するテキスト",
   "font_size": 24.0,
-  "bounds": {
+  "frame": {
     "point": { "x": 10.0, "y": 10.0 },
     "size": { "width": 100.0, "height": 30.0 }
   },
@@ -78,7 +78,7 @@ rs-pdf -i input.json -o output.pdf
 {
   "type": "image",
   "path": "assets/images/sample.png",
-  "bounds": {
+  "frame": {
     "point": { "x": 50.0, "y": 50.0 },
     "size": null
   }
@@ -90,7 +90,7 @@ rs-pdf -i input.json -o output.pdf
 ```json
 {
   "type": "rectangle",
-  "bounds": {
+  "frame": {
     "point": { "x": 0.0, "y": 0.0 },
     "size": { "width": 100.0, "height": 50.0 }
   },
@@ -106,7 +106,7 @@ rs-pdf -i input.json -o output.pdf
 ```json
 {
   "type": "line",
-  "bounds": {
+  "frame": {
     "point": { "x": 0.0, "y": 0.0 },
     "size": { "width": 100.0, "height": 0.0 }
   },
@@ -124,7 +124,7 @@ rs-pdf -i input.json -o output.pdf
 {
   "type": "objects",
   "direction": "horizontal",
-  "bounds": {
+  "frame": {
     "point": { "x": 10.0, "y": 10.0 },
     "size": { "width": 200.0, "height": 100.0 }
   },
