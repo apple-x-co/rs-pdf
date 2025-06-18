@@ -120,7 +120,7 @@ rs-pdf -i input.json -o output.pdf
 
 #### 通常のコンテナ
 
-```json
+```json5
 {
   "type": "objects",
   "direction": "horizontal",
