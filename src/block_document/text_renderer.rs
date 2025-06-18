@@ -1,10 +1,10 @@
-use crate::block_document::geometry::Size;
+use crate::block_document::geometry::GeoSize;
 use ab_glyph::{Font, FontVec, ScaleFont};
 use std::fs::File;
 use std::io::Read;
 use std::process::exit;
 
-pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
+pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> GeoSize {
     let file = File::open(font_path).map_err(|_| {
         eprintln!("Failed to open font file: {}.", font_path);
     });
@@ -59,7 +59,7 @@ pub fn measure_text(text: &String, font_size: f32, font_path: &String) -> Size {
     let width_mm = width_pt * 0.35278;
     let height_mm = height_pt * 0.35278;
 
-    Size {
+    GeoSize {
         width: width_mm,
         height: height_mm,
     }

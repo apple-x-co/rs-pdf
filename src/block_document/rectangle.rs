@@ -1,16 +1,16 @@
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::GeoRect;
 use crate::block_document::style::Style;
 
 #[derive(Debug, Clone)]
 pub struct Rectangle {
-    pub bounds: Option<Bounds>,
+    pub frame: Option<GeoRect>,
     pub styles: Vec<Style>,
 }
 
 impl Rectangle {
-    pub fn new(bounds: Option<Bounds>) -> Rectangle {
+    pub fn new(frame: Option<GeoRect>) -> Rectangle {
         Rectangle {
-            bounds,
+            frame,
             styles: Vec::new(),
         }
     }

@@ -1,43 +1,43 @@
 use crate::block_document::style::Space;
 
 #[derive(Debug, Default, Clone)]
-pub struct Bounds {
-    pub point: Option<Point>,
-    pub size: Option<Size>,
+pub struct GeoRect {
+    pub point: Option<GeoPoint>,
+    pub size: Option<GeoSize>,
 }
 
 #[derive(Debug, Default, Clone)]
-pub struct Point {
+pub struct GeoPoint {
     pub x: f32, // NOTE: mm
     pub y: f32, // NOTE: mm
 }
 
 #[derive(Debug, Default, Clone)]
-pub struct Size {
+pub struct GeoSize {
     pub width: f32,  // NOTE: mm
     pub height: f32, // NOTE: mm
 }
 
-impl Bounds {
-    pub fn new(width: f32, height: f32, x: f32, y: f32) -> Bounds {
-        Bounds {
-            point: Some(Point { x, y }),
-            size: Some(Size { width, height }),
+impl GeoRect {
+    pub fn new(width: f32, height: f32, x: f32, y: f32) -> GeoRect {
+        GeoRect {
+            point: Some(GeoPoint { x, y }),
+            size: Some(GeoSize { width, height }),
         }
     }
 
-    pub fn zero() -> Bounds {
-        Bounds {
-            point: Some(Point { x: 0.0, y: 0.0 }),
-            size: Some(Size {
+    pub fn zero() -> GeoRect {
+        GeoRect {
+            point: Some(GeoPoint { x: 0.0, y: 0.0 }),
+            size: Some(GeoSize {
                 width: 0.0,
                 height: 0.0,
             }),
         }
     }
 
-    pub fn none() -> Bounds {
-        Bounds {
+    pub fn none() -> GeoRect {
+        GeoRect {
             point: None,
             size: None,
         }
@@ -70,13 +70,13 @@ impl Bounds {
     }
 
     // NOTE: 内側に余白を作る
-    pub fn inset(&self, space: &Space) -> Bounds {
-        Bounds {
-            point: Some(Point {
+    pub fn inset(&self, space: &Space) -> GeoRect {
+        GeoRect {
+            point: Some(GeoPoint {
                 x: self.point.as_ref().unwrap_or(&Default::default()).x + space.left,
                 y: self.point.as_ref().unwrap_or(&Default::default()).y + space.top,
             }),
-            size: Some(Size {
+            size: Some(GeoSize {
                 width: self.size.as_ref().unwrap_or(&Default::default()).width
                     - space.left
                     - space.right,
@@ -88,35 +88,35 @@ impl Bounds {
     }
 
     // NOTE: 2の矩形を満たす新しい矩形を作る
-    pub fn union(&self, bounds: &Bounds) -> Bounds {
-        Bounds::new(
-            if self.max_x() > bounds.max_x() {
-                self.max_x() - bounds.min_x()
+    pub fn union(&self, geo_rect: &GeoRect) -> GeoRect {
+        GeoRect::new(
+            if self.max_x() > geo_rect.max_x() {
+                self.max_x() - geo_rect.min_x()
             } else {
-                bounds.max_x() - self.min_x()
+                geo_rect.max_x() - self.min_x()
             },
-            if self.max_y() > bounds.max_y() {
-                self.max_y() - bounds.min_y()
+            if self.max_y() > geo_rect.max_y() {
+                self.max_y() - geo_rect.min_y()
             } else {
-                bounds.max_y() - self.min_y()
+                geo_rect.max_y() - self.min_y()
             },
-            if self.min_x() < bounds.min_x() {
+            if self.min_x() < geo_rect.min_x() {
                 self.min_x()
             } else {
-                bounds.min_x()
+                geo_rect.min_x()
             },
-            if self.min_y() < bounds.min_y() {
+            if self.min_y() < geo_rect.min_y() {
                 self.min_y()
             } else {
-                bounds.min_y()
+                geo_rect.min_y()
             },
         )
     }
 
     // NOTE: 左上座標から左下座標に変換をする
-    pub fn transform(&self, parent: &Bounds) -> Bounds {
-        Bounds {
-            point: Some(Point {
+    pub fn transform(&self, parent: &GeoRect) -> GeoRect {
+        GeoRect {
+            point: Some(GeoPoint {
                 x: self.point.as_ref().unwrap_or(&Default::default()).x
                     + parent.point.as_ref().unwrap_or(&Default::default()).x,
                 y: parent.size.as_ref().unwrap_or(&Default::default()).height
@@ -129,8 +129,8 @@ impl Bounds {
     }
 }
 
-impl Size {
-    pub fn new(width: f32, height: f32) -> Size {
-        Size { width, height }
+impl GeoSize {
+    pub fn new(width: f32, height: f32) -> GeoSize {
+        GeoSize { width, height }
     }
 }

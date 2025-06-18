@@ -10,7 +10,7 @@
         "objects": [
           {
             "type": "rectangle",
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 11.0,
                 "y": 11.0
@@ -30,7 +30,7 @@
           },
           {
             "type": "rectangle",
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 1.0,
                 "y": 1.0
@@ -50,7 +50,7 @@
           },
           {
             "type": "line",
-            "bounds": {
+            "frame": {
               "size": {
                 "width": 10.0,
                 "height": 0.0
@@ -63,7 +63,7 @@
           },
           {
             "type": "line",
-            "bounds": {
+            "frame": {
               "size": {
                 "width": 0.0,
                 "height": 10.0
@@ -123,7 +123,7 @@
                 "dash_1": 2
               }
             },
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 1.0,
                 "y": 283.0
@@ -135,7 +135,7 @@
             "type": "text",
             "text": "------\nHELLO WORLD\nGOOD NIGHT :)\n------",
             "font_size": 20.0,
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 30.0,
                 "y": 30.0
@@ -156,7 +156,7 @@
           {
             "type": "image",
             "path": "assets/images/channel.png",
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 167.66666667,
                 "y": 0.0
@@ -182,7 +182,7 @@
             "objects": [
               {
                 "type": "rectangle",
-                "bounds": {
+                "frame": {
                   "point": {
                     "x": 0.0,
                     "y": 0.0
@@ -216,7 +216,7 @@
                 "type": "text",
                 "text": "Hi!!",
                 "font_size": 20.0,
-                "bounds": {
+                "frame": {
                   "point": {
                     "x": 1.0,
                     "y": 1.0
@@ -228,7 +228,7 @@
                 }
               }
             ],
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 159.0,
                 "y": 51.0
@@ -267,7 +267,7 @@
           },
           {
             "type": "rectangle",
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 50.0,
                 "y": 50.0
@@ -287,7 +287,7 @@
           },
           {
             "type": "rectangle",
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 50.0,
                 "y": 50.0
@@ -307,7 +307,7 @@
           },
           {
             "type": "rectangle",
-            "bounds": {
+            "frame": {
               "point": {
                 "x": 55.0,
                 "y": 55.0

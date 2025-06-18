@@ -1,21 +1,21 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::GeoRect;
 
 #[derive(Debug, Clone)]
 pub struct FlexibleItem {
     pub block: BlockType,
-    pub bounds: Option<Bounds>,
+    pub frame: Option<GeoRect>,
 }
 
 impl FlexibleItem {
     pub fn new(block: BlockType) -> FlexibleItem {
         FlexibleItem {
             block,
-            bounds: None,
+            frame: None,
         }
     }
 
-    pub fn set_bounds(&mut self, bounds: Bounds) {
-        self.bounds = Some(bounds);
+    pub fn set_frame(&mut self, frame: GeoRect) {
+        self.frame = Some(frame);
     }
 }

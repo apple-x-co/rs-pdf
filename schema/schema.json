@@ -38,7 +38,7 @@
             "height"
           ]
         },
-        "bounds": {
+        "frame": {
           "type": "object",
           "oneOf": [
             {
@@ -124,8 +124,8 @@
                 "null"
               ]
             },
-            "bounds": {
-              "$ref": "#/definitions/geometry/definitions/bounds"
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
             },
             "style": {
               "type": [
@@ -177,8 +177,8 @@
               "type": "string",
               "minLength": 1
             },
-            "bounds": {
-              "$ref": "#/definitions/geometry/definitions/bounds"
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
             },
             "style": {
               "type": [
@@ -210,8 +210,8 @@
               "type": "string",
               "const": "line"
             },
-            "bounds": {
-              "$ref": "#/definitions/geometry/definitions/bounds"
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
             },
             "style": {
               "type": [
@@ -233,7 +233,7 @@
           },
           "required": [
             "type",
-            "bounds"
+            "frame"
           ]
         },
         "rectangle": {
@@ -243,8 +243,8 @@
               "type": "string",
               "const": "rectangle"
             },
-            "bounds": {
-              "$ref": "#/definitions/geometry/definitions/bounds"
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
             },
             "style": {
               "type": [
@@ -303,8 +303,8 @@
                 ]
               }
             },
-            "bounds": {
-              "$ref": "#/definitions/geometry/definitions/bounds"
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
             },
             "direction": {
               "type": [
@@ -356,8 +356,8 @@
                 ]
               }
             },
-            "bounds": {
-              "$ref": "#/definitions/geometry/definitions/bounds"
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
             },
             "direction": {
               "type": [

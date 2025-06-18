@@ -4,7 +4,7 @@ use crate::block_document::container::Container;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::Document;
 use crate::block_document::flexible_container::FlexibleContainer;
-use crate::block_document::geometry::{Bounds, Point, Size};
+use crate::block_document::geometry::{GeoRect, GeoPoint, GeoSize};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
@@ -40,7 +40,7 @@ pub fn parse(json_path: &str) -> Document {
 
     let mut doc = Document::new(
         json["document"]["title"].as_str().unwrap().to_string(),
-        Size {
+        GeoSize {
             width: json["document"]["width"].as_f64().unwrap() as f32,
             height: json["document"]["height"].as_f64().unwrap() as f32,
         },
@@ -73,9 +73,9 @@ pub fn parse(json_path: &str) -> Document {
 fn parse_object(object_json: &Value) -> Option<BlockType> {
     match object_json["type"].as_str().unwrap() {
         "text" => {
-            let bounds = object_json["bounds"]
+            let frame = object_json["frame"]
                 .as_object()
-                .map(|_| parse_bounds(&object_json["bounds"]));
+                .map(|_| parse_frame(&object_json["frame"]));
 
             let font_path: Option<String> = object_json["font_path"]
                 .as_str()
@@ -86,7 +86,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 object_json["text"].as_str().unwrap().to_string(),
                 object_json["font_size"].as_f64().unwrap() as f32,
                 font_path,
-                bounds,
+                frame,
             );
 
             let style = &object_json["style"];
@@ -152,11 +152,11 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
         "image" => {
             let image_path = object_json["path"].as_str().unwrap().to_string();
 
-            let bounds = object_json["bounds"]
+            let frame = object_json["frame"]
                 .as_object()
-                .map(|_| parse_bounds(&object_json["bounds"]));
+                .map(|_| parse_frame(&object_json["frame"]));
 
-            let mut image = Image::new(image_path, bounds);
+            let mut image = Image::new(image_path, frame);
 
             let style = &object_json["style"];
 
@@ -185,13 +185,13 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             Some(BlockType::Image(image))
         }
         "line" => {
-            let bounds = object_json["bounds"]
+            let frame = object_json["frame"]
                 .as_object()
-                .map(|_| parse_bounds(&object_json["bounds"]));
+                .map(|_| parse_frame(&object_json["frame"]));
 
             let style = &object_json["style"];
 
-            let mut line = Line::new(bounds.unwrap());
+            let mut line = Line::new(frame.unwrap());
 
             if style.is_null() {
                 return Some(BlockType::Line(line));
@@ -218,11 +218,11 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             Some(BlockType::Line(line))
         }
         "rectangle" => {
-            let bounds = object_json["bounds"]
+            let frame = object_json["frame"]
                 .as_object()
-                .map(|_| parse_bounds(&object_json["bounds"]));
+                .map(|_| parse_frame(&object_json["frame"]));
 
-            let mut rectangle = Rectangle::new(bounds);
+            let mut rectangle = Rectangle::new(frame);
 
             let style = &object_json["style"];
 
@@ -257,11 +257,11 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             Some(BlockType::Rectangle(rectangle))
         }
         "objects" => {
-            let bounds = object_json["bounds"]
+            let frame = object_json["frame"]
                 .as_object()
-                .map(|_| parse_bounds(&object_json["bounds"]));
+                .map(|_| parse_frame(&object_json["frame"]));
 
-            let mut container = BlockContainer::new(bounds);
+            let mut container = BlockContainer::new(frame);
 
             if !object_json["direction"].is_null() {
                 container.set_direction(parse_direction(&object_json["direction"]));
@@ -280,11 +280,11 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             Some(BlockType::Container(container))
         }
         "flexible" => {
-            let bounds = object_json["bounds"]
+            let frame = object_json["frame"]
                 .as_object()
-                .map(|_| parse_bounds(&object_json["bounds"]));
+                .map(|_| parse_frame(&object_json["frame"]));
 
-            let mut container = FlexibleContainer::new(bounds);
+            let mut container = FlexibleContainer::new(frame);
 
             if !object_json["direction"].is_null() {
                 container.set_direction(parse_direction(&object_json["direction"]));
@@ -317,36 +317,36 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
     }
 }
 
-fn parse_bounds(bounds_json: &Value) -> Bounds {
-    match bounds_json.as_object() {
-        Some(bounds) => {
-            let point_x = bounds["point"]["x"].as_f64();
-            let point_y = bounds["point"]["y"].as_f64();
-            let size_w = bounds["size"]["width"].as_f64();
-            let size_h = bounds["size"]["height"].as_f64();
+fn parse_frame(frame_json: &Value) -> GeoRect {
+    match frame_json.as_object() {
+        Some(frame) => {
+            let point_x = frame["point"]["x"].as_f64();
+            let point_y = frame["point"]["y"].as_f64();
+            let size_w = frame["size"]["width"].as_f64();
+            let size_h = frame["size"]["height"].as_f64();
 
             match (point_x, point_y, size_w, size_h) {
                 (Some(x), Some(y), Some(w), Some(h)) => {
-                    Bounds::new(w as f32, h as f32, x as f32, y as f32)
+                    GeoRect::new(w as f32, h as f32, x as f32, y as f32)
                 }
-                (Some(x), Some(y), None, None) => Bounds {
-                    point: Some(Point {
+                (Some(x), Some(y), None, None) => GeoRect {
+                    point: Some(GeoPoint {
                         x: x as f32,
                         y: y as f32,
                     }),
                     size: None,
                 },
-                (None, None, Some(w), Some(h)) => Bounds {
+                (None, None, Some(w), Some(h)) => GeoRect {
                     point: None,
-                    size: Some(Size {
+                    size: Some(GeoSize {
                         width: w as f32,
                         height: h as f32,
                     }),
                 },
-                _ => Bounds::none(),
+                _ => GeoRect::none(),
             }
         }
-        _ => Bounds::none(),
+        _ => GeoRect::none(),
     }
 }
 

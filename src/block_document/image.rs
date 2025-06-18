@@ -1,18 +1,18 @@
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::GeoRect;
 use crate::block_document::style::Style;
 
 #[derive(Debug, Clone)]
 pub struct Image {
     pub path: String,
-    pub bounds: Option<Bounds>,
+    pub frame: Option<GeoRect>,
     pub styles: Vec<Style>,
 }
 
 impl Image {
-    pub fn new(path: String, bounds: Option<Bounds>) -> Image {
+    pub fn new(path: String, frame: Option<GeoRect>) -> Image {
         Image {
             path,
-            bounds,
+            frame,
             styles: Vec::new(),
         }
     }
@@ -21,7 +21,7 @@ impl Image {
         self.styles.push(style);
     }
 
-    pub fn set_bounds(&mut self, bounds: Bounds) {
-        self.bounds = Some(bounds);
+    pub fn set_frame(&mut self, frame: GeoRect) {
+        self.frame = Some(frame);
     }
 }

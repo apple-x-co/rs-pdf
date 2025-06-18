@@ -1,19 +1,19 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
-use crate::block_document::geometry::Bounds;
+use crate::block_document::geometry::GeoRect;
 
 #[derive(Debug, Clone)]
 pub struct FlexibleContainer {
     pub blocks: Vec<BlockType>,
-    pub bounds: Option<Bounds>,
+    pub frame: Option<GeoRect>,
     pub direction: Direction,
 }
 
 impl FlexibleContainer {
-    pub fn new(bounds: Option<Bounds>) -> FlexibleContainer {
+    pub fn new(frame: Option<GeoRect>) -> FlexibleContainer {
         FlexibleContainer {
             blocks: Vec::new(),
-            bounds,
+            frame,
             direction: Direction::Horizontal,
         }
     }
@@ -26,7 +26,7 @@ impl FlexibleContainer {
         self.direction = direction;
     }
 
-    pub fn set_bounds(&mut self, bounds: Bounds) {
-        self.bounds = Some(bounds);
+    pub fn set_frame(&mut self, frame: GeoRect) {
+        self.frame = Some(frame);
     }
 }
