@@ -730,6 +730,154 @@
                 }
               }
             ]
+          },
+          {
+            "type": "objects",
+            "objects": [
+              {
+                "type": "image",
+                "path": "assets/images/channel.png"
+              },
+              {
+                "type": "image",
+                "path": "assets/images/channel.png"
+              }
+            ]
+          },
+          {
+            "type": "objects",
+            "objects": [
+              {
+                "type": "object",
+                "object": {
+                  "type": "image",
+                  "path": "assets/images/channel.png"
+                },
+                "style": {
+                  "space": {
+                    "top": 1,
+                    "right": 1,
+                    "bottom": 1,
+                    "left": 1
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "object": {
+                  "type": "image",
+                  "path": "assets/images/channel.png"
+                },
+                "style": {
+                  "space": {
+                    "top": 1,
+                    "right": 0.5,
+                    "bottom": 1,
+                    "left": 0.5
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "objects",
+            "objects": [
+              {
+                "type": "rectangle",
+                "frame": {
+                  "point": null,
+                  "size": {
+                    "width": 50,
+                    "height": 50
+                  }
+                },
+                "style": {
+                  "background_color": {
+                    "red": 0,
+                    "green": 0,
+                    "blue": 100
+                  }
+                }
+              },
+              {
+                "type": "rectangle",
+                "frame": {
+                  "point": null,
+                  "size": {
+                    "width": 50,
+                    "height": 50
+                  }
+                },
+                "style": {
+                  "background_color": {
+                    "red": 0,
+                    "green": 100,
+                    "blue": 0
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "objects",
+            "objects": [
+              {
+                "type": "object",
+                "object": {
+                  "type": "rectangle",
+                  "frame": {
+                    "point": null,
+                    "size": {
+                      "width": 50,
+                      "height": 50
+                    }
+                  },
+                  "style": {
+                    "background_color": {
+                      "red": 0,
+                      "green": 0,
+                      "blue": 100
+                    }
+                  }
+                },
+                "style": {
+                  "space": {
+                    "top": 1,
+                    "right": 0.5,
+                    "bottom": 1,
+                    "left": 0.5
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "object": {
+                  "type": "rectangle",
+                  "frame": {
+                    "point": null,
+                    "size": {
+                      "width": 50,
+                      "height": 50
+                    }
+                  },
+                  "style": {
+                    "background_color": {
+                      "red": 0,
+                      "green": 100,
+                      "blue": 0
+                    }
+                  }
+                },
+                "style": {
+                  "space": {
+                    "top": 1,
+                    "right": 0.5,
+                    "bottom": 1,
+                    "left": 0.5
+                  }
+                }
+              }
+            ]
           }
         ]
       }

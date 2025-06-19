@@ -15,6 +15,10 @@ impl Rectangle {
         }
     }
 
+    pub fn set_frame(&mut self, frame: GeoRect) {
+        self.frame = Some(frame);
+    }
+
     pub fn add_style(&mut self, style: Style) {
         self.styles.push(style);
     }

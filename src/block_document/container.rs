@@ -154,26 +154,6 @@ impl Container {
                 (false, Some(container_drawn_frame))
             }
             BlockType::Wrapper(block_wrapper) => {
-                // for style in block_wrapper.styles.iter() {
-                //     match style {
-                //         Style::Space(space) => {
-                //             let f = GeoRect::new(
-                //                 frame_width,
-                //                 frame_height,
-                //                 frame_x,
-                //                 frame_y,
-                //             ).inset(space);
-                //
-                //             frame_width = f.width();
-                //             frame_height = f.height();
-                //             frame_x = f.min_x();
-                //             frame_y = f.min_y();
-                //         }
-                //         _ => {}
-                //     }
-                // }
-
-
                 if block_wrapper.frame.is_some()
                     && block_wrapper.frame.as_ref().unwrap().point.is_some()
                     && block_wrapper.frame.as_ref().unwrap().size.is_some()
@@ -369,7 +349,23 @@ impl Container {
                     return (true, None);
                 }
 
-                (false, Some(GeoRect::zero())) // FIXME: これあってる...?
+                if block_rectangle.frame.is_some()
+                    && block_rectangle.frame.as_ref().unwrap().point.is_none()
+                    && block_rectangle.frame.as_ref().unwrap().size.is_some()
+                {
+                    let frame = GeoRect::new(
+                        block_rectangle.frame.as_ref().unwrap().size.as_ref().unwrap().width,
+                        block_rectangle.frame.as_ref().unwrap().size.as_ref().unwrap().height,
+                        drawn_frame.max_x(),
+                        drawn_frame.min_y(),
+                    );
+
+                    block_rectangle.set_frame(frame.clone());
+
+                    return (false, Some(frame));
+                }
+
+                (false, Some(GeoRect::zero()))
             }
             BlockType::Text(block_text) => {
                 let (
