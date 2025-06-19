@@ -8,15 +8,13 @@ use crate::block_document::geometry::{GeoRect, GeoPoint, GeoSize};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
-use crate::block_document::style::{
-    Alignment, BorderStyle, HorizontalAlignment, RgbColor, Style, TextOutlineStyle,
-    TextStyle, VerticalAlignment,
-};
+use crate::block_document::style::{Alignment, BorderStyle, HorizontalAlignment, RgbColor, Space, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
 use crate::block_document::text::Text;
 use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
 use crate::block_document::flexible_item::FlexibleItem;
+use crate::block_document::wrapper::Wrapper;
 // const PAGE_A4_WIDTH: f32 = 210.0;
 // const PAGE_A4_HEIGHT: f32 = 297.0;
 
@@ -95,6 +93,12 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 return Some(BlockType::Text(text));
             }
 
+            if !style["alignment"].is_null() {
+                if let Some(alignment) = parse_alignment(&style["alignment"]) {
+                    text.add_style(alignment);
+                }
+            }
+
             if !style["border_color"].is_null() {
                 if let Some(border_color) = parse_border_color(&style["border_color"]) {
                     text.add_style(border_color);
@@ -110,12 +114,6 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             if !style["border_width"].is_null() {
                 if let Some(border_width) = parse_border_width(&style["border_width"]) {
                     text.add_style(border_width);
-                }
-            }
-
-            if !style["alignment"].is_null() {
-                if let Some(alignment) = parse_alignment(&style["alignment"]) {
-                    text.add_style(alignment);
                 }
             }
 
@@ -256,6 +254,22 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Rectangle(rectangle))
         }
+        "object" => {
+            if let Some(object) = parse_object(&object_json["object"]) {
+                let mut wrapper = Wrapper::new(object);
+
+                let style = &object_json["style"];
+                if !style["space"].is_null() {
+                    if let Some(space) = parse_space(&style["space"]) {
+                        wrapper.add_style(space);
+                    }
+                }
+
+                return Some(BlockType::Wrapper(Box::from(wrapper)));
+            }
+
+            None
+        },
         "objects" => {
             let frame = object_json["frame"]
                 .as_object()
@@ -408,6 +422,19 @@ fn parse_alignment(alignment_json: &Value) -> Option<Style> {
             _ => None,
         },
     }))
+}
+
+fn parse_space(space_json: &Value) -> Option<Style> {
+    Some(
+        Style::Space(
+            Space {
+                top: space_json["top"].as_f64().unwrap() as f32,
+                right: space_json["right"].as_f64().unwrap() as f32,
+                bottom: space_json["bottom"].as_f64().unwrap() as f32,
+                left: space_json["left"].as_f64().unwrap() as f32,
+            }
+        )
+    )
 }
 
 fn parse_text_fill_color(text_fill_color_json: &Value) -> Option<Style> {

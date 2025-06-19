@@ -69,8 +69,26 @@ impl GeoRect {
             + self.size.as_ref().unwrap_or(&Default::default()).height
     }
 
-    // NOTE: 内側に余白を作る
-    pub fn inset(&self, space: &Space) -> GeoRect {
+    // // NOTE: 内側に余白を作る
+    // pub fn inset(&self, space: &Space) -> GeoRect {
+    //     GeoRect {
+    //         point: Some(GeoPoint {
+    //             x: self.point.as_ref().unwrap_or(&Default::default()).x + space.left,
+    //             y: self.point.as_ref().unwrap_or(&Default::default()).y + space.top,
+    //         }),
+    //         size: Some(GeoSize {
+    //             width: self.size.as_ref().unwrap_or(&Default::default()).width
+    //                 - space.left
+    //                 - space.right,
+    //             height: self.size.as_ref().unwrap_or(&Default::default()).height
+    //                 - space.top
+    //                 - space.bottom,
+    //         }),
+    //     }
+    // }
+
+    // NOTE: 外側に余白を作る
+    pub fn padding(&self, space: &Space) -> GeoRect {
         GeoRect {
             point: Some(GeoPoint {
                 x: self.point.as_ref().unwrap_or(&Default::default()).x + space.left,
@@ -78,11 +96,11 @@ impl GeoRect {
             }),
             size: Some(GeoSize {
                 width: self.size.as_ref().unwrap_or(&Default::default()).width
-                    - space.left
-                    - space.right,
+                    + space.left
+                    + space.right,
                 height: self.size.as_ref().unwrap_or(&Default::default()).height
-                    - space.top
-                    - space.bottom,
+                    + space.top
+                    + space.bottom,
             }),
         }
     }

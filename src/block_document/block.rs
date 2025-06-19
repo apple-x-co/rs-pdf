@@ -5,6 +5,7 @@ use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::text::Text;
+use crate::block_document::wrapper::Wrapper;
 
 #[derive(Debug, Clone)]
 pub enum BlockType {
@@ -15,4 +16,5 @@ pub enum BlockType {
     Rectangle(Rectangle),
     Text(Text),
     Image(Image),
+    Wrapper(Box<Wrapper>),
 }

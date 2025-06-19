@@ -82,6 +82,15 @@ fn draw(
                 draw(doc, page_index, &lb_frame, font_path, block);
             }
         }
+        BlockType::Wrapper(block_wrapper) => {
+            let lb_frame = block_wrapper
+                .frame
+                .as_ref()
+                .unwrap_or(&GeoRect::none())
+                .transform(parent_frame);
+
+            draw(doc, page_index, &lb_frame, font_path, &block_wrapper.block);
+        }
         BlockType::Flexible(flexible_container) => {
             let lb_frame = flexible_container
                 .frame

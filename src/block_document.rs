@@ -14,3 +14,4 @@ pub mod rectangle;
 pub mod style;
 pub mod text;
 pub mod text_renderer;
+pub mod wrapper;

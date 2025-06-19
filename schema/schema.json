@@ -283,6 +283,9 @@
               "items": {
                 "anyOf": [
                   {
+                    "$ref": "#/definitions/object/definitions/object"
+                  },
+                  {
                     "$ref": "#/definitions/object/definitions/text"
                   },
                   {
@@ -319,6 +322,43 @@
           },
           "required": [
             "objects"
+          ]
+        },
+        "object": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "object"
+            },
+            "object": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/object/definitions/text"
+                },
+                {
+                  "$ref": "#/definitions/object/definitions/image"
+                },
+                {
+                  "$ref": "#/definitions/object/definitions/rectangle"
+                }
+              ]
+            },
+            "style": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "space": {
+                  "$ref": "#/definitions/style/definitions/space"
+                }
+              }
+            }
+          },
+          "required": [
+            "type",
+            "object"
           ]
         },
         "flexible": {

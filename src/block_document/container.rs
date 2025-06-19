@@ -6,6 +6,7 @@ use crate::block_document::image::Image;
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::measure_text;
 use image::{GenericImageView, ImageError};
+use crate::block_document::style::Style;
 
 #[derive(Debug, Clone)]
 pub struct Container {
@@ -46,7 +47,6 @@ impl Container {
         }
     }
 
-    // FIXME: styles に Space が場合は insets した矩形が描画開始位置サイズになる。矩形自体は変わらない。
     fn apply_block_constraints(
         block: &mut BlockType,
         parent_frame: &GeoRect,
@@ -152,6 +152,81 @@ impl Container {
                 block_container.set_frame(container_drawn_frame.clone());
 
                 (false, Some(container_drawn_frame))
+            }
+            BlockType::Wrapper(block_wrapper) => {
+                // for style in block_wrapper.styles.iter() {
+                //     match style {
+                //         Style::Space(space) => {
+                //             let f = GeoRect::new(
+                //                 frame_width,
+                //                 frame_height,
+                //                 frame_x,
+                //                 frame_y,
+                //             ).inset(space);
+                //
+                //             frame_width = f.width();
+                //             frame_height = f.height();
+                //             frame_x = f.min_x();
+                //             frame_y = f.min_y();
+                //         }
+                //         _ => {}
+                //     }
+                // }
+
+
+                if block_wrapper.frame.is_some()
+                    && block_wrapper.frame.as_ref().unwrap().point.is_some()
+                    && block_wrapper.frame.as_ref().unwrap().size.is_some()
+                {
+                    let mut inner_drawn_frame = block_wrapper.frame.clone().unwrap();
+
+                    for style in block_wrapper.styles.iter() {
+                        match style {
+                            Style::Space(space) => {
+                                inner_drawn_frame = inner_drawn_frame.padding(space);
+                            }
+                            _ => {}
+                        }
+                    }
+
+                    return (true, Some(inner_drawn_frame));
+                }
+
+                let (is_fixed, frame) = Self::apply_block_constraints(
+                    &mut block_wrapper.block,
+                    parent_frame, // NOTE: 合ってないかも...
+                    &GeoRect::zero(),
+                    &Direction::Horizontal,
+                    font_path,
+                );
+
+                if is_fixed {
+                    return (true, None);
+                }
+
+                if let Some(frame) = frame {
+                    let mut inner_drawn_frame = GeoRect::new(
+                        frame.width(),
+                        frame.height(),
+                        drawn_frame.max_x(),
+                        drawn_frame.min_y(),
+                    );
+
+                    for style in block_wrapper.styles.iter() {
+                        match style {
+                            Style::Space(space) => {
+                                inner_drawn_frame = inner_drawn_frame.padding(space);
+                            }
+                            _ => {}
+                        }
+                    }
+
+                    block_wrapper.set_frame(inner_drawn_frame.clone());
+
+                    return (false, Some(inner_drawn_frame))
+                }
+
+                (false, None)
             }
             BlockType::Flexible(flexible_container) => {
                 let count = flexible_container.blocks.len();

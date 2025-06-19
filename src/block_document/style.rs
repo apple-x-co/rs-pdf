@@ -38,7 +38,7 @@ pub enum BorderStyle {
     Dash(i64),
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct Space {
     pub top: f32,    // NOTE: mm
     pub right: f32,  // NOTE: mm
