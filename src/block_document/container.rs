@@ -228,23 +228,6 @@ impl Container {
                 let mut i = 0;
 
                 for block in flexible_container.blocks.iter_mut() {
-                    let item_frame = match flexible_container.direction {
-                        Direction::Horizontal => GeoRect {
-                            point: Some(GeoPoint {
-                                x: i as f32 * item_width,
-                                y: 0.0,
-                            }),
-                            size: None,
-                        },
-                        Direction::Vertical => GeoRect {
-                            point: Some(GeoPoint {
-                                x: 0.0,
-                                y: i as f32 * item_height,
-                            }),
-                            size: None,
-                        },
-                    };
-
                     // NOTE: FlexItem の場合は "アイテム幅 OR アイテム高さ" を設定
                     match block {
                         BlockType::FlexibleItem(flexible_item) => {
@@ -273,6 +256,23 @@ impl Container {
                         }
                         _ => {}
                     }
+
+                    let item_frame = match flexible_container.direction {
+                        Direction::Horizontal => GeoRect {
+                            point: Some(GeoPoint {
+                                x: i as f32 * item_width,
+                                y: 0.0,
+                            }),
+                            size: None,
+                        },
+                        Direction::Vertical => GeoRect {
+                            point: Some(GeoPoint {
+                                x: 0.0,
+                                y: i as f32 * item_height,
+                            }),
+                            size: None,
+                        },
+                    };
 
                     let (is_fixed, frame) = Self::apply_block_constraints(
                         block,
