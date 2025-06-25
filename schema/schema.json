@@ -156,6 +156,9 @@
                 },
                 "text_outline_style": {
                   "$ref": "#/definitions/style/definitions/text_outline_style"
+                },
+                "text_wrap": {
+                  "$ref": "#/definitions/style/definitions/text_wrap"
                 }
               }
             }
@@ -592,6 +595,32 @@
               ]
             }
           }
+        },
+        "text_wrap" : {
+          "type" : "object",
+          "properties" : {
+            "mode" : {
+              "type" : "string",
+              "enum" : [
+                "none",
+                "word",
+                "character"
+              ]
+            },
+            "break_anywhere" : {
+              "type" : "boolean"
+            },
+            "overflow" : {
+              "type" : "string",
+              "enum" : [
+                "clip",
+                "ellipsis"
+              ]
+            }
+          },
+          "required" : [
+            "mode"
+          ]
         }
       }
     }

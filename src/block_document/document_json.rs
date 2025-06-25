@@ -8,7 +8,7 @@ use crate::block_document::geometry::{GeoRect, GeoPoint, GeoSize};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::rectangle::Rectangle;
-use crate::block_document::style::{Alignment, BorderStyle, HorizontalAlignment, RgbColor, Space, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
+use crate::block_document::style::{Alignment, BorderStyle, HorizontalAlignment, RgbColor, Space, Style, TextOutlineStyle, TextStyle, TextWrap, TextWrapMode, TextOverflow, VerticalAlignment};
 use crate::block_document::text::Text;
 use serde_json::Value;
 use std::fs::read_to_string;
@@ -142,6 +142,12 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             if !style["text_style"].is_null() {
                 if let Some(text_style) = parse_text_style(&style["text_style"]) {
                     text.add_style(text_style);
+                }
+            }
+
+            if !style["text_wrap"].is_null() {
+                if let Some(text_wrap) = parse_text_wrap(&style["text_wrap"]) {
+                    text.add_style(text_wrap);
                 }
             }
 
@@ -472,4 +478,27 @@ fn parse_text_style(text_style_json: &Value) -> Option<Style> {
         "fill_stroke" => Some(Style::TextStyle(TextStyle::FillStroke)),
         _ => None,
     }
+}
+
+fn parse_text_wrap(text_wrap_json: &Value) -> Option<Style> {
+    let mode = match text_wrap_json["mode"].as_str().unwrap() {
+        "none" => TextWrapMode::None,
+        "word" => TextWrapMode::Word,
+        "character" => TextWrapMode::Character,
+        _ => return None,
+    };
+
+    let break_anywhere = text_wrap_json["break_anywhere"].as_bool().unwrap_or(false);
+
+    let overflow = match text_wrap_json["overflow"].as_str().unwrap_or("clip") {
+        "clip" => TextOverflow::Clip,
+        "ellipsis" => TextOverflow::Ellipsis,
+        _ => TextOverflow::Clip,
+    };
+
+    Some(Style::TextWrap(TextWrap {
+        mode,
+        break_anywhere,
+        overflow,
+    }))
 }

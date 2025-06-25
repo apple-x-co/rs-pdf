@@ -1,12 +1,12 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::px_to_mm;
-use crate::block_document::geometry::{GeoRect, GeoPoint, GeoSize};
+use crate::block_document::geometry::{GeoPoint, GeoRect, GeoSize};
 use crate::block_document::image::Image;
+use crate::block_document::style::{Style, TextWrapMode};
 use crate::block_document::text::Text;
-use crate::block_document::text_renderer::measure_text;
+use crate::block_document::text_renderer::{measure_text, wrap_text_by_character};
 use image::{GenericImageView, ImageError};
-use crate::block_document::style::Style;
 
 #[derive(Debug, Clone)]
 pub struct Container {
@@ -503,7 +503,7 @@ impl Container {
     }
 
     fn calculate_text_constraints(
-        block_text: &Text,
+        block_text: &mut Text,
         drawn_frame: &GeoRect,
         direction: &Direction,
         font_path: &String,
@@ -530,21 +530,72 @@ impl Container {
             )
         };
 
-        // NOTE: グリフサイズを取得
-        let text_size = measure_text(
-            &block_text.text,
-            block_text.font_size,
-            block_text.font_path.as_ref().unwrap_or(&font_path),
-        );
+        let text_wrap = block_text.get_text_wrap();
+        let use_font_path = block_text.font_path.as_ref().unwrap_or(font_path);
 
-        // NOTE: サイズが未指定の場合はグリフサイズを設定
+        let (text_width, text_height) = if block_text.needs_wrapping() && block_text.get_available_width().is_some() {
+            let available_width = block_text.get_available_width().unwrap();
+            let available_height = block_text.get_available_height();
+
+            // 折り返し処理を実行
+            match text_wrap.mode {
+                TextWrapMode::Character => {
+                    let wrapped = wrap_text_by_character(
+                        &block_text.text,
+                        block_text.font_size,
+                        use_font_path,
+                        available_width,
+                        available_height,
+                        &text_wrap,
+                    );
+
+                    let width = wrapped.total_size.width;
+                    let height = wrapped.total_size.height;
+
+                    // 折り返し結果をTextに保存
+                    block_text.set_wrapped_text(wrapped);
+
+                    (width, height)
+                }
+                TextWrapMode::Word => {
+                    // TODO: 後で実装
+                    // 現在は文字単位折り返しにフォールバック
+                    let wrapped = wrap_text_by_character(
+                        &block_text.text,
+                        block_text.font_size,
+                        use_font_path,
+                        available_width,
+                        available_height,
+                        &text_wrap,
+                    );
+
+                    let width = wrapped.total_size.width;
+                    let height = wrapped.total_size.height;
+
+                    block_text.set_wrapped_text(wrapped);
+
+                    (width, height)
+                }
+                TextWrapMode::None => {
+                    // 通常の計算
+                    let text_size = measure_text(&block_text.text, block_text.font_size, use_font_path);
+                    (text_size.width, text_size.height)
+                }
+            }
+        } else {
+            // 折り返しが不要な場合は通常のサイズ計算
+            let text_size = measure_text(&block_text.text, block_text.font_size, use_font_path);
+            (text_size.width, text_size.height)
+        };
+
+        // NOTE: サイズが未指定の場合はテキストサイズを設定
         if block_text
             .frame
             .as_ref()
             .map_or(true, |b| b.size.is_none())
         {
-            frame_width = text_size.width;
-            frame_height = text_size.height;
+            frame_width = text_width;
+            frame_height = text_height;
         }
 
         // NOTE: 位置が未指定の場合は drawn_frame を基準に座標を決定
@@ -569,8 +620,8 @@ impl Container {
             frame_height,
             frame_x,
             frame_y,
-            text_size.width,
-            text_size.height,
+            text_width,
+            text_height,
         )
     }
 }

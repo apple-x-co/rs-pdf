@@ -420,32 +420,72 @@ fn draw_text(
                 .add_external_font(File::open(block_text.font_path.as_ref().unwrap_or(font_path)).unwrap())
                 .unwrap();
 
-            // NOTE: 改行を考慮無し
-            if !block_text.text.contains("\n") {
+            // // NOTE: 改行を考慮無し
+            // if !block_text.text.contains("\n") {
+            //     layer2.use_text(
+            //         block_text.text.clone(),
+            //         block_text.font_size,
+            //         Mm(lb_frame.min_x() + x_offset),
+            //         Mm(lb_frame.min_y() - y_offset),
+            //         &font,
+            //     );
+            //
+            //     return;
+            // }
+            //
+            // // NOTE: 改行を考慮して描画
+            // let texts: Vec<&str> = block_text.text.split("\n").collect();
+            // let line_height = lb_frame.height() / texts.iter().count() as f32;
+            // let mut current_y = lb_frame.max_y() - line_height - y_offset;
+            // for line in texts {
+            //     layer2.use_text(
+            //         line,
+            //         block_text.font_size,
+            //         Mm(lb_frame.min_x() + x_offset),
+            //         Mm(current_y),
+            //         &font,
+            //     );
+            //     current_y -= line_height;
+            // }
+
+            // NOTE: 折り返し結果を使用してテキストを描画
+            let display_lines = block_text.get_display_text();
+
+            if display_lines.len() == 1 && !display_lines[0].contains('\n') {
+                // NOTE: 単一行の場合
                 layer2.use_text(
-                    block_text.text.clone(),
+                    display_lines[0].clone(),
                     block_text.font_size,
                     Mm(lb_frame.min_x() + x_offset),
                     Mm(lb_frame.min_y() - y_offset),
                     &font,
                 );
+            } else {
+                // NOTE: 複数行の場合（折り返し結果または元々の改行）
+                let line_height = if let Some(wrapped) = block_text.get_wrapped_text() {
+                    // NOTE: 折り返し結果の行の高さを使用
+                    if !wrapped.lines.is_empty() {
+                        wrapped.total_size.height / wrapped.lines.len() as f32
+                    } else {
+                        lb_frame.height() / display_lines.len() as f32
+                    }
+                } else {
+                    // NOTE: 従来の計算
+                    lb_frame.height() / display_lines.len() as f32
+                };
 
-                return;
-            }
+                let mut current_y = lb_frame.max_y() - line_height - y_offset;
 
-            // NOTE: 改行を考慮して描画
-            let texts: Vec<&str> = block_text.text.split("\n").collect();
-            let line_height = lb_frame.height() / texts.iter().count() as f32;
-            let mut current_y = lb_frame.max_y() - line_height - y_offset;
-            for line in texts {
-                layer2.use_text(
-                    line,
-                    block_text.font_size,
-                    Mm(lb_frame.min_x() + x_offset),
-                    Mm(current_y),
-                    &font,
-                );
-                current_y -= line_height;
+                for line in display_lines {
+                    layer2.use_text(
+                        line,
+                        block_text.font_size,
+                        Mm(lb_frame.min_x() + x_offset),
+                        Mm(current_y),
+                        &font,
+                    );
+                    current_y -= line_height;
+                }
             }
         }
     }

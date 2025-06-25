@@ -880,6 +880,94 @@
             ]
           }
         ]
+      },
+      {
+        "objects": [
+          {
+            "type": "text",
+            "text": "English: This is a long English text that should be wrapped automatically using character-based wrapping when it exceeds the specified frame width.",
+            "font_size": 12.0,
+            "frame": {
+              "point": {"x": 10, "y": 10},
+              "size": {"width": 60, "height": 40}
+            },
+            "style": {
+              "text_wrap": {
+                "mode": "character",
+                "overflow": "clip"
+              },
+              "border_width": {"width": 1.0},
+              "border_color": {"red": 255, "green": 0, "blue": 0}
+            }
+          },
+          {
+            "type": "text",
+            "text": "Japanese: これは非常に長い日本語のテキストで、指定されたフレーム幅を超えた場合に文字単位で自動的に折り返される例です。ひらがな、カタカナ、漢字すべてに対応しています。",
+            "font_size": 12.0,
+            "frame": {
+              "point": {"x": 80, "y": 10},
+              "size": {"width": 60, "height": 40}
+            },
+            "style": {
+              "text_wrap": {
+                "mode": "character",
+                "overflow": "ellipsis"
+              },
+              "border_width": {"width": 1.0},
+              "border_color": {"red": 0, "green": 255, "blue": 0}
+            }
+          },
+          {
+            "type": "text",
+            "text": "Mixed: This text contains both English and 日本語 characters and should wrap correctly with character-based wrapping.",
+            "font_size": 10.0,
+            "frame": {
+              "point": {"x": 150, "y": 10},
+              "size": {"width": 50, "height": 35}
+            },
+            "style": {
+              "text_wrap": {
+                "mode": "character",
+                "overflow": "ellipsis"
+              },
+              "border_width": {"width": 1.0},
+              "border_color": {"red": 0, "green": 0, "blue": 255}
+            }
+          },
+          {
+            "type": "text",
+            "text": "No wrap example: This text will overflow the frame",
+            "font_size": 12.0,
+            "frame": {
+              "point": {"x": 10, "y": 60},
+              "size": {"width": 50, "height": 20}
+            },
+            "style": {
+              "text_wrap": {
+                "mode": "none"
+              },
+              "border_width": {"width": 1.0},
+              "border_color": {"red": 128, "green": 128, "blue": 128}
+            }
+          },
+          {
+            "type": "text",
+            "text": "Height test: This is a very long text that will test the height overflow behavior. It should either be clipped or show ellipsis depending on the overflow setting. Let's see how it handles multiple lines that exceed the available height.",
+            "font_size": 9.0,
+            "frame": {
+              "point": {"x": 70, "y": 60},
+              "size": {"width": 40, "height": 25}
+            },
+            "style": {
+              "text_wrap": {
+                "mode": "character",
+                "overflow": "ellipsis"
+              },
+              "border_width": {"width": 1.0},
+              "border_color": {"red": 255, "green": 128, "blue": 0}
+            }
+          }
+        ]
       }
     ]
   }
