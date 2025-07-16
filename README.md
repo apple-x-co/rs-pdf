@@ -24,8 +24,8 @@ rs-pdf -i input.json -o output.pdf
 
 ### オプション
 
-- `-i, --input-path <PATH>` : 入力JSONファイルのパス
-- `-o, --output-path <PATH>` : 出力PDFファイルのパス
+- `-i, --input <PATH>` : 入力JSONファイルのパス
+- `-o, --output <PATH>` : 出力PDFファイルのパス
 - `-d, --debug` : デバッグモード（グリッド表示）
 - `-a, --allow-override` : 既存ファイルの上書きを許可
 
