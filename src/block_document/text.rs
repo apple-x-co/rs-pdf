@@ -8,8 +8,9 @@ pub struct Text {
     pub font_size: f32, // NOTE: PT
     pub font_path: Option<String>,
     pub frame: Option<GeoRect>,
-    pub text_size: Option<GeoSize>,
     pub styles: Vec<Style>,
+    pub wrap_width: Option<f32>, // NOTE: mm
+    pub wrapped_size: Option<GeoSize>,
     pub wrapped_text: Option<WrappedText>,
 }
 
@@ -25,8 +26,9 @@ impl Text {
             font_size,
             font_path,
             frame,
-            text_size: None,
             styles: Vec::new(),
+            wrap_width: None,
+            wrapped_size: None,
             wrapped_text: None,
         }
     }
@@ -38,9 +40,9 @@ impl Text {
     pub fn set_frame(&mut self, frame: GeoRect) {
         self.frame = Some(frame);
     }
-    
+
     pub fn set_text_size(&mut self, size: GeoSize) {
-        self.text_size = Some(size);
+        self.wrapped_size = Some(size);
     }
 
     pub fn get_text_wrap(&self) -> TextWrap {
@@ -54,6 +56,11 @@ impl Text {
     }
 
     pub fn needs_wrapping(&self) -> bool {
+        if self.wrap_width.is_some() {
+            let wrap = self.get_text_wrap();
+            return !matches!(wrap.mode, crate::block_document::style::TextWrapMode::None);
+        }
+
         if let Some(frame) = &self.frame {
             if frame.size.is_some() {
                 let wrap = self.get_text_wrap();
@@ -64,7 +71,15 @@ impl Text {
         false
     }
 
+    pub fn set_wrap_width(&mut self, wrap_width: f32) {
+        self.wrap_width = Some(wrap_width);
+    }
+
     pub fn get_available_width(&self) -> Option<f32> {
+        if let Some(wrap_width) = self.wrap_width {
+            return Some(wrap_width);
+        }
+
         self.frame.as_ref()?.size.as_ref().map(|s| s.width)
     }
 

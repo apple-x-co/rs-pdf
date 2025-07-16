@@ -328,8 +328,29 @@ impl Container {
             }
             BlockType::FlexibleItem(flexible_item) => {
                 if let Some(frame) = flexible_item.frame.as_ref() {
+                    let block = &mut flexible_item.block;
+                    match block {
+                        BlockType::Text(block_text) => {
+                            let text_wrap = block_text.get_text_wrap();
+                            match text_wrap.mode {
+                                TextWrapMode::Word => {
+                                    if block_text.frame.is_none() {
+                                        block_text.set_wrap_width(frame.width());
+                                    }
+                                }
+                                TextWrapMode::Character => {
+                                    if block_text.frame.is_none() {
+                                        block_text.set_wrap_width(frame.width());
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                        _ => {}
+                    }
+
                     let (_, frame) = Self::apply_block_constraints(
-                        &mut flexible_item.block,
+                        block,
                         frame,
                         &GeoRect::zero(),
                         &Direction::Horizontal,

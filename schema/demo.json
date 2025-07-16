@@ -968,6 +968,103 @@
             }
           }
         ]
+      },
+      {
+        "objects": [
+          {
+            "type": "flexible",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                  "font_size": 20,
+                  "style": {
+                    "text_wrap": {
+                      "mode": "character"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+                  "font_size": 20,
+                  "style": {
+                    "text_wrap": {
+                      "mode": "character"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+                  "font_size": 20,
+                  "style": {
+                    "text_wrap": {
+                      "mode": "character"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "HELLO WORLD",
+            "font_size": 20
+          },
+          {
+            "type": "flexible",
+            "objects": [
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+                  "font_size": 20,
+                  "style": {
+                    "text_wrap": {
+                      "mode": "character"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+                  "font_size": 20,
+                  "style": {
+                    "text_wrap": {
+                      "mode": "character"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "flexible_item",
+                "object": {
+                  "type": "text",
+                  "text": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                  "font_size": 20,
+                  "style": {
+                    "text_wrap": {
+                      "mode": "character"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   }
