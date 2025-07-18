@@ -374,11 +374,20 @@ impl Container {
                     && block_rectangle.frame.as_ref().unwrap().point.is_none()
                     && block_rectangle.frame.as_ref().unwrap().size.is_some()
                 {
+                    let frame_x = match direction {
+                        Direction::Vertical => drawn_frame.min_x(),
+                        Direction::Horizontal => drawn_frame.max_x(),
+                    };
+                    let frame_y = match direction {
+                        Direction::Vertical => drawn_frame.max_y(),
+                        Direction::Horizontal => drawn_frame.min_y(),
+                    };
+
                     let frame = GeoRect::new(
                         block_rectangle.frame.as_ref().unwrap().size.as_ref().unwrap().width,
                         block_rectangle.frame.as_ref().unwrap().size.as_ref().unwrap().height,
-                        drawn_frame.max_x(),
-                        drawn_frame.min_y(),
+                        frame_x,
+                        frame_y,
                     );
 
                     block_rectangle.set_frame(frame.clone());
