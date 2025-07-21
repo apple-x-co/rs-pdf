@@ -2,6 +2,169 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
+    "container": {
+      "definitions": {
+        "objects": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "objects"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/container/definitions/object"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/text"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/image"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/line"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/rectangle"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/objects"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/flexible"
+                  }
+                ]
+              }
+            },
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          },
+          "required": [
+            "objects"
+          ]
+        },
+        "object": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "object"
+            },
+            "object": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/object/definitions/text"
+                },
+                {
+                  "$ref": "#/definitions/object/definitions/image"
+                },
+                {
+                  "$ref": "#/definitions/object/definitions/rectangle"
+                }
+              ]
+            },
+            "style": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "space": {
+                  "$ref": "#/definitions/style/definitions/space"
+                }
+              }
+            }
+          },
+          "required": [
+            "type",
+            "object"
+          ]
+        },
+        "flexible": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "flexible"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/object/definitions/text"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/image"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/line"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/rectangle"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/objects"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/flexible"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/flexible_item"
+                  }
+                ]
+              }
+            },
+            "frame": {
+              "$ref": "#/definitions/geometry/definitions/frame"
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          },
+          "required": [
+            "objects"
+          ]
+        },
+        "flexible_item": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "flexible_item"
+            },
+            "object": {
+              "$ref": "#/definitions/object/definitions/text"
+            }
+          },
+          "required": [
+            "type",
+            "object"
+          ]
+        }
+      }
+    },
     "geometry": {
       "definitions": {
         "point": {
@@ -273,165 +436,6 @@
           "required": [
             "type"
           ]
-        },
-        "objects": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "objects"
-            },
-            "objects": {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/object/definitions/object"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/text"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/image"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/line"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/rectangle"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/objects"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/flexible"
-                  }
-                ]
-              }
-            },
-            "frame": {
-              "$ref": "#/definitions/geometry/definitions/frame"
-            },
-            "direction": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "enum": [
-                "horizontal",
-                "vertical"
-              ]
-            }
-          },
-          "required": [
-            "objects"
-          ]
-        },
-        "object": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "object"
-            },
-            "object": {
-              "anyOf": [
-                {
-                  "$ref": "#/definitions/object/definitions/text"
-                },
-                {
-                  "$ref": "#/definitions/object/definitions/image"
-                },
-                {
-                  "$ref": "#/definitions/object/definitions/rectangle"
-                }
-              ]
-            },
-            "style": {
-              "type": [
-                "object",
-                "null"
-              ],
-              "properties": {
-                "space": {
-                  "$ref": "#/definitions/style/definitions/space"
-                }
-              }
-            }
-          },
-          "required": [
-            "type",
-            "object"
-          ]
-        },
-        "flexible": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "flexible"
-            },
-            "objects": {
-              "type": "array",
-              "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/object/definitions/text"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/image"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/line"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/rectangle"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/objects"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/flexible"
-                  },
-                  {
-                    "$ref": "#/definitions/object/definitions/flexible_item"
-                  }
-                ]
-              }
-            },
-            "frame": {
-              "$ref": "#/definitions/geometry/definitions/frame"
-            },
-            "direction": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "enum": [
-                "horizontal",
-                "vertical"
-              ]
-            }
-          },
-          "required": [
-            "objects"
-          ]
-        },
-        "flexible_item": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "flexible_item"
-            },
-            "object": {
-              "$ref": "#/definitions/object/definitions/text"
-            }
-          },
-          "required": [
-            "type",
-            "object"
-          ]
         }
       }
     },
@@ -667,10 +671,10 @@
                       "$ref": "#/definitions/object/definitions/rectangle"
                     },
                     {
-                      "$ref": "#/definitions/object/definitions/objects"
+                      "$ref": "#/definitions/container/definitions/objects"
                     },
                     {
-                      "$ref": "#/definitions/object/definitions/flexible"
+                      "$ref": "#/definitions/container/definitions/flexible"
                     }
                   ]
                 }
