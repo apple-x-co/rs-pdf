@@ -659,6 +659,9 @@
                 "items": {
                   "anyOf": [
                     {
+                      "$ref": "#/definitions/container/definitions/object"
+                    },
+                    {
                       "$ref": "#/definitions/object/definitions/text"
                     },
                     {
