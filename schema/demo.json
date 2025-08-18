@@ -1065,6 +1065,18 @@
             ]
           }
         ]
+      },
+      {
+        "objects": [
+          {
+            "type": "image",
+            "path": "assets/images/delivery_note_rgb.png"
+          },
+          {
+            "type": "image",
+            "path": "assets/images/delivery_note_rgba.png"
+          }
+        ]
       }
     ]
   }

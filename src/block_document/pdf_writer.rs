@@ -14,6 +14,7 @@ use printpdf::{
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
+use image::DynamicImage;
 
 pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     let mut working_block_document = block_document.clone();
@@ -513,7 +514,9 @@ fn draw_image(
                 .decode()
                 .unwrap();
 
-            let pdf_image = Image::from_dynamic_image(&image);
+            let rgb_image = ensure_rgb_format(image);
+
+            let pdf_image = Image::from_dynamic_image(&rgb_image);
 
             let transform = ImageTransform {
                 translate_x: Some(Mm(lb_frame.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
@@ -585,6 +588,19 @@ fn draw_image(
         }
     }
 }
+
+fn ensure_rgb_format(img: DynamicImage) -> DynamicImage {
+    match img {
+        // すでにRGB形式の場合はそのまま返す
+        DynamicImage::ImageRgb8(_) => img,
+        DynamicImage::ImageRgb16(_) => img,
+        DynamicImage::ImageRgb32F(_) => img,
+
+        // アルファチャンネルがある場合は削除
+        _ => DynamicImage::ImageRgb8(img.to_rgb8()),
+    }
+}
+
 
 fn draw_grid(
     doc: &PdfDocumentReference,
