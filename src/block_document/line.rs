@@ -10,8 +10,8 @@ pub struct Line {
 
 impl Line {
     pub fn new(frame: GeoRect) -> Line {
-        if frame.size.is_none() || frame.point.is_none() {
-            panic!("The frame and points are not supported!");
+        if frame.size.is_none() {
+            panic!("Line frame size is none");
         }
 
         Line {
@@ -22,5 +22,9 @@ impl Line {
 
     pub fn add_style(&mut self, style: Style) {
         self.styles.push(style);
+    }
+
+    pub fn set_frame(&mut self, frame: GeoRect) {
+        self.frame = frame;
     }
 }

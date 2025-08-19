@@ -34,12 +34,12 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
         0.0,
     );
 
-    // NOTE: レイアウト（Frame が確定する）
+    // NOTE: レイアウト（frame を確定する）
     for container in working_block_document.containers.iter_mut() {
         container.apply_constraints(&page_frame, &Direction::Vertical, &working_block_document.font_path);
     }
 
-    // NOTE: 描画（Frame が確定している）
+    // NOTE: 描画（frame が確定している）
     let mut i = 0;
     for container in working_block_document.containers.iter() {
         if i > 0 {

@@ -460,7 +460,53 @@ impl Container {
 
                 (false, Some(GeoRect::new(width, height, x, y)))
             }
-            BlockType::Line(_) => (false, None),
+            BlockType::Line(block_line) => {
+                if block_line.frame.point.is_some()
+                    && block_line.frame.size.is_some()
+                {
+                    let mut inner_drawn_frame = block_line.frame.clone();
+
+                    for style in block_line.styles.iter() {
+                        match style {
+                            Style::Space(space) => {
+                                inner_drawn_frame = inner_drawn_frame.padding(space);
+                            }
+                            _ => {}
+                        }
+                    }
+
+                    return (true, Some(inner_drawn_frame));
+                }
+
+                let frame_x = match direction {
+                    Direction::Vertical => drawn_frame.min_x(),
+                    Direction::Horizontal => drawn_frame.max_x(),
+                };
+                let frame_y = match direction {
+                    Direction::Vertical => drawn_frame.max_y(),
+                    Direction::Horizontal => drawn_frame.min_y(),
+                };
+
+                let mut frame = GeoRect::new(
+                    block_line.frame.size.as_ref().unwrap().width,
+                    block_line.frame.size.as_ref().unwrap().height,
+                    frame_x,
+                    frame_y,
+                );
+
+                for style in block_line.styles.iter() {
+                    match style {
+                        Style::Space(space) => {
+                            frame = frame.padding(space);
+                        }
+                        _ => {}
+                    }
+                }
+
+                block_line.set_frame(frame.clone());
+
+                (false, Some(frame))
+            },
         }
     }
 

@@ -201,6 +201,12 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 return Some(BlockType::Line(line));
             }
 
+            if !style["space"].is_null() {
+                if let Some(space) = parse_space(&style["space"]) {
+                    (line).add_style(space);
+                }
+            }
+
             if !style["border_color"].is_null() {
                 if let Some(border_color) = parse_border_color(&style["border_color"]) {
                     line.add_style(border_color);
