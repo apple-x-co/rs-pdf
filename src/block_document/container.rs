@@ -188,8 +188,14 @@ impl Container {
                     let mut inner_drawn_frame = GeoRect::new(
                         frame.width(),
                         frame.height(),
-                        drawn_frame.max_x(),
-                        drawn_frame.min_y(),
+                        match direction {
+                            Direction::Vertical => drawn_frame.min_x(),
+                            Direction::Horizontal => drawn_frame.max_x(),
+                        },
+                        match direction {
+                            Direction::Vertical => drawn_frame.max_y(),
+                            Direction::Horizontal => drawn_frame.min_y(),
+                        },
                     );
 
                     for style in block_wrapper.styles.iter() {
