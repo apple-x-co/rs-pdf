@@ -227,20 +227,28 @@ impl Container {
                     height = flexible_container.frame.as_ref().unwrap().height();
                 }
 
-                let item_width = width / count as f32;
-                let item_height = height / count as f32;
-
                 let mut inner_drawn_frame = GeoRect::zero();
-                let mut i = 0;
+                let mut item_x = 0.0;
+                let mut item_y = 0.0;
 
                 for block in flexible_container.blocks.iter_mut() {
+                    let mut item_width = width / count as f32;
+                    let mut item_height = height / count as f32;
+
                     // NOTE: FlexItem の場合は "アイテム幅 OR アイテム高さ" を設定
                     match block {
                         BlockType::FlexibleItem(flexible_item) => {
+                            if let Some(basis) = flexible_item.basis {
+                                item_width = width * (basis / 100.0);
+                            }
+                            if let Some(basis) = flexible_item.basis {
+                                item_height = height * (basis / 100.0);
+                            }
+
                             flexible_item.set_frame(match flexible_container.direction {
                                 Direction::Horizontal => GeoRect {
                                     point: Some(GeoPoint {
-                                        x: i as f32 * item_width,
+                                        x: item_x,
                                         y: 0.0,
                                     }),
                                     size: Some(GeoSize {
@@ -251,7 +259,7 @@ impl Container {
                                 Direction::Vertical => GeoRect {
                                     point: Some(GeoPoint {
                                         x: 0.0,
-                                        y: i as f32 * item_height,
+                                        y: item_y,
                                     }),
                                     size: Some(GeoSize {
                                         width: 0.0,
@@ -266,7 +274,7 @@ impl Container {
                     let item_frame = match flexible_container.direction {
                         Direction::Horizontal => GeoRect {
                             point: Some(GeoPoint {
-                                x: i as f32 * item_width,
+                                x: item_x,
                                 y: 0.0,
                             }),
                             size: None,
@@ -274,7 +282,7 @@ impl Container {
                         Direction::Vertical => GeoRect {
                             point: Some(GeoPoint {
                                 x: 0.0,
-                                y: i as f32 * item_height,
+                                y: item_y,
                             }),
                             size: None,
                         },
@@ -313,7 +321,8 @@ impl Container {
                         }
                     }
 
-                    i += 1;
+                    item_x += item_width;
+                    item_y += item_height;
                 }
 
                 let container_drawn_frame = GeoRect::new(

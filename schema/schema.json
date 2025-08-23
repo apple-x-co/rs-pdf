@@ -156,6 +156,11 @@
             },
             "object": {
               "$ref": "#/definitions/object/definitions/text"
+            },
+            "basis": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 100.0
             }
           },
           "required": [

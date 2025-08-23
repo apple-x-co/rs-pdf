@@ -330,9 +330,22 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
         }
         "flexible_item" => {
             if let Some(object) = parse_object(&object_json["object"]) {
-                return Some(BlockType::FlexibleItem(Box::from(FlexibleItem::new(object))));
+                let mut basis: Option<f32> = None;
+
+                if !object_json["basis"].is_null() {
+                    basis = Some(object_json["basis"].as_f64().unwrap() as f32);
+                }
+
+                return Some(
+                    BlockType::FlexibleItem(Box::from(
+                        FlexibleItem::new(
+                            object,
+                            basis,
+                        )
+                    ))
+                );
             }
-            
+
             None
         }
         _ => {
