@@ -7,6 +7,7 @@ use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::style::{BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
 use crate::block_document::text::Text as BlockText;
+use image::DynamicImage;
 use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
     PdfPageIndex, Point, Rect, Rgb, TextRenderingMode,
@@ -14,7 +15,6 @@ use printpdf::{
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
-use image::DynamicImage;
 
 pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     let mut working_block_document = block_document.clone();

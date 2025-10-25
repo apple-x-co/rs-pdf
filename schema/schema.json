@@ -654,6 +654,10 @@
           "type": "string",
           "minLength": 1
         },
+        "auto_pagination": {
+          "type": "boolean",
+          "description": "Automatically paginate blocks that don't fit on the current page"
+        },
         "pages": {
           "type": "array",
           "items": {

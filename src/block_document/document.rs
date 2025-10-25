@@ -12,15 +12,17 @@ pub struct Document {
     pub title: String,
     pub page_size: GeoSize,
     pub font_path: String,
+    pub auto_pagination: bool,
     pub containers: Vec<Container>,
 }
 
 impl Document {
-    pub fn new(title: String, page_size: GeoSize, font_path: String) -> Document {
+    pub fn new(title: String, page_size: GeoSize, font_path: String, auto_pagination: bool) -> Document {
         Document {
             title,
             page_size,
             font_path,
+            auto_pagination,
             containers: Vec::new(),
         }
     }

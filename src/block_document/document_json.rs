@@ -43,6 +43,9 @@ pub fn parse(json_path: &str) -> Document {
             height: json["document"]["height"].as_f64().unwrap() as f32,
         },
         json["document"]["font_path"].as_str().unwrap().to_string(),
+        json["document"]["auto_pagination"]
+            .as_bool()
+            .unwrap_or(false),
     );
 
     json["document"]["pages"]
