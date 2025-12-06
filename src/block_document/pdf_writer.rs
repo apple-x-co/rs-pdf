@@ -1,11 +1,14 @@
 use crate::block_document::block::BlockType;
+use crate::block_document::container::Container;
 use crate::block_document::direction::Direction;
-use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
+use crate::block_document::document::{DPI as BlockDPI, Document as BlockDocument};
 use crate::block_document::geometry::GeoRect;
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
-use crate::block_document::style::{BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment};
+use crate::block_document::style::{
+    BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment,
+};
 use crate::block_document::text::Text as BlockText;
 use image::DynamicImage;
 use printpdf::{
@@ -35,13 +38,23 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     );
 
     // NOTE: レイアウト（frame を確定する）
+    let mut drawable_containers: Vec<Container> = Vec::new();
     for container in working_block_document.containers.iter_mut() {
-        container.apply_constraints(&page_frame, &Direction::Vertical, &working_block_document.font_path);
+        let applied_containers = container.apply_constraints(
+            &page_frame,
+            &Direction::Vertical,
+            &working_block_document.font_path,
+            working_block_document.auto_pagination,
+        );
+
+        for applied_container in applied_containers {
+            drawable_containers.push(applied_container);
+        }
     }
 
     // NOTE: 描画（frame が確定している）
     let mut i = 0;
-    for container in working_block_document.containers.iter() {
+    for container in drawable_containers.iter() {
         if i > 0 {
             (page_index, _) = doc.add_page(
                 Mm(working_block_document.page_size.width),
@@ -57,7 +70,13 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
         }
 
         for block in container.blocks.iter() {
-            draw(&doc, &page_index, &page_frame, &working_block_document.font_path, block);
+            draw(
+                &doc,
+                &page_index,
+                &page_frame,
+                &working_block_document.font_path,
+                block,
+            );
         }
     }
 
@@ -112,9 +131,7 @@ fn draw(
             draw(doc, page_index, &lb_frame, font_path, &flexible_item.block);
         }
         BlockType::Line(line) => draw_line(doc, page_index, line, parent_frame),
-        BlockType::Rectangle(rectangle) => {
-            draw_rectangle(doc, page_index, rectangle, parent_frame)
-        }
+        BlockType::Rectangle(rectangle) => draw_rectangle(doc, page_index, rectangle, parent_frame),
         BlockType::Text(text) => {
             draw_text(doc, page_index, font_path, text, parent_frame);
         }
@@ -335,16 +352,46 @@ fn draw_text(
             let x_offset = match h_alignment {
                 Some(h_a) => match h_a {
                     HorizontalAlignment::Left => 0.0,
-                    HorizontalAlignment::Center => (geo_frame.width() - block_text.frame.as_ref().unwrap_or(&GeoRect::zero()).width()) / 2.0,
-                    HorizontalAlignment::Right => geo_frame.width() - block_text.frame.as_ref().unwrap_or(&GeoRect::zero()).width(),
+                    HorizontalAlignment::Center => {
+                        (geo_frame.width()
+                            - block_text
+                                .frame
+                                .as_ref()
+                                .unwrap_or(&GeoRect::zero())
+                                .width())
+                            / 2.0
+                    }
+                    HorizontalAlignment::Right => {
+                        geo_frame.width()
+                            - block_text
+                                .frame
+                                .as_ref()
+                                .unwrap_or(&GeoRect::zero())
+                                .width()
+                    }
                 },
                 _ => 0.0,
             };
             let y_offset = match v_alignment {
                 Some(v_a) => match v_a {
                     VerticalAlignment::Top => 0.0,
-                    VerticalAlignment::Center => (geo_frame.height() - block_text.frame.as_ref().unwrap_or(&GeoRect::zero()).height()) / 2.0,
-                    VerticalAlignment::Bottom => geo_frame.height() - block_text.frame.as_ref().unwrap_or(&GeoRect::zero()).height(),
+                    VerticalAlignment::Center => {
+                        (geo_frame.height()
+                            - block_text
+                                .frame
+                                .as_ref()
+                                .unwrap_or(&GeoRect::zero())
+                                .height())
+                            / 2.0
+                    }
+                    VerticalAlignment::Bottom => {
+                        geo_frame.height()
+                            - block_text
+                                .frame
+                                .as_ref()
+                                .unwrap_or(&GeoRect::zero())
+                                .height()
+                    }
                 },
                 _ => 0.0,
             };
@@ -353,19 +400,31 @@ fn draw_text(
                 layer1.add_line(Line {
                     points: vec![
                         (
-                            Point::new(Mm(lb_frame.min_x() + x_offset), Mm(lb_frame.min_y() - y_offset)),
+                            Point::new(
+                                Mm(lb_frame.min_x() + x_offset),
+                                Mm(lb_frame.min_y() - y_offset),
+                            ),
                             false,
                         ),
                         (
-                            Point::new(Mm(lb_frame.max_x() + x_offset), Mm(lb_frame.min_y() - y_offset)),
+                            Point::new(
+                                Mm(lb_frame.max_x() + x_offset),
+                                Mm(lb_frame.min_y() - y_offset),
+                            ),
                             false,
                         ),
                         (
-                            Point::new(Mm(lb_frame.max_x() + x_offset), Mm(lb_frame.max_y() - y_offset)),
+                            Point::new(
+                                Mm(lb_frame.max_x() + x_offset),
+                                Mm(lb_frame.max_y() - y_offset),
+                            ),
                             false,
                         ),
                         (
-                            Point::new(Mm(lb_frame.min_x() + x_offset), Mm(lb_frame.max_y() - y_offset)),
+                            Point::new(
+                                Mm(lb_frame.min_x() + x_offset),
+                                Mm(lb_frame.max_y() - y_offset),
+                            ),
                             false,
                         ),
                     ],
@@ -418,7 +477,9 @@ fn draw_text(
             }
 
             let font = doc
-                .add_external_font(File::open(block_text.font_path.as_ref().unwrap_or(font_path)).unwrap())
+                .add_external_font(
+                    File::open(block_text.font_path.as_ref().unwrap_or(font_path)).unwrap(),
+                )
                 .unwrap();
 
             // // NOTE: 改行を考慮無し
@@ -498,9 +559,15 @@ fn draw_image(
     block_image: &BlockImage,
     geo_frame: &GeoRect,
 ) {
-    if !fs::exists(&block_image.path).map_err(|e|{
-        eprintln!("Failed to check if file {} exists due to {}", block_image.path, e);
-    }).unwrap_or(false) {
+    if !fs::exists(&block_image.path)
+        .map_err(|e| {
+            eprintln!(
+                "Failed to check if file {} exists due to {}",
+                block_image.path, e
+            );
+        })
+        .unwrap_or(false)
+    {
         eprintln!("No such file or directory -> {:?}", &block_image.path);
         return;
     }
@@ -521,9 +588,9 @@ fn draw_image(
             let transform = ImageTransform {
                 translate_x: Some(Mm(lb_frame.min_x())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
                 translate_y: Some(Mm(lb_frame.min_y())), // NOTE: 画像の左下基準 なので、(0, 0) に配置すると PDF の左下に画像が配置される。
-                scale_x: None,                            // NOTE: 水平方向の拡縮小
-                scale_y: None,                            // NOTE: 垂直方向の拡縮小
-                rotate: None,                             // NOTE: 回転なし
+                scale_x: None,                           // NOTE: 水平方向の拡縮小
+                scale_y: None,                           // NOTE: 垂直方向の拡縮小
+                rotate: None,                            // NOTE: 回転なし
                 dpi: Some(BlockDPI),
             };
 
@@ -601,12 +668,7 @@ fn ensure_rgb_format(img: DynamicImage) -> DynamicImage {
     }
 }
 
-
-fn draw_grid(
-    doc: &PdfDocumentReference,
-    page_index: &PdfPageIndex,
-    parent_frame: &GeoRect,
-) {
+fn draw_grid(doc: &PdfDocumentReference, page_index: &PdfPageIndex, parent_frame: &GeoRect) {
     let layer1 = doc.get_page(*page_index).add_layer("Layer");
     layer1.set_outline_thickness(0.1);
     layer1.set_outline_color(Color::Rgb(Rgb {
@@ -636,8 +698,14 @@ fn draw_grid(
         if i % 5.0 == 0.0 {
             layer1.add_line(Line {
                 points: vec![
-                    (Point::new(Mm(parent_frame.min_x()), Mm(parent_frame.max_y() - i)), false),
-                    (Point::new(Mm(parent_frame.max_x()), Mm(parent_frame.max_y() - i)), false),
+                    (
+                        Point::new(Mm(parent_frame.min_x()), Mm(parent_frame.max_y() - i)),
+                        false,
+                    ),
+                    (
+                        Point::new(Mm(parent_frame.max_x()), Mm(parent_frame.max_y() - i)),
+                        false,
+                    ),
                 ],
                 is_closed: false,
             });
@@ -647,8 +715,14 @@ fn draw_grid(
 
         layer2.add_line(Line {
             points: vec![
-                (Point::new(Mm(parent_frame.min_x()), Mm(parent_frame.max_y() - i)), false),
-                (Point::new(Mm(parent_frame.max_x()), Mm(parent_frame.max_y() - i)), false),
+                (
+                    Point::new(Mm(parent_frame.min_x()), Mm(parent_frame.max_y() - i)),
+                    false,
+                ),
+                (
+                    Point::new(Mm(parent_frame.max_x()), Mm(parent_frame.max_y() - i)),
+                    false,
+                ),
             ],
             is_closed: false,
         });
@@ -661,8 +735,14 @@ fn draw_grid(
         if i % 5.0 == 0.0 {
             layer1.add_line(Line {
                 points: vec![
-                    (Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.min_y())), false),
-                    (Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.max_y())), false),
+                    (
+                        Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.min_y())),
+                        false,
+                    ),
+                    (
+                        Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.max_y())),
+                        false,
+                    ),
                 ],
                 is_closed: false,
             });
@@ -672,8 +752,14 @@ fn draw_grid(
 
         layer2.add_line(Line {
             points: vec![
-                (Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.min_y())), false),
-                (Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.max_y())), false),
+                (
+                    Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.min_y())),
+                    false,
+                ),
+                (
+                    Point::new(Mm(parent_frame.max_x() - i), Mm(parent_frame.max_y())),
+                    false,
+                ),
             ],
             is_closed: false,
         });

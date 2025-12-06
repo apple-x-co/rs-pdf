@@ -28,10 +28,64 @@ impl Container {
         parent_frame: &GeoRect,
         direction: &Direction,
         font_path: &String,
-    ) {
+        auto_pagination: bool,
+    ) -> Vec<Container> {
+        if auto_pagination {
+            let mut containers: Vec<Container> = Vec::new();
+
+            let mut drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
+            let mut blocks: Vec<BlockType> = Vec::new();
+            for item in self.blocks.iter() {
+                let mut block = item.clone();
+                let (is_fixed, frame) = Self::apply_block_constraints(
+                    &mut block,
+                    &parent_frame,
+                    &drawn_frame,
+                    direction,
+                    font_path,
+                );
+                if is_fixed {
+                    continue;
+                }
+
+                if parent_frame.max_y() < drawn_frame.max_y() + frame.as_ref().unwrap_or(&GeoRect::default()).height() {
+                    containers.push(Container { blocks });
+
+                    drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
+
+                    block = item.clone();
+                    let (_, frame) = Self::apply_block_constraints(
+                        &mut block,
+                        &parent_frame,
+                        &drawn_frame,
+                        direction,
+                        font_path,
+                    );
+
+                    drawn_frame = drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
+
+                    blocks = Vec::new();
+                    blocks.push(block);
+
+                    continue;
+                }
+
+                drawn_frame = drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
+
+                blocks.push(block);
+            }
+
+            if blocks.len() > 0 {
+                containers.push(Container { blocks });
+            }
+
+            return containers;
+        }
+
         let mut drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
 
-        for block in self.blocks.iter_mut() {
+        let mut blocks = self.blocks.clone();
+        for block in blocks.iter_mut() {
             let (is_fixed, frame) = Self::apply_block_constraints(
                 block,
                 &parent_frame,
@@ -45,6 +99,11 @@ impl Container {
 
             drawn_frame = drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
         }
+
+        let mut containers: Vec<Container> = Vec::new();
+        containers.push(Container { blocks });
+
+        containers
     }
 
     fn apply_block_constraints(
