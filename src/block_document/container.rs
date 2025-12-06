@@ -45,6 +45,8 @@ impl Container {
                     font_path,
                 );
                 if is_fixed {
+                    blocks.push(block);
+
                     continue;
                 }
 
