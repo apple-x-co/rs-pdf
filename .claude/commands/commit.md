@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), AskUserQuestion
+allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git log:*), Bash(git branch:*), Bash(git diff:*), AskUserQuestion
 description: Create a git commit
 ---
 
@@ -9,6 +9,7 @@ description: Create a git commit
 - Current git diff (staged and unstaged changes): !`git diff HEAD`
 - Current branch: !`git branch --show-current`
 - Recent commits: !`git log --oneline -10`
+- Branch name for a commit message: !`git branch --show-current`
 
 ## Your task
 
@@ -27,21 +28,31 @@ description: Create a git commit
 
 1. **詳細版（推奨）**: 変更内容の具体的な詳細を含む
    - 形式: `<type>: <主要な変更> <詳細や補足情報> <branch>`
-   - 例: `feat: ユーザー認証機能を追加し JWT トークンベースの認証を実装 issues/#123`
+   - 例:
+     ```text
+     feat: ユーザー認証機能を追加し JWT トークンベースの認証を実装 issues/#123
+     ```
 
 2. **標準版**: 変更の要点を簡潔に表現
    - 形式: `<type>: <変更の要約> <branch>`
-   - 例: `feat: ユーザー認証機能を追加 issues/#123`
+   - 例:
+   ```text
+   feat: ユーザー認証機能を追加 issues/#123
+   ```
 
 3. **簡潔版**: 最小限の情報で変更を表現
    - 形式: `<type>: <変更内容> <branch>`
-   - 例: `feat: 認証機能追加 issues/#123`
+   - 例:
+   ```text
+   feat: 認証機能追加 issues/#123
+   ```
 
 **フォーマット規則**（全候補に適用）:
 - Conventional Commits 形式を使用（`feat`/`fix`/`docs`/`refactor`/`chore`/`test`/`style`/`perf` 等）
 - プレフィックス（`<type>:`）は英語
 - メッセージ本文は日本語
-- 行末に必ずブランチ名を含める（フォーマット: `<branch>` の値をそのまま使用）
+- 1行の長さは72文字以内を推奨（ブランチ名を含む）
+- 行末に必ずブランチ名（`main`/`develop`/`issues/#123`/`feat/#123`/`hotfix/#123` 等）を含める（フォーマット: `<branch>` の値をそのまま使用）
 - ファイル名やコマンドはバッククォーテーション `` ` `` で囲む
 - 英語と日本語の間に半角スペースを入れる
 - 1行で完結（本文や追加行は作成しない）
@@ -58,9 +69,11 @@ description: Create a git commit
 
 ### ステップ4: コミット実行
 
-1. 未ステージの変更がある場合は `git add` で全てステージング
-2. 選択されたメッセージで `git commit -m "<選択されたメッセージ>"` を実行
-3. `git status` でコミット成功を確認
+1. 変更がない場合は「コミット可能な変更がありません」と通知して終了
+2. 未ステージの変更がある場合は `git add` で全てステージング
+3. 選択されたメッセージで `git commit -m "<選択されたメッセージ>"` を実行
+4. コミット失敗時はエラー内容をユーザーに報告
+5. `git status` でコミット成功を確認し、結果を日本語で報告
 
 ## 重要な制約
 
