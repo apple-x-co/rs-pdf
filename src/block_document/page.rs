@@ -9,14 +9,14 @@ use crate::block_document::text_renderer::{measure_text, wrap_text_by_character}
 use image::{GenericImageView, ImageError};
 
 #[derive(Debug, Clone)]
-pub struct Container {
+pub struct Page {
     pub blocks: Vec<BlockType>,
     pub auto_pagination: bool,
 }
 
-impl Container {
-    pub fn new() -> Container {
-        Container { blocks: Vec::new(), auto_pagination: false }
+impl Page {
+    pub fn new() -> Page {
+        Page { blocks: Vec::new(), auto_pagination: false }
     }
 
     pub fn set_auto_pagination(&mut self, auto_pagination: bool) {
@@ -34,9 +34,9 @@ impl Container {
         direction: &Direction,
         font_path: &String,
         auto_pagination: bool,
-    ) -> Vec<Container> {
+    ) -> Vec<Page> {
         if auto_pagination {
-            let mut containers: Vec<Container> = Vec::new();
+            let mut containers: Vec<Page> = Vec::new();
 
             let mut drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
             let mut blocks: Vec<BlockType> = Vec::new();
@@ -56,7 +56,7 @@ impl Container {
                 }
 
                 if parent_frame.max_y() < drawn_frame.max_y() + frame.as_ref().unwrap_or(&GeoRect::default()).height() {
-                    containers.push(Container { blocks, auto_pagination });
+                    containers.push(Page { blocks, auto_pagination });
 
                     drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
 
@@ -83,7 +83,7 @@ impl Container {
             }
 
             if blocks.len() > 0 {
-                containers.push(Container { blocks, auto_pagination });
+                containers.push(Page { blocks, auto_pagination });
             }
 
             return containers;
@@ -107,8 +107,8 @@ impl Container {
             drawn_frame = drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
         }
 
-        let mut containers: Vec<Container> = Vec::new();
-        containers.push(Container { blocks, auto_pagination });
+        let mut containers: Vec<Page> = Vec::new();
+        containers.push(Page { blocks, auto_pagination });
 
         containers
     }

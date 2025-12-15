@@ -1,5 +1,5 @@
 use crate::block_document::block::BlockType;
-use crate::block_document::container::Container;
+use crate::block_document::page::Page;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::{DPI as BlockDPI, Document as BlockDocument};
 use crate::block_document::geometry::GeoRect;
@@ -38,23 +38,23 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     );
 
     // NOTE: レイアウト（frame を確定する）
-    let mut drawable_containers: Vec<Container> = Vec::new();
-    for container in working_block_document.containers.iter_mut() {
-        let applied_containers = container.apply_constraints(
+    let mut drawable_pages: Vec<Page> = Vec::new();
+    for page in working_block_document.pages.iter_mut() {
+        let applied_pages = page.apply_constraints(
             &page_frame,
             &Direction::Vertical,
             &working_block_document.font_path,
-            container.auto_pagination,
+            page.auto_pagination,
         );
 
-        for applied_container in applied_containers {
-            drawable_containers.push(applied_container);
+        for applied_page in applied_pages {
+            drawable_pages.push(applied_page);
         }
     }
 
     // NOTE: 描画（frame が確定している）
     let mut i = 0;
-    for container in drawable_containers.iter() {
+    for page in drawable_pages.iter() {
         if i > 0 {
             (page_index, _) = doc.add_page(
                 Mm(working_block_document.page_size.width),
@@ -69,7 +69,7 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
             draw_grid(&doc, &page_index, &page_frame)
         }
 
-        for block in container.blocks.iter() {
+        for block in page.blocks.iter() {
             draw(
                 &doc,
                 &page_index,

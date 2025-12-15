@@ -1,6 +1,6 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::block_container::BlockContainer;
-use crate::block_document::container::Container;
+use crate::block_document::page::Page;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::Document;
 use crate::block_document::flexible_container::FlexibleContainer;
@@ -50,12 +50,12 @@ pub fn parse(json_path: &str) -> Document {
         .unwrap()
         .iter()
         .for_each(|page_json| {
-            let mut container = Container::new();
+            let mut page = Page::new();
 
             let auto_pagination = page_json["auto_pagination"]
                 .as_bool()
                 .unwrap_or(false);
-            container.set_auto_pagination(auto_pagination);
+            page.set_auto_pagination(auto_pagination);
 
             page_json["objects"]
                 .as_array()
@@ -63,11 +63,11 @@ pub fn parse(json_path: &str) -> Document {
                 .iter()
                 .for_each(|object_json| {
                     if let Some(object) = parse_object(object_json) {
-                        container.add_block(object);
+                        page.add_block(object);
                     }
                 });
 
-            doc.add_container(container);
+            doc.add_page(page);
         });
 
     doc

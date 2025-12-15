@@ -1,6 +1,6 @@
 pub mod block;
 pub mod block_container;
-pub mod container;
+pub mod page;
 pub mod direction;
 pub mod document;
 pub mod document_json;
