@@ -1,22 +1,35 @@
 use crate::block_document::block::BlockType;
 use crate::block_document::block_container::BlockContainer;
-use crate::block_document::page::Page;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::Document;
 use crate::block_document::flexible_container::FlexibleContainer;
-use crate::block_document::geometry::{GeoRect, GeoPoint, GeoSize};
+use crate::block_document::flexible_item::FlexibleItem;
+use crate::block_document::geometry::{GeoPoint, GeoRect, GeoSize};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
+use crate::block_document::page::Page;
 use crate::block_document::rectangle::Rectangle;
-use crate::block_document::style::{Alignment, BorderStyle, HorizontalAlignment, RgbColor, Space, Style, TextOutlineStyle, TextStyle, TextWrap, TextWrapMode, TextOverflow, VerticalAlignment};
+use crate::block_document::style::{
+    Alignment, BorderStyle, HorizontalAlignment, RgbColor, Space, Style, TextOutlineStyle,
+    TextOverflow, TextStyle, TextWrap, TextWrapMode, VerticalAlignment,
+};
 use crate::block_document::text::Text;
+use crate::block_document::wrapper::Wrapper;
 use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
-use crate::block_document::flexible_item::FlexibleItem;
-use crate::block_document::wrapper::Wrapper;
 // const PAGE_A4_WIDTH: f32 = 210.0;
 // const PAGE_A4_HEIGHT: f32 = 297.0;
+const PAGE_TYPE_DYNAMIC: &'static str = "dynamic";
+const PAGE_TYPE_STATIC: &'static str = "static";
+const OBJECT_TYPE_TEXT: &'static str = "text";
+const OBJECT_TYPE_IMAGE: &'static str = "image";
+const OBJECT_TYPE_LINE: &'static str = "line";
+const OBJECT_TYPE_RECTANGLE: &'static str = "rectangle";
+const OBJECT_TYPE_OBJECT: &'static str = "object";
+const OBJECT_TYPE_OBJECTS: &'static str = "objects";
+const OBJECT_TYPE_FLEXIBLE: &'static str = "flexible";
+const OBJECT_TYPE_FLEXIBLE_ITEM: &'static str = "flexible_item";
 
 const JSON_SCHEMA_BYTES: &'static [u8] = include_bytes!("../../schema/schema.json");
 
@@ -49,25 +62,45 @@ pub fn parse(json_path: &str) -> Document {
         .as_array()
         .unwrap()
         .iter()
-        .for_each(|page_json| {
-            let mut page = Page::new();
+        .for_each(|page_json| match page_json["type"].as_str().unwrap() {
+            PAGE_TYPE_STATIC => {
+                let mut page = Page::new();
 
-            let auto_pagination = page_json["auto_pagination"]
-                .as_bool()
-                .unwrap_or(false);
-            page.set_auto_pagination(auto_pagination);
+                let auto_pagination = page_json["auto_pagination"].as_bool().unwrap_or(false);
+                page.set_auto_pagination(auto_pagination);
 
-            page_json["objects"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .for_each(|object_json| {
-                    if let Some(object) = parse_object(object_json) {
-                        page.add_block(object);
-                    }
-                });
+                page_json["objects"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .for_each(|object_json| {
+                        if let Some(object) = parse_object(object_json) {
+                            page.add_block(object);
+                        }
+                    });
 
-            doc.add_page(page);
+                doc.add_page(page);
+            }
+            PAGE_TYPE_DYNAMIC => {
+                let mut page = Page::new();
+
+                page_json["common"]["objects"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .for_each(|object_json| {
+                        if let Some(object) = parse_object(object_json) {
+                            page.add_block(object);
+                        }
+                    });
+
+                // FIXME: page_json["content"]["frame"], page_json["content"]["objects"]
+
+                doc.add_page(page);
+            }
+            _ => {
+                eprintln!("unknown page type");
+            }
         });
 
     doc
@@ -75,7 +108,7 @@ pub fn parse(json_path: &str) -> Document {
 
 fn parse_object(object_json: &Value) -> Option<BlockType> {
     match object_json["type"].as_str().unwrap() {
-        "text" => {
+        OBJECT_TYPE_TEXT => {
             let frame = object_json["frame"]
                 .as_object()
                 .map(|_| parse_frame(&object_json["frame"]));
@@ -158,7 +191,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Text(text))
         }
-        "image" => {
+        OBJECT_TYPE_IMAGE => {
             let image_path = object_json["path"].as_str().unwrap().to_string();
 
             let frame = object_json["frame"]
@@ -193,7 +226,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Image(image))
         }
-        "line" => {
+        OBJECT_TYPE_LINE => {
             let frame = object_json["frame"]
                 .as_object()
                 .map(|_| parse_frame(&object_json["frame"]));
@@ -232,7 +265,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Line(line))
         }
-        "rectangle" => {
+        OBJECT_TYPE_RECTANGLE => {
             let frame = object_json["frame"]
                 .as_object()
                 .map(|_| parse_frame(&object_json["frame"]));
@@ -271,7 +304,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Rectangle(rectangle))
         }
-        "object" => {
+        OBJECT_TYPE_OBJECT => {
             if let Some(object) = parse_object(&object_json["object"]) {
                 let mut wrapper = Wrapper::new(object);
 
@@ -286,8 +319,8 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             }
 
             None
-        },
-        "objects" => {
+        }
+        OBJECT_TYPE_OBJECTS => {
             let frame = object_json["frame"]
                 .as_object()
                 .map(|_| parse_frame(&object_json["frame"]));
@@ -310,7 +343,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Container(container))
         }
-        "flexible" => {
+        OBJECT_TYPE_FLEXIBLE => {
             let frame = object_json["frame"]
                 .as_object()
                 .map(|_| parse_frame(&object_json["frame"]));
@@ -333,7 +366,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
 
             Some(BlockType::Flexible(container))
         }
-        "flexible_item" => {
+        OBJECT_TYPE_FLEXIBLE_ITEM => {
             if let Some(object) = parse_object(&object_json["object"]) {
                 let mut basis: Option<f32> = None;
 
@@ -341,14 +374,9 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                     basis = Some(object_json["basis"].as_f64().unwrap() as f32);
                 }
 
-                return Some(
-                    BlockType::FlexibleItem(Box::from(
-                        FlexibleItem::new(
-                            object,
-                            basis,
-                        )
-                    ))
-                );
+                return Some(BlockType::FlexibleItem(Box::from(FlexibleItem::new(
+                    object, basis,
+                ))));
             }
 
             None
@@ -455,16 +483,12 @@ fn parse_alignment(alignment_json: &Value) -> Option<Style> {
 }
 
 fn parse_space(space_json: &Value) -> Option<Style> {
-    Some(
-        Style::Space(
-            Space {
-                top: space_json["top"].as_f64().unwrap() as f32,
-                right: space_json["right"].as_f64().unwrap() as f32,
-                bottom: space_json["bottom"].as_f64().unwrap() as f32,
-                left: space_json["left"].as_f64().unwrap() as f32,
-            }
-        )
-    )
+    Some(Style::Space(Space {
+        top: space_json["top"].as_f64().unwrap() as f32,
+        right: space_json["right"].as_f64().unwrap() as f32,
+        bottom: space_json["bottom"].as_f64().unwrap() as f32,
+        left: space_json["left"].as_f64().unwrap() as f32,
+    }))
 }
 
 fn parse_text_fill_color(text_fill_color_json: &Value) -> Option<Style> {

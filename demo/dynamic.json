@@ -1,0 +1,550 @@
+{
+  "$schema": "../schema/schema.json",
+  "document": {
+    "title": "rs-pdf",
+    "width": 210.0,
+    "height": 297.0,
+    "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf",
+    "pages": [
+      {
+        "type": "dynamic",
+        "common": {
+          "objects": [
+            {
+              "type": "objects",
+              "direction": "vertical",
+              "objects": [
+                {
+                  "type": "image",
+                  "path": "assets/images/delivery_note_rgb.png"
+                },
+                {
+                  "type": "object",
+                  "object": {
+                    "type": "text",
+                    "text": "〒000-0000",
+                    "font_size": 10
+                  },
+                  "style": {
+                    "space": {
+                      "top": 5.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 0.0
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "object": {
+                    "type": "text",
+                    "text": "日本 都道府県 市町村区 町番号 1-1-1",
+                    "font_size": 10
+                  },
+                  "style": {
+                    "space": {
+                      "top": 2.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 0.0
+                    }
+                  }
+                }
+              ],
+              "frame": {
+                "point": {
+                  "x": 10.0,
+                  "y": 10.0
+                },
+                "size": {
+                  "width": 190.0,
+                  "height": 30.0
+                }
+              }
+            },
+            {
+              "type": "objects",
+              "objects": [
+                {
+                  "type": "flexible",
+                  "objects": [
+                    {
+                      "type": "objects",
+                      "direction": "vertical",
+                      "objects": [
+                        {
+                          "type": "text",
+                          "text": "お届け先",
+                          "font_size": 12,
+                          "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf"
+                        },
+                        {
+                          "type": "object",
+                          "object": {
+                            "type": "text",
+                            "text": "〒0000000",
+                            "font_size": 10
+                          },
+                          "style": {
+                            "space": {
+                              "top": 3.0,
+                              "left": 0.0,
+                              "right": 0.0,
+                              "bottom": 0.0
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "object": {
+                            "type": "text",
+                            "text": "日本 都道府県 市町村区 町番号 1-1-2",
+                            "font_size": 10
+                          },
+                          "style": {
+                            "space": {
+                              "top": 3.0,
+                              "left": 0.0,
+                              "right": 0.0,
+                              "bottom": 0.0
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "object": {
+                            "type": "text",
+                            "text": "山田 太郎 さま",
+                            "font_size": 10
+                          },
+                          "style": {
+                            "space": {
+                              "top": 5.0,
+                              "left": 0.0,
+                              "right": 0.0,
+                              "bottom": 0.0
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "objects",
+                      "direction": "vertical",
+                      "objects": [
+                        {
+                          "type": "text",
+                          "text": "注文者",
+                          "font_size": 12,
+                          "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf"
+                        },
+                        {
+                          "type": "object",
+                          "object": {
+                            "type": "text",
+                            "text": "〒0000000",
+                            "font_size": 10
+                          },
+                          "style": {
+                            "space": {
+                              "top": 3.0,
+                              "left": 0.0,
+                              "right": 0.0,
+                              "bottom": 0.0
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "object": {
+                            "type": "text",
+                            "text": "日本 都道府県 市町村区 町番号 1-1-2",
+                            "font_size": 10
+                          },
+                          "style": {
+                            "space": {
+                              "top": 3.0,
+                              "left": 0.0,
+                              "right": 0.0,
+                              "bottom": 0.0
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "object": {
+                            "type": "text",
+                            "text": "山田 太郎 さま",
+                            "font_size": 10
+                          },
+                          "style": {
+                            "space": {
+                              "top": 5.0,
+                              "left": 0.0,
+                              "right": 0.0,
+                              "bottom": 0.0
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "frame": {
+                "point": {
+                  "x": 10.0,
+                  "y": 40.0
+                },
+                "size": {
+                  "width": 190.0,
+                  "height": 50.0
+                }
+              }
+            },
+            {
+              "type": "objects",
+              "direction": "vertical",
+              "objects": [
+                {
+                  "type": "text",
+                  "text": "ご注文内容",
+                  "font_size": 10
+                },
+                {
+                  "type": "line",
+                  "frame": {
+                    "size": {
+                      "width": 190.0,
+                      "height": 0.0
+                    },
+                    "point": null
+                  },
+                  "style": {
+                    "space": {
+                      "top": 3.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 3.0
+                    },
+                    "border_width": {
+                      "width": 1.5
+                    },
+                    "border_color": {
+                      "red": 100,
+                      "green": 100,
+                      "blue": 100
+                    }
+                  }
+                },
+                {
+                  "type": "flexible",
+                  "objects": [
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "ご注文No",
+                        "font_size": 8
+                      },
+                      "basis": 20.0
+                    },
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "1755392425-40260-65",
+                        "font_size": 8
+                      },
+                      "basis": 80.0
+                    }
+                  ]
+                },
+                {
+                  "type": "line",
+                  "frame": {
+                    "size": {
+                      "width": 190.0,
+                      "height": 0.0
+                    },
+                    "point": null
+                  },
+                  "style": {
+                    "space": {
+                      "top": 3.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 3.0
+                    },
+                    "border_width": {
+                      "width": 0.5
+                    },
+                    "border_color": {
+                      "red": 100,
+                      "green": 100,
+                      "blue": 100
+                    }
+                  }
+                },
+                {
+                  "type": "flexible",
+                  "objects": [
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "ご注文日時",
+                        "font_size": 8
+                      },
+                      "basis": 20.0
+                    },
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "2025-08-17 10:00:25",
+                        "font_size": 8
+                      },
+                      "basis": 80.0
+                    }
+                  ]
+                },
+                {
+                  "type": "line",
+                  "frame": {
+                    "size": {
+                      "width": 190.0,
+                      "height": 0.0
+                    },
+                    "point": null
+                  },
+                  "style": {
+                    "space": {
+                      "top": 3.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 3.0
+                    },
+                    "border_width": {
+                      "width": 0.5
+                    },
+                    "border_color": {
+                      "red": 100,
+                      "green": 100,
+                      "blue": 100
+                    }
+                  }
+                },
+                {
+                  "type": "flexible",
+                  "objects": [
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "お支払い方法",
+                        "font_size": 8
+                      },
+                      "basis": 20.0
+                    },
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "クレジットカード",
+                        "font_size": 8
+                      },
+                      "basis": 80.0
+                    }
+                  ]
+                },
+                {
+                  "type": "line",
+                  "frame": {
+                    "size": {
+                      "width": 190.0,
+                      "height": 0.0
+                    },
+                    "point": null
+                  },
+                  "style": {
+                    "space": {
+                      "top": 3.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 3.0
+                    },
+                    "border_width": {
+                      "width": 0.5
+                    },
+                    "border_color": {
+                      "red": 100,
+                      "green": 100,
+                      "blue": 100
+                    }
+                  }
+                },
+                {
+                  "type": "flexible",
+                  "objects": [
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "お電話番号",
+                        "font_size": 8
+                      },
+                      "basis": 20.0
+                    },
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "00-0000-0000",
+                        "font_size": 8
+                      },
+                      "basis": 80.0
+                    }
+                  ]
+                },
+                {
+                  "type": "line",
+                  "frame": {
+                    "size": {
+                      "width": 190.0,
+                      "height": 0.0
+                    },
+                    "point": null
+                  },
+                  "style": {
+                    "space": {
+                      "top": 3.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 3.0
+                    },
+                    "border_width": {
+                      "width": 0.5
+                    },
+                    "border_color": {
+                      "red": 100,
+                      "green": 100,
+                      "blue": 100
+                    }
+                  }
+                }
+              ],
+              "frame": {
+                "point": {
+                  "x": 10.0,
+                  "y": 80.0
+                },
+                "size": {
+                  "width": 190.0,
+                  "height": 50.0
+                }
+              }
+            },
+            {
+              "type": "objects",
+              "direction": "vertical",
+              "objects": [
+                {
+                  "type": "flexible",
+                  "objects": [
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "商品名 / 商品コード",
+                        "font_size": 8
+                      },
+                      "basis": 70.0
+                    },
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "数量",
+                        "font_size": 8,
+                        "style": {
+                          "alignment": {
+                            "horizontal": "center"
+                          }
+                        }
+                      },
+                      "basis": 15.0
+                    },
+                    {
+                      "type": "flexible_item",
+                      "object": {
+                        "type": "text",
+                        "text": "小計",
+                        "font_size": 8,
+                        "style": {
+                          "alignment": {
+                            "horizontal": "center"
+                          }
+                        }
+                      },
+                      "basis": 15.0
+                    }
+                  ]
+                },
+                {
+                  "type": "line",
+                  "frame": {
+                    "size": {
+                      "width": 190.0,
+                      "height": 0.0
+                    },
+                    "point": null
+                  },
+                  "style": {
+                    "space": {
+                      "top": 3.0,
+                      "left": 0.0,
+                      "right": 0.0,
+                      "bottom": 3.0
+                    },
+                    "border_width": {
+                      "width": 1.5
+                    },
+                    "border_color": {
+                      "red": 100,
+                      "green": 100,
+                      "blue": 100
+                    }
+                  }
+                }
+              ],
+              "frame": {
+                "point": {
+                  "x": 10.0,
+                  "y": 130.0
+                },
+                "size": {
+                  "width": 190.0,
+                  "height": 50.0
+                }
+              }
+            }
+          ]
+        },
+        "content": {
+          "frame": {
+            "point": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "size": {
+              "width": 210.0,
+              "height": 297.0
+            }
+          },
+          "objects": []
+        }
+      }
+    ]
+  }
+}
