@@ -1,10 +1,10 @@
-use crate::block_document::block::BlockType;
+use crate::block_document::block::Block;
 use crate::block_document::direction::Direction;
 use crate::block_document::geometry::GeoRect;
 
 #[derive(Debug, Clone)]
 pub struct FlexibleContainer {
-    pub blocks: Vec<BlockType>,
+    pub blocks: Vec<Block>,
     pub frame: Option<GeoRect>,
     pub direction: Direction,
 }
@@ -18,7 +18,7 @@ impl FlexibleContainer {
         }
     }
 
-    pub fn add_block(&mut self, block: BlockType) {
+    pub fn add_block(&mut self, block: Block) {
         self.blocks.push(block);
     }
 

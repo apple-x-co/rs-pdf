@@ -1,6 +1,6 @@
 pub mod block;
 pub mod block_container;
-pub mod page;
+pub mod static_page;
 pub mod direction;
 pub mod document;
 pub mod document_json;
@@ -15,3 +15,5 @@ pub mod style;
 pub mod text;
 pub mod text_renderer;
 pub mod wrapper;
+pub mod page;
+pub mod dynamic_page;

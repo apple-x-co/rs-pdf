@@ -8,7 +8,7 @@ use crate::block_document::text::Text;
 use crate::block_document::wrapper::Wrapper;
 
 #[derive(Debug, Clone)]
-pub enum BlockType {
+pub enum Block {
     Container(BlockContainer),
     Flexible(FlexibleContainer),
     FlexibleItem(Box<FlexibleItem>),

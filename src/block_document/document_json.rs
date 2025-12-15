@@ -1,7 +1,8 @@
-use crate::block_document::block::BlockType;
+use crate::block_document::block::Block;
 use crate::block_document::block_container::BlockContainer;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::Document;
+use crate::block_document::dynamic_page::DynamicPage;
 use crate::block_document::flexible_container::FlexibleContainer;
 use crate::block_document::flexible_item::FlexibleItem;
 use crate::block_document::geometry::{GeoPoint, GeoRect, GeoSize};
@@ -9,6 +10,7 @@ use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::page::Page;
 use crate::block_document::rectangle::Rectangle;
+use crate::block_document::static_page::StaticPage;
 use crate::block_document::style::{
     Alignment, BorderStyle, HorizontalAlignment, RgbColor, Space, Style, TextOutlineStyle,
     TextOverflow, TextStyle, TextWrap, TextWrapMode, VerticalAlignment,
@@ -18,8 +20,7 @@ use crate::block_document::wrapper::Wrapper;
 use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
-// const PAGE_A4_WIDTH: f32 = 210.0;
-// const PAGE_A4_HEIGHT: f32 = 297.0;
+
 const PAGE_TYPE_DYNAMIC: &'static str = "dynamic";
 const PAGE_TYPE_STATIC: &'static str = "static";
 const OBJECT_TYPE_TEXT: &'static str = "text";
@@ -64,7 +65,7 @@ pub fn parse(json_path: &str) -> Document {
         .iter()
         .for_each(|page_json| match page_json["type"].as_str().unwrap() {
             PAGE_TYPE_STATIC => {
-                let mut page = Page::new();
+                let mut page = StaticPage::new();
 
                 let auto_pagination = page_json["auto_pagination"].as_bool().unwrap_or(false);
                 page.set_auto_pagination(auto_pagination);
@@ -79,10 +80,10 @@ pub fn parse(json_path: &str) -> Document {
                         }
                     });
 
-                doc.add_page(page);
+                doc.add_page(Page::StaticPage(page));
             }
             PAGE_TYPE_DYNAMIC => {
-                let mut page = Page::new();
+                let mut page = DynamicPage::new();
 
                 page_json["common"]["objects"]
                     .as_array()
@@ -90,13 +91,24 @@ pub fn parse(json_path: &str) -> Document {
                     .iter()
                     .for_each(|object_json| {
                         if let Some(object) = parse_object(object_json) {
-                            page.add_block(object);
+                            page.add_common_block(object);
                         }
                     });
 
-                // FIXME: page_json["content"]["frame"], page_json["content"]["objects"]
+                let frame = parse_frame(&page_json["content"]["frame"]);
+                page.set_content_frame(frame);
 
-                doc.add_page(page);
+                page_json["content"]["objects"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .for_each(|object_json| {
+                        if let Some(object) = parse_object(object_json) {
+                            page.add_content_block(object);
+                        }
+                    });
+
+                doc.add_page(Page::DynamicPage(page));
             }
             _ => {
                 eprintln!("unknown page type");
@@ -106,7 +118,7 @@ pub fn parse(json_path: &str) -> Document {
     doc
 }
 
-fn parse_object(object_json: &Value) -> Option<BlockType> {
+fn parse_object(object_json: &Value) -> Option<Block> {
     match object_json["type"].as_str().unwrap() {
         OBJECT_TYPE_TEXT => {
             let frame = object_json["frame"]
@@ -128,7 +140,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let style = &object_json["style"];
 
             if style.is_null() {
-                return Some(BlockType::Text(text));
+                return Some(Block::Text(text));
             }
 
             if !style["alignment"].is_null() {
@@ -189,7 +201,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 }
             }
 
-            Some(BlockType::Text(text))
+            Some(Block::Text(text))
         }
         OBJECT_TYPE_IMAGE => {
             let image_path = object_json["path"].as_str().unwrap().to_string();
@@ -203,7 +215,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let style = &object_json["style"];
 
             if style.is_null() {
-                return Some(BlockType::Image(image));
+                return Some(Block::Image(image));
             }
 
             if !style["border_color"].is_null() {
@@ -224,7 +236,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 }
             }
 
-            Some(BlockType::Image(image))
+            Some(Block::Image(image))
         }
         OBJECT_TYPE_LINE => {
             let frame = object_json["frame"]
@@ -236,7 +248,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let mut line = Line::new(frame.unwrap());
 
             if style.is_null() {
-                return Some(BlockType::Line(line));
+                return Some(Block::Line(line));
             }
 
             if !style["space"].is_null() {
@@ -263,7 +275,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 }
             }
 
-            Some(BlockType::Line(line))
+            Some(Block::Line(line))
         }
         OBJECT_TYPE_RECTANGLE => {
             let frame = object_json["frame"]
@@ -275,7 +287,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
             let style = &object_json["style"];
 
             if style.is_null() {
-                return Some(BlockType::Rectangle(rectangle));
+                return Some(Block::Rectangle(rectangle));
             }
 
             if !style["background_color"].is_null() {
@@ -302,7 +314,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                 }
             }
 
-            Some(BlockType::Rectangle(rectangle))
+            Some(Block::Rectangle(rectangle))
         }
         OBJECT_TYPE_OBJECT => {
             if let Some(object) = parse_object(&object_json["object"]) {
@@ -315,7 +327,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                     }
                 }
 
-                return Some(BlockType::Wrapper(Box::from(wrapper)));
+                return Some(Block::Wrapper(Box::from(wrapper)));
             }
 
             None
@@ -341,7 +353,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                     }
                 });
 
-            Some(BlockType::Container(container))
+            Some(Block::Container(container))
         }
         OBJECT_TYPE_FLEXIBLE => {
             let frame = object_json["frame"]
@@ -364,7 +376,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                     }
                 });
 
-            Some(BlockType::Flexible(container))
+            Some(Block::Flexible(container))
         }
         OBJECT_TYPE_FLEXIBLE_ITEM => {
             if let Some(object) = parse_object(&object_json["object"]) {
@@ -374,7 +386,7 @@ fn parse_object(object_json: &Value) -> Option<BlockType> {
                     basis = Some(object_json["basis"].as_f64().unwrap() as f32);
                 }
 
-                return Some(BlockType::FlexibleItem(Box::from(FlexibleItem::new(
+                return Some(Block::FlexibleItem(Box::from(FlexibleItem::new(
                     object, basis,
                 ))));
             }

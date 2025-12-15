@@ -1,10 +1,10 @@
-use crate::block_document::block::BlockType;
-use crate::block_document::page::Page;
+use crate::block_document::block::Block;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::{DPI as BlockDPI, Document as BlockDocument};
 use crate::block_document::geometry::GeoRect;
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
+use crate::block_document::page::Page;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::style::{
     BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment,
@@ -40,43 +40,97 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     // NOTE: レイアウト（frame を確定する）
     let mut drawable_pages: Vec<Page> = Vec::new();
     for page in working_block_document.pages.iter_mut() {
-        let applied_pages = page.apply_constraints(
-            &page_frame,
-            &Direction::Vertical,
-            &working_block_document.font_path,
-            page.auto_pagination,
-        );
+        match page {
+            Page::DynamicPage(dynamic_page) => {
+                let applied_pages = dynamic_page.apply_constraints(
+                    &page_frame,
+                    &Direction::Vertical,
+                    &working_block_document.font_path,
+                );
 
-        for applied_page in applied_pages {
-            drawable_pages.push(applied_page);
+                for applied_page in applied_pages {
+                    drawable_pages.push(Page::DynamicPage(applied_page));
+                }
+            }
+            Page::StaticPage(static_page) => {
+                let applied_pages = static_page.apply_constraints(
+                    &page_frame,
+                    &Direction::Vertical,
+                    &working_block_document.font_path,
+                    static_page.auto_pagination,
+                );
+
+                for applied_page in applied_pages {
+                    drawable_pages.push(Page::StaticPage(applied_page));
+                }
+            }
         }
     }
 
     // NOTE: 描画（frame が確定している）
     let mut i = 0;
     for page in drawable_pages.iter() {
-        if i > 0 {
-            (page_index, _) = doc.add_page(
-                Mm(working_block_document.page_size.width),
-                Mm(working_block_document.page_size.height),
-                "Layer 1",
-            );
-        }
+        match page {
+            Page::DynamicPage(dynamic_page) => {
+                if i > 0 {
+                    (page_index, _) = doc.add_page(
+                        Mm(working_block_document.page_size.width),
+                        Mm(working_block_document.page_size.height),
+                        "Layer 1",
+                    );
+                }
 
-        i += 1;
+                i += 1;
 
-        if is_debug {
-            draw_grid(&doc, &page_index, &page_frame)
-        }
+                if is_debug {
+                    draw_grid(&doc, &page_index, &page_frame)
+                }
 
-        for block in page.blocks.iter() {
-            draw(
-                &doc,
-                &page_index,
-                &page_frame,
-                &working_block_document.font_path,
-                block,
-            );
+                for block in dynamic_page.common_blocks.iter() {
+                    draw(
+                        &doc,
+                        &page_index,
+                        &page_frame,
+                        &working_block_document.font_path,
+                        block,
+                    );
+                }
+
+                for block in dynamic_page.content_blocks.iter() {
+                    draw(
+                        &doc,
+                        &page_index,
+                        &page_frame,
+                        &working_block_document.font_path,
+                        block,
+                    );
+                }
+            }
+            Page::StaticPage(static_page) => {
+                if i > 0 {
+                    (page_index, _) = doc.add_page(
+                        Mm(working_block_document.page_size.width),
+                        Mm(working_block_document.page_size.height),
+                        "Layer 1",
+                    );
+                }
+
+                i += 1;
+
+                if is_debug {
+                    draw_grid(&doc, &page_index, &page_frame)
+                }
+
+                for block in static_page.blocks.iter() {
+                    draw(
+                        &doc,
+                        &page_index,
+                        &page_frame,
+                        &working_block_document.font_path,
+                        block,
+                    );
+                }
+            }
         }
     }
 
@@ -89,10 +143,10 @@ fn draw(
     page_index: &PdfPageIndex,
     parent_frame: &GeoRect,
     font_path: &String,
-    block: &BlockType,
+    block: &Block,
 ) {
     match block {
-        BlockType::Container(block_container) => {
+        Block::Container(block_container) => {
             let lb_frame = block_container
                 .frame
                 .as_ref()
@@ -102,7 +156,7 @@ fn draw(
                 draw(doc, page_index, &lb_frame, font_path, block);
             }
         }
-        BlockType::Wrapper(block_wrapper) => {
+        Block::Wrapper(block_wrapper) => {
             let lb_frame = block_wrapper
                 .frame
                 .as_ref()
@@ -111,7 +165,7 @@ fn draw(
 
             draw(doc, page_index, &lb_frame, font_path, &block_wrapper.block);
         }
-        BlockType::Flexible(flexible_container) => {
+        Block::Flexible(flexible_container) => {
             let lb_frame = flexible_container
                 .frame
                 .as_ref()
@@ -121,7 +175,7 @@ fn draw(
                 draw(doc, page_index, &lb_frame, font_path, block);
             }
         }
-        BlockType::FlexibleItem(flexible_item) => {
+        Block::FlexibleItem(flexible_item) => {
             let lb_frame = flexible_item
                 .frame
                 .as_ref()
@@ -130,12 +184,12 @@ fn draw(
 
             draw(doc, page_index, &lb_frame, font_path, &flexible_item.block);
         }
-        BlockType::Line(line) => draw_line(doc, page_index, line, parent_frame),
-        BlockType::Rectangle(rectangle) => draw_rectangle(doc, page_index, rectangle, parent_frame),
-        BlockType::Text(text) => {
+        Block::Line(line) => draw_line(doc, page_index, line, parent_frame),
+        Block::Rectangle(rectangle) => draw_rectangle(doc, page_index, rectangle, parent_frame),
+        Block::Text(text) => {
             draw_text(doc, page_index, font_path, text, parent_frame);
         }
-        BlockType::Image(image) => {
+        Block::Image(image) => {
             draw_image(doc, page_index, image, parent_frame);
         }
     }

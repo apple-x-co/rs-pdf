@@ -1,5 +1,5 @@
-use crate::block_document::page::Page;
 use crate::block_document::geometry::GeoSize;
+use crate::block_document::page::Page;
 
 pub const DPI: f32 = 300.0;
 
