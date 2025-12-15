@@ -43,7 +43,159 @@
                 ]
               }
             }
-          }
+          },
+          "required": [
+            "type",
+            "objects"
+          ]
+        },
+        "dynamic": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "dynamic"
+            },
+            "common": {
+              "type": "object",
+              "properties": {
+                "objects": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/container/definitions/object"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/text"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/image"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/line"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/rectangle"
+                      },
+                      {
+                        "$ref": "#/definitions/container/definitions/objects"
+                      },
+                      {
+                        "$ref": "#/definitions/container/definitions/flexible"
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "objects"
+              ]
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "frame": {
+                  "type": "object",
+                  "oneOf": [
+                    {
+                      "properties": {
+                        "point": {
+                          "$ref": "#/definitions/geometry/definitions/point"
+                        },
+                        "size": {
+                          "$ref": "#/definitions/geometry/definitions/size"
+                        }
+                      },
+                      "required": [
+                        "point",
+                        "size"
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "point": {
+                          "type": "null"
+                        },
+                        "size": {
+                          "$ref": "#/definitions/geometry/definitions/size"
+                        }
+                      },
+                      "required": [
+                        "point",
+                        "size"
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "point": {
+                          "$ref": "#/definitions/geometry/definitions/point"
+                        },
+                        "size": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "point",
+                        "size"
+                      ]
+                    },
+                    {
+                      "properties": {
+                        "point": {
+                          "type": "null"
+                        },
+                        "size": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "point",
+                        "size"
+                      ]
+                    }
+                  ]
+                },
+                "objects": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/container/definitions/object"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/text"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/image"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/line"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/rectangle"
+                      },
+                      {
+                        "$ref": "#/definitions/container/definitions/objects"
+                      },
+                      {
+                        "$ref": "#/definitions/container/definitions/flexible"
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "frame",
+                "objects"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "common",
+            "content"
+          ]
         }
       }
     },
@@ -705,6 +857,9 @@
             "anyOf": [
               {
                 "$ref": "#/definitions/page/definitions/static"
+              },
+              {
+                "$ref": "#/definitions/page/definitions/dynamic"
               }
             ]
           }
