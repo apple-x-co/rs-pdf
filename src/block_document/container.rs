@@ -11,13 +11,18 @@ use image::{GenericImageView, ImageError};
 #[derive(Debug, Clone)]
 pub struct Container {
     pub blocks: Vec<BlockType>,
+    pub auto_pagination: bool,
 }
 
 impl Container {
     pub fn new() -> Container {
-        Container { blocks: Vec::new() }
+        Container { blocks: Vec::new(), auto_pagination: false }
     }
 
+    pub fn set_auto_pagination(&mut self, auto_pagination: bool) {
+        self.auto_pagination = auto_pagination;
+    }
+    
     pub fn add_block(&mut self, block: BlockType) {
         self.blocks.push(block);
     }
@@ -51,7 +56,7 @@ impl Container {
                 }
 
                 if parent_frame.max_y() < drawn_frame.max_y() + frame.as_ref().unwrap_or(&GeoRect::default()).height() {
-                    containers.push(Container { blocks });
+                    containers.push(Container { blocks, auto_pagination });
 
                     drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
 
@@ -78,7 +83,7 @@ impl Container {
             }
 
             if blocks.len() > 0 {
-                containers.push(Container { blocks });
+                containers.push(Container { blocks, auto_pagination });
             }
 
             return containers;
@@ -103,7 +108,7 @@ impl Container {
         }
 
         let mut containers: Vec<Container> = Vec::new();
-        containers.push(Container { blocks });
+        containers.push(Container { blocks, auto_pagination });
 
         containers
     }

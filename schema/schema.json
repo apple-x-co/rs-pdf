@@ -2,6 +2,51 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
+    "page": {
+      "definitions": {
+        "static": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "static"
+            },
+            "auto_pagination": {
+              "type": "boolean",
+              "description": "Automatically paginate blocks that don't fit on the current page"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/container/definitions/object"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/text"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/image"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/line"
+                  },
+                  {
+                    "$ref": "#/definitions/object/definitions/rectangle"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/objects"
+                  },
+                  {
+                    "$ref": "#/definitions/container/definitions/flexible"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "container": {
       "definitions": {
         "objects": {
@@ -654,44 +699,14 @@
           "type": "string",
           "minLength": 1
         },
-        "auto_pagination": {
-          "type": "boolean",
-          "description": "Automatically paginate blocks that don't fit on the current page"
-        },
         "pages": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "objects": {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/definitions/container/definitions/object"
-                    },
-                    {
-                      "$ref": "#/definitions/object/definitions/text"
-                    },
-                    {
-                      "$ref": "#/definitions/object/definitions/image"
-                    },
-                    {
-                      "$ref": "#/definitions/object/definitions/line"
-                    },
-                    {
-                      "$ref": "#/definitions/object/definitions/rectangle"
-                    },
-                    {
-                      "$ref": "#/definitions/container/definitions/objects"
-                    },
-                    {
-                      "$ref": "#/definitions/container/definitions/flexible"
-                    }
-                  ]
-                }
+            "anyOf": [
+              {
+                "$ref": "#/definitions/page/definitions/static"
               }
-            }
+            ]
           }
         }
       },

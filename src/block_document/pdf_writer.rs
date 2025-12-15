@@ -44,7 +44,7 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
             &page_frame,
             &Direction::Vertical,
             &working_block_document.font_path,
-            working_block_document.auto_pagination,
+            container.auto_pagination,
         );
 
         for applied_container in applied_containers {

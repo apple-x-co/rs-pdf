@@ -43,9 +43,6 @@ pub fn parse(json_path: &str) -> Document {
             height: json["document"]["height"].as_f64().unwrap() as f32,
         },
         json["document"]["font_path"].as_str().unwrap().to_string(),
-        json["document"]["auto_pagination"]
-            .as_bool()
-            .unwrap_or(false),
     );
 
     json["document"]["pages"]
@@ -54,6 +51,11 @@ pub fn parse(json_path: &str) -> Document {
         .iter()
         .for_each(|page_json| {
             let mut container = Container::new();
+
+            let auto_pagination = page_json["auto_pagination"]
+                .as_bool()
+                .unwrap_or(false);
+            container.set_auto_pagination(auto_pagination);
 
             page_json["objects"]
                 .as_array()
