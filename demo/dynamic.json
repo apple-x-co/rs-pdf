@@ -534,15 +534,146 @@
         "content": {
           "frame": {
             "point": {
-              "x": 0.0,
-              "y": 0.0
+              "x": 10.0,
+              "y": 140.0
             },
             "size": {
-              "width": 210.0,
-              "height": 297.0
+              "width": 190.0,
+              "height": 145.0
             }
           },
-          "objects": []
+          "objects": [
+            {
+              "type": "text",
+              "text": "HELLO WORLD1!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD2!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD3!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD4!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD5!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD6!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD7!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD8!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD9!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD10!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD11!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD12!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD13!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD14!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD15!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD16!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD17!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD18!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD19!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD20!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD21!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD22!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD23!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD24!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD25!",
+              "font_size": 30
+            },
+            {
+              "type": "text",
+              "text": "HELLO WORLD26!",
+              "font_size": 30
+            }
+          ]
         }
       }
     ]

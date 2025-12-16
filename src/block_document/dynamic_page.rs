@@ -39,14 +39,14 @@ impl DynamicPage {
         direction: &Direction,
         font_path: &String,
     ) -> Vec<DynamicPage> {
-        let mut drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
+        let mut common_drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
 
         let mut common_blocks = self.common_blocks.clone();
         for block in common_blocks.iter_mut() {
             let (is_fixed, frame) = Self::apply_block_constraints(
                 block,
                 &parent_frame,
-                &drawn_frame,
+                &common_drawn_frame,
                 direction,
                 font_path,
             );
@@ -54,17 +54,67 @@ impl DynamicPage {
                 continue;
             }
 
-            drawn_frame = drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
+            common_drawn_frame = common_drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
         }
 
-        // TODO: HERE! content_block が content_frame からはみ出た場合に、新しくページを追加する
-
         let mut containers: Vec<DynamicPage> = Vec::new();
-        containers.push(DynamicPage {
-            common_blocks,
-            content_frame: Default::default(), // TODO: HERE!
-            content_blocks: vec![], // TODO: HERE!
-        });
+        let content_frame = self.content_frame.clone();
+        let mut content_drawn_frame = GeoRect::new(0.0, 0.0, content_frame.min_x(), content_frame.min_y());
+        let mut content_blocks: Vec<Block> = Vec::new();
+
+        for item in self.content_blocks.iter() {
+            let mut block = item.clone();
+            let (is_fixed, frame) = Self::apply_block_constraints(
+                &mut block,
+                &content_frame,
+                &content_drawn_frame,
+                direction,
+                font_path,
+            );
+            if is_fixed {
+                content_blocks.push(block);
+
+                continue;
+            }
+
+            if content_frame.max_y() < content_drawn_frame.max_y() + frame.as_ref().unwrap_or(&GeoRect::default()).height() {
+                containers.push(DynamicPage {
+                    common_blocks: common_blocks.clone(),
+                    content_frame: content_frame.clone(),
+                    content_blocks,
+                });
+
+                content_drawn_frame = GeoRect::new(0.0, 0.0, content_frame.min_x(), content_frame.min_y());
+
+                block = item.clone();
+                let (_, frame) = Self::apply_block_constraints(
+                    &mut block,
+                    &content_frame,
+                    &content_drawn_frame,
+                    direction,
+                    font_path,
+                );
+
+                content_drawn_frame = content_drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
+
+                content_blocks = Vec::new();
+                content_blocks.push(block);
+
+                continue;
+            }
+
+            content_drawn_frame = content_drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
+
+            content_blocks.push(block);
+        }
+
+        if content_blocks.len() > 0 {
+            containers.push(DynamicPage {
+                common_blocks,
+                content_frame,
+                content_blocks,
+            });
+        }
 
         containers
     }
