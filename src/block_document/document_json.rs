@@ -9,6 +9,7 @@ use crate::block_document::geometry::{GeoPoint, GeoRect, GeoSize};
 use crate::block_document::image::Image;
 use crate::block_document::line::Line;
 use crate::block_document::page::Page;
+use crate::block_document::page_number::PageNumber;
 use crate::block_document::rectangle::Rectangle;
 use crate::block_document::static_page::StaticPage;
 use crate::block_document::style::{
@@ -21,6 +22,7 @@ use serde_json::Value;
 use std::fs::read_to_string;
 use std::process::exit;
 
+const PAGE_NUMBER_FORMAT: &'static str = "Page ${CURRENT_PAGE_NUMBER} of ${TOTAL_PAGES}";
 const PAGE_TYPE_DYNAMIC: &'static str = "dynamic";
 const PAGE_TYPE_STATIC: &'static str = "static";
 const OBJECT_TYPE_TEXT: &'static str = "text";
@@ -58,6 +60,11 @@ pub fn parse(json_path: &str) -> Document {
         },
         json["document"]["font_path"].as_str().unwrap().to_string(),
     );
+
+    let page_number_json = &json["document"]["page_number"];
+    if let Some(page_number) = parse_page_number(page_number_json) {
+        doc.set_page_number(page_number);
+    }
 
     json["document"]["pages"]
         .as_array()
@@ -116,6 +123,65 @@ pub fn parse(json_path: &str) -> Document {
         });
 
     doc
+}
+
+fn parse_page_number(page_number_json: &Value) -> Option<PageNumber> {
+    if page_number_json.is_null() {
+        return None
+    }
+
+    let font_path: Option<String> = page_number_json["font_path"]
+        .as_str()
+        .filter(|s| !s.is_empty())
+        .map(|s| s.to_string());
+
+    let frame = page_number_json["frame"]
+        .as_object()
+        .map(|_| parse_frame(&page_number_json["frame"]));
+
+    let mut page_number = PageNumber::new(
+        page_number_json["format"].as_str()
+            .unwrap_or(PAGE_NUMBER_FORMAT).to_string(),
+        page_number_json["font_size"].as_f64().unwrap() as f32,
+        font_path,
+        frame,
+    );
+
+    let style = &page_number_json["style"];
+
+    if style.is_null() {
+        return Some(page_number);
+    }
+
+    if !style["text_fill_color"].is_null() {
+        if let Some(text_fill_color) = parse_text_fill_color(&style["text_fill_color"]) {
+            page_number.add_style(text_fill_color);
+        }
+    }
+
+    if !style["text_outline_color"].is_null() {
+        if let Some(text_outline_color) =
+            parse_text_outline_color(&style["text_outline_color"])
+        {
+            page_number.add_style(text_outline_color);
+        }
+    }
+
+    if !style["text_outline_style"].is_null() {
+        if let Some(text_outline_style) =
+            parse_text_outline_style(&style["text_outline_style"])
+        {
+            page_number.add_style(text_outline_style);
+        }
+    }
+
+    if !style["text_style"].is_null() {
+        if let Some(text_style) = parse_text_style(&style["text_style"]) {
+            page_number.add_style(text_style);
+        }
+    }
+
+    Some(page_number)
 }
 
 fn parse_object(object_json: &Value) -> Option<Block> {

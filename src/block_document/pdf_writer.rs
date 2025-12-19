@@ -1,15 +1,17 @@
 use crate::block_document::block::Block;
 use crate::block_document::direction::Direction;
-use crate::block_document::document::{DPI as BlockDPI, Document as BlockDocument};
+use crate::block_document::document::{Document as BlockDocument, DPI as BlockDPI};
 use crate::block_document::geometry::GeoRect;
 use crate::block_document::image::Image as BlockImage;
 use crate::block_document::line::Line as BlockLine;
 use crate::block_document::page::Page;
+use crate::block_document::page_number::PageNumber;
 use crate::block_document::rectangle::Rectangle as BlockRectangle;
 use crate::block_document::style::{
     BorderStyle, HorizontalAlignment, Style, TextOutlineStyle, TextStyle, VerticalAlignment,
 };
 use crate::block_document::text::Text as BlockText;
+use crate::block_document::text_renderer::measure_text;
 use image::DynamicImage;
 use printpdf::{
     Color, Image, ImageTransform, Line, LineDashPattern, Mm, PdfDocument, PdfDocumentReference,
@@ -18,6 +20,9 @@ use printpdf::{
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
+
+const CURRENT_PAGE_NUMBER_PLACEHOLDER: &'static str = "${CURRENT_PAGE_NUMBER}";
+const TOTAL_PAGES_PLACEHOLDER: &'static str = "${TOTAL_PAGES}";
 
 pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     let mut working_block_document = block_document.clone();
@@ -67,6 +72,8 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
         }
     }
 
+    let total_pages = drawable_pages.len();
+
     // NOTE: 描画（frame が確定している）
     let mut i = 0;
     for page in drawable_pages.iter() {
@@ -105,6 +112,18 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
                         block,
                     );
                 }
+
+                if let Some(page_number) = &block_document.page_number {
+                    draw_page_number(
+                        &doc,
+                        &page_index,
+                        &page_frame,
+                        &working_block_document.font_path,
+                        page_number,
+                        i,
+                        total_pages,
+                    );
+                }
             }
             Page::StaticPage(static_page) => {
                 if i > 0 {
@@ -135,6 +154,53 @@ pub fn save(block_document: BlockDocument, file: File, is_debug: bool) {
     }
 
     doc.save(&mut BufWriter::new(file)).unwrap();
+}
+
+fn draw_page_number(
+    doc: &PdfDocumentReference,
+    page_index: &PdfPageIndex,
+    parent_frame: &GeoRect,
+    font_path: &String,
+    page_number: &PageNumber,
+    current_page_number: usize,
+    total_pages: usize,
+) {
+    let text = format!(
+        "{}",
+        page_number.format
+            .replace(CURRENT_PAGE_NUMBER_PLACEHOLDER, current_page_number.to_string().as_str())
+            .replace(TOTAL_PAGES_PLACEHOLDER, total_pages.to_string().as_str()),
+    );
+
+    let mut block_text = BlockText::new(
+        text,
+        page_number.font_size,
+        page_number.font_path.clone(),
+        page_number.frame.clone(),
+    );
+
+    page_number.styles.iter().for_each(|style| {
+        block_text.add_style(style.clone());
+    });
+
+    if block_text.frame.is_none() {
+        let use_font_path = block_text.font_path.as_ref().unwrap_or(font_path);
+        let text_size = measure_text(&block_text.text, block_text.font_size, use_font_path);
+        block_text.set_frame(GeoRect::new(
+            parent_frame.width(),
+            parent_frame.height(),
+            (parent_frame.min_x() + parent_frame.width() - text_size.width) / 2.0, // ((parent_frame.min_x() + parent_frame.width()) / 2.0) - (text_size.width / 2.0),
+            parent_frame.min_y() - 3.0,
+        ));
+    }
+
+    draw_text(
+        doc,
+        page_index,
+        font_path,
+        &block_text,
+        parent_frame,
+    );
 }
 
 // NOTE: parent_frame の基準点は左下

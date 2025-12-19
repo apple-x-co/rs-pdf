@@ -17,3 +17,4 @@ pub mod text_renderer;
 pub mod wrapper;
 pub mod page;
 pub mod dynamic_page;
+mod page_number;
