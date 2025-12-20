@@ -96,65 +96,7 @@
               "type": "object",
               "properties": {
                 "frame": {
-                  "type": "object",
-                  "oneOf": [
-                    {
-                      "properties": {
-                        "point": {
-                          "$ref": "#/definitions/geometry/definitions/point"
-                        },
-                        "size": {
-                          "$ref": "#/definitions/geometry/definitions/size"
-                        }
-                      },
-                      "required": [
-                        "point",
-                        "size"
-                      ]
-                    },
-                    {
-                      "properties": {
-                        "point": {
-                          "type": "null"
-                        },
-                        "size": {
-                          "$ref": "#/definitions/geometry/definitions/size"
-                        }
-                      },
-                      "required": [
-                        "point",
-                        "size"
-                      ]
-                    },
-                    {
-                      "properties": {
-                        "point": {
-                          "$ref": "#/definitions/geometry/definitions/point"
-                        },
-                        "size": {
-                          "type": "null"
-                        }
-                      },
-                      "required": [
-                        "point",
-                        "size"
-                      ]
-                    },
-                    {
-                      "properties": {
-                        "point": {
-                          "type": "null"
-                        },
-                        "size": {
-                          "type": "null"
-                        }
-                      },
-                      "required": [
-                        "point",
-                        "size"
-                      ]
-                    }
-                  ]
+                  "$ref": "#/definitions/geometry/definitions/frame"
                 },
                 "objects": {
                   "type": "array",
@@ -188,6 +130,46 @@
               "required": [
                 "frame",
                 "objects"
+              ]
+            },
+            "continuation": {
+              "type": "object",
+              "properties": {
+                "common_objects": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/container/definitions/object"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/text"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/image"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/line"
+                      },
+                      {
+                        "$ref": "#/definitions/object/definitions/rectangle"
+                      },
+                      {
+                        "$ref": "#/definitions/container/definitions/objects"
+                      },
+                      {
+                        "$ref": "#/definitions/container/definitions/flexible"
+                      }
+                    ]
+                  }
+                },
+                "content_frame": {
+                  "$ref": "#/definitions/geometry/definitions/frame"
+                }
+              },
+              "required": [
+                "common_objects",
+                "content_frame"
               ]
             }
           },

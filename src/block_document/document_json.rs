@@ -115,6 +115,21 @@ pub fn parse(json_path: &str) -> Document {
                         }
                     });
 
+                if !page_json["continuation"].is_null() {
+                    let continuation_content_frame = parse_frame(&page_json["continuation"]["content_frame"]);
+                    page.set_continuation_content_frame(continuation_content_frame);
+
+                    page_json["continuation"]["common_objects"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .for_each(|object_json| {
+                            if let Some(object) = parse_object(object_json) {
+                                page.add_continuation_common_block(object);
+                            }
+                        });
+                }
+
                 doc.add_page(Page::DynamicPage(page));
             }
             _ => {

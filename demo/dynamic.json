@@ -553,137 +553,1436 @@
             }
           },
           "objects": [
+
             {
-              "type": "text",
-              "text": "HELLO WORLD1!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "長い商品名は自動で折り返す 長い商品名は自動で折り返す 長い商品名は自動で折り返す 長い商品名は自動で折り返す / PRODUCT-001",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥3,027",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD2!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD3!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-002",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD4!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD5!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-003",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD6!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD7!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-004",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD8!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD9!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-005",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD10!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD11!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-006",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD12!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD13!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-007",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD14!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD15!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-008",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD16!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD17!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-009",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD18!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD19!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-010",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD20!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD21!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-011",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD22!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD23!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "普通の長さの商品名 / PRODUCT-012",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "1",
+                    "font_size": 8,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "text_wrap": {
+                        "mode": "character",
+                        "break_anywhere": true
+                      },
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD24!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD25!",
-              "font_size": 30
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "商品合計",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": " ",
+                    "font_size": 8
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥3,027",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
             },
             {
-              "type": "text",
-              "text": "HELLO WORLD26!",
-              "font_size": 30
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
+            },
+            {
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "消費税",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": " ",
+                    "font_size": 8
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥3,03",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
+            },
+            {
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
+            },
+            {
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "送料",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": " ",
+                    "font_size": 8
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥500",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
+            },
+            {
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
+            },
+            {
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "割引",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": " ",
+                    "font_size": 8
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
+            },
+            {
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
+            },
+            {
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "手数料",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": " ",
+                    "font_size": 8
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥0",
+                    "font_size": 9,
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
+            },
+            {
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 0.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
+            },
+            {
+              "type": "flexible",
+              "objects": [
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "合計",
+                    "font_size": 10,
+                    "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf",
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 70.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": " ",
+                    "font_size": 8
+                  },
+                  "basis": 15.0
+                },
+                {
+                  "type": "flexible_item",
+                  "object": {
+                    "type": "text",
+                    "text": "¥3,830",
+                    "font_size": 9,
+                    "font_path": "assets/fonts/NotoSansCJKjp-Thin.ttf",
+                    "style": {
+                      "alignment": {
+                        "horizontal": "right"
+                      }
+                    }
+                  },
+                  "basis": 15.0
+                }
+              ]
+            },
+            {
+              "type": "line",
+              "frame": {
+                "size": {
+                  "width": 190.0,
+                  "height": 0.0
+                },
+                "point": null
+              },
+              "style": {
+                "space": {
+                  "top": 3.0,
+                  "left": 0.0,
+                  "right": 0.0,
+                  "bottom": 0.0
+                },
+                "border_width": {
+                  "width": 1.5
+                },
+                "border_color": {
+                  "red": 100,
+                  "green": 100,
+                  "blue": 100
+                }
+              }
             }
           ]
+        },
+        "continuation": {
+          "common_objects": [
+            {
+              "type": "objects",
+              "direction": "vertical",
+              "objects": [
+                {
+                  "type": "image",
+                  "path": "assets/images/delivery_note_rgb.png"
+                }
+              ],
+              "frame": {
+                "point": {
+                  "x": 10.0,
+                  "y": 10.0
+                },
+                "size": {
+                  "width": 190.0,
+                  "height": 30.0
+                }
+              }
+            }
+          ],
+          "content_frame": {
+            "point": {
+              "x": 10.0,
+              "y": 25.0
+            },
+            "size": {
+              "width": 190.0,
+              "height": 265.0
+            }
+          }
         }
       }
     ]

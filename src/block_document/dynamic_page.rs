@@ -1,4 +1,3 @@
-use image::{GenericImageView, ImageError};
 use crate::block_document::block::Block;
 use crate::block_document::direction::Direction;
 use crate::block_document::document::px_to_mm;
@@ -7,17 +6,26 @@ use crate::block_document::image::Image;
 use crate::block_document::style::{Style, TextWrapMode};
 use crate::block_document::text::Text;
 use crate::block_document::text_renderer::{measure_text, wrap_text_by_character};
+use image::{GenericImageView, ImageError};
 
 #[derive(Debug, Clone)]
 pub struct DynamicPage {
     pub common_blocks: Vec<Block>,
     pub content_frame: GeoRect,
     pub content_blocks: Vec<Block>,
+    pub continuation_common_blocks: Option<Vec<Block>>,
+    pub continuation_content_frame: Option<GeoRect>,
 }
 
 impl DynamicPage {
     pub fn new() -> DynamicPage {
-        DynamicPage { common_blocks: Vec::new(), content_frame: GeoRect::zero(), content_blocks: Vec::new() }
+        DynamicPage {
+            common_blocks: Vec::new(),
+            content_frame: GeoRect::zero(),
+            content_blocks: Vec::new(),
+            continuation_common_blocks: None,
+            continuation_content_frame: None,
+        }
     }
 
     pub fn add_common_block(&mut self, block: Block) {
@@ -30,6 +38,20 @@ impl DynamicPage {
 
     pub fn add_content_block(&mut self, block: Block) {
         self.content_blocks.push(block);
+    }
+
+    pub fn add_continuation_common_block(&mut self, block: Block) {
+        if self.continuation_common_blocks.is_none() {
+            self.continuation_common_blocks = Some(vec![block]);
+
+            return;
+        }
+
+        self.continuation_common_blocks.as_mut().unwrap().push(block);
+    }
+
+    pub fn set_continuation_content_frame(&mut self, frame: GeoRect) {
+        self.continuation_content_frame = Some(frame);
     }
 
     // NOTE: 座標を計算する
@@ -57,8 +79,28 @@ impl DynamicPage {
             common_drawn_frame = common_drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
         }
 
+        let mut continuation_common_blocks = self.continuation_common_blocks.clone();
+        if let Some(ref mut a_common_blocks) = continuation_common_blocks {
+            let mut continuation_common_drawn_frame = GeoRect::new(0.0, 0.0, parent_frame.min_x(), parent_frame.min_y());
+            for block in a_common_blocks.iter_mut() {
+                let (is_fixed, frame) = Self::apply_block_constraints(
+                    block,
+                    &parent_frame,
+                    &continuation_common_drawn_frame,
+                    direction,
+                    font_path,
+                );
+                if is_fixed {
+                    continue;
+                }
+
+                continuation_common_drawn_frame = continuation_common_drawn_frame.union(frame.as_ref().unwrap_or(&GeoRect::default()));
+            }
+        }
+
         let mut containers: Vec<DynamicPage> = Vec::new();
-        let content_frame = self.content_frame.clone();
+        let mut content_frame = self.content_frame.clone();
+        let continuation_content_frame = self.continuation_content_frame.clone();
         let mut content_drawn_frame = GeoRect::new(0.0, 0.0, content_frame.min_x(), content_frame.min_y());
         let mut content_blocks: Vec<Block> = Vec::new();
 
@@ -82,7 +124,17 @@ impl DynamicPage {
                     common_blocks: common_blocks.clone(),
                     content_frame: content_frame.clone(),
                     content_blocks,
+                    continuation_common_blocks: None,
+                    continuation_content_frame: None,
                 });
+
+                if continuation_common_blocks.is_some() {
+                    common_blocks = continuation_common_blocks.clone().unwrap();
+                }
+
+                if continuation_content_frame.is_some() {
+                    content_frame = continuation_content_frame.clone().unwrap();
+                }
 
                 content_drawn_frame = GeoRect::new(0.0, 0.0, content_frame.min_x(), content_frame.min_y());
 
@@ -113,6 +165,8 @@ impl DynamicPage {
                 common_blocks,
                 content_frame,
                 content_blocks,
+                continuation_common_blocks: None,
+                continuation_content_frame: None,
             });
         }
 
@@ -281,7 +335,7 @@ impl DynamicPage {
 
                     block_wrapper.set_frame(inner_drawn_frame.clone());
 
-                    return (false, Some(inner_drawn_frame))
+                    return (false, Some(inner_drawn_frame));
                 }
 
                 (false, None)
@@ -319,20 +373,14 @@ impl DynamicPage {
 
                             flexible_item.set_frame(match flexible_container.direction {
                                 Direction::Horizontal => GeoRect {
-                                    point: Some(GeoPoint {
-                                        x: item_x,
-                                        y: 0.0,
-                                    }),
+                                    point: Some(GeoPoint { x: item_x, y: 0.0 }),
                                     size: Some(GeoSize {
                                         width: item_width,
                                         height: 0.0,
                                     }),
                                 },
                                 Direction::Vertical => GeoRect {
-                                    point: Some(GeoPoint {
-                                        x: 0.0,
-                                        y: item_y,
-                                    }),
+                                    point: Some(GeoPoint { x: 0.0, y: item_y }),
                                     size: Some(GeoSize {
                                         width: 0.0,
                                         height: item_height,
@@ -345,17 +393,11 @@ impl DynamicPage {
 
                     let item_frame = match flexible_container.direction {
                         Direction::Horizontal => GeoRect {
-                            point: Some(GeoPoint {
-                                x: item_x,
-                                y: 0.0,
-                            }),
+                            point: Some(GeoPoint { x: item_x, y: 0.0 }),
                             size: None,
                         },
                         Direction::Vertical => GeoRect {
-                            point: Some(GeoPoint {
-                                x: 0.0,
-                                y: item_y,
-                            }),
+                            point: Some(GeoPoint { x: 0.0, y: item_y }),
                             size: None,
                         },
                     };
@@ -471,8 +513,22 @@ impl DynamicPage {
                     };
 
                     let frame = GeoRect::new(
-                        block_rectangle.frame.as_ref().unwrap().size.as_ref().unwrap().width,
-                        block_rectangle.frame.as_ref().unwrap().size.as_ref().unwrap().height,
+                        block_rectangle
+                            .frame
+                            .as_ref()
+                            .unwrap()
+                            .size
+                            .as_ref()
+                            .unwrap()
+                            .width,
+                        block_rectangle
+                            .frame
+                            .as_ref()
+                            .unwrap()
+                            .size
+                            .as_ref()
+                            .unwrap()
+                            .height,
                         frame_x,
                         frame_y,
                     );
@@ -500,10 +556,7 @@ impl DynamicPage {
                     font_path,
                 );
 
-                block_text.set_text_size(GeoSize::new(
-                    text_width,
-                    text_height
-                ));
+                block_text.set_text_size(GeoSize::new(text_width, text_height));
 
                 if block_text.frame.is_some()
                     && block_text.frame.as_ref().unwrap().point.is_some()
@@ -542,9 +595,7 @@ impl DynamicPage {
                 (false, Some(GeoRect::new(width, height, x, y)))
             }
             Block::Line(block_line) => {
-                if block_line.frame.point.is_some()
-                    && block_line.frame.size.is_some()
-                {
+                if block_line.frame.point.is_some() && block_line.frame.size.is_some() {
                     let mut inner_drawn_frame = block_line.frame.clone();
 
                     for style in block_line.styles.iter() {
@@ -587,7 +638,7 @@ impl DynamicPage {
                 block_line.set_frame(frame.clone());
 
                 (false, Some(frame))
-            },
+            }
         }
     }
 
@@ -696,67 +747,65 @@ impl DynamicPage {
         let text_wrap = block_text.get_text_wrap();
         let use_font_path = block_text.font_path.as_ref().unwrap_or(font_path);
 
-        let (text_width, text_height) = if block_text.needs_wrapping() && block_text.get_available_width().is_some() {
-            let available_width = block_text.get_available_width().unwrap();
-            let available_height = block_text.get_available_height();
+        let (text_width, text_height) =
+            if block_text.needs_wrapping() && block_text.get_available_width().is_some() {
+                let available_width = block_text.get_available_width().unwrap();
+                let available_height = block_text.get_available_height();
 
-            // 折り返し処理を実行
-            match text_wrap.mode {
-                TextWrapMode::Character => {
-                    let wrapped = wrap_text_by_character(
-                        &block_text.text,
-                        block_text.font_size,
-                        use_font_path,
-                        available_width,
-                        available_height,
-                        &text_wrap,
-                    );
+                // 折り返し処理を実行
+                match text_wrap.mode {
+                    TextWrapMode::Character => {
+                        let wrapped = wrap_text_by_character(
+                            &block_text.text,
+                            block_text.font_size,
+                            use_font_path,
+                            available_width,
+                            available_height,
+                            &text_wrap,
+                        );
 
-                    let width = wrapped.total_size.width;
-                    let height = wrapped.total_size.height;
+                        let width = wrapped.total_size.width;
+                        let height = wrapped.total_size.height;
 
-                    // 折り返し結果をTextに保存
-                    block_text.set_wrapped_text(wrapped);
+                        // 折り返し結果をTextに保存
+                        block_text.set_wrapped_text(wrapped);
 
-                    (width, height)
+                        (width, height)
+                    }
+                    TextWrapMode::Word => {
+                        // TODO: 後で実装
+                        // 現在は文字単位折り返しにフォールバック
+                        let wrapped = wrap_text_by_character(
+                            &block_text.text,
+                            block_text.font_size,
+                            use_font_path,
+                            available_width,
+                            available_height,
+                            &text_wrap,
+                        );
+
+                        let width = wrapped.total_size.width;
+                        let height = wrapped.total_size.height;
+
+                        block_text.set_wrapped_text(wrapped);
+
+                        (width, height)
+                    }
+                    TextWrapMode::None => {
+                        // 通常の計算
+                        let text_size =
+                            measure_text(&block_text.text, block_text.font_size, use_font_path);
+                        (text_size.width, text_size.height)
+                    }
                 }
-                TextWrapMode::Word => {
-                    // TODO: 後で実装
-                    // 現在は文字単位折り返しにフォールバック
-                    let wrapped = wrap_text_by_character(
-                        &block_text.text,
-                        block_text.font_size,
-                        use_font_path,
-                        available_width,
-                        available_height,
-                        &text_wrap,
-                    );
-
-                    let width = wrapped.total_size.width;
-                    let height = wrapped.total_size.height;
-
-                    block_text.set_wrapped_text(wrapped);
-
-                    (width, height)
-                }
-                TextWrapMode::None => {
-                    // 通常の計算
-                    let text_size = measure_text(&block_text.text, block_text.font_size, use_font_path);
-                    (text_size.width, text_size.height)
-                }
-            }
-        } else {
-            // 折り返しが不要な場合は通常のサイズ計算
-            let text_size = measure_text(&block_text.text, block_text.font_size, use_font_path);
-            (text_size.width, text_size.height)
-        };
+            } else {
+                // 折り返しが不要な場合は通常のサイズ計算
+                let text_size = measure_text(&block_text.text, block_text.font_size, use_font_path);
+                (text_size.width, text_size.height)
+            };
 
         // NOTE: サイズが未指定の場合はテキストサイズを設定
-        if block_text
-            .frame
-            .as_ref()
-            .map_or(true, |b| b.size.is_none())
-        {
+        if block_text.frame.as_ref().map_or(true, |b| b.size.is_none()) {
             frame_width = text_width;
             frame_height = text_height;
         }
